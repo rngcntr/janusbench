@@ -35,7 +35,10 @@ services:
 
     # from sunsided/janusgraph-docker
     scylla:
-        image: scylladb/scylla:3.0.8
+        build:
+            context: scylla
+            args:
+                VERSION: 3.0.8
         ports:
             # http://docs.scylladb.com/kb/posix/
             # REST API
@@ -52,11 +55,6 @@ services:
               # Prometheus monitoring
             - "9180:9180"
             - "9100:9100"
-        healthcheck:
-            test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
-            interval: 30s
-            timeout: 10s
-            retries: 5
 
     # from sunsided/janusgraph-docker
     elasticsearch:
