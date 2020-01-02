@@ -3,12 +3,10 @@ version: "3"
 services:
     janusgraph:
         build:
-            context: janusgraph-scylla-elasticsearch
+            context: janusgraph
             args:
                 VERSION: latest
-        image: janusgraph-scylla-elasticsearch
-        ports:
-            - "8182:8182"
+        image: janusgraph
         depends_on:
             - scylla
             - elasticsearch
@@ -27,7 +25,6 @@ services:
         command: "./bin/gremlin.sh"
         stdin_open: true
         volumes:
-            - "./gremlin-client/docker-entrypoint-initdb.d:/docker-entrypoint/initdb.d"
             - "./gremlin-client/data:/data"
         depends_on:
             - janusgraph
@@ -58,8 +55,6 @@ services:
             interval: 30s
             timeout: 10s
             retries: 5
-        volumes:
-            - ./scylla/data:/var/lib/scylla
 
     # from sunsided/janusgraph-docker
     elasticsearch:
@@ -77,5 +72,3 @@ services:
             timeout: 30s
             retries: 30
         user: "1000"
-        volumes:
-            - ./elasticsearch/data:/usr/share/elasticsearch/data
