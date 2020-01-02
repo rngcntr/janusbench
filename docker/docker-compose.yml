@@ -7,24 +7,32 @@ services:
             args:
                 VERSION: latest
         image: janusgraph-scylla-elasticsearch
-        container_name: janusgraph
         ports:
             - "8182:8182"
         depends_on:
             - scylla
             - elasticsearch
+        environment:
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=scylla
+            - janusgraph.storage.keyspace=airlines
+            - janusgraph.cache.db-cache=true
+            - janusgraph.index.search.backend=elasticsearch
+            - janusgraph.index.search.hostname=elasticsearch
+            - janusgraph.index.search.index-name=airlines
+            - janusgraph.index.search.elasticsearch.client-only=true
 
     gremlin-client:
         image: janusgraph/janusgraph:latest
         command: "./bin/gremlin.sh"
         stdin_open: true
-        environment:
-            - GREMLIN_REMOTE_HOSTS=janusgraph
         volumes:
             - "./gremlin-client/docker-entrypoint-initdb.d:/docker-entrypoint/initdb.d"
             - "./gremlin-client/data:/data"
         depends_on:
             - janusgraph
+        environment:
+            - GREMLIN_REMOTE_HOSTS=janusgraph
 
     # from sunsided/janusgraph-docker
     scylla:
