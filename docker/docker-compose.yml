@@ -2,29 +2,14 @@ version: "3"
 
 services:
     janusgraph:
-        image: janusgraph/janusgraph:latest
-        copy:
-            src/gremlin-server.yaml ${JANUS_HOME}/conf/gremlin-server/gremlin-server.yaml
-        environment:
-            # keys must begin with "janusgraph."
-            - janusgraph.gremlin.graph=org.janusgraph.core.JanusGraphFactory
-            - janusgraph.graph.graphname=airlines
-
-            - janusgraph.storage.backend=cql
-            - janusgraph.storage.hostname=scylla
-            - janusgraph.storage.keyspace=airlines
-
-            - janusgraph.cache.db-cache=true
-
-            - janusgraph.index.search.backend=elasticsearch
-            - janusgraph.index.search.hostname=elasticsearch
-            - janusgraph.index.search.index-name=airlines
-            - janusgraph.index.search.elasticsearch.client-only=true
+        build:
+            context: janusgraph-scylla-elasticsearch
+            args:
+                VERSION: latest
+        image: janusgraph-scylla-elasticsearch
+        container_name: janusgraph
         ports:
             - "8182:8182"
-        volumes:
-            - "./janusgraph/docker-entrypoint-initdb.d:/docker-entrypoint/initdb.d"
-            - "./janusgraph/data:/data"
         depends_on:
             - scylla
             - elasticsearch
