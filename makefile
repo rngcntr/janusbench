@@ -1,7 +1,8 @@
 all:
+	docker-compose -f configurations/${CONFIG}.yml build
 
 run:
-	docker-compose -f docker/docker-compose.yml run --rm -e GREMLIN_REMOTE_HOSTS=janusgraph gremlin-client ./bin/gremlin.sh
+	docker-compose -f configurations/${CONFIG}.yml run --rm -e GREMLIN_REMOTE_HOSTS=janusgraph gremlin-client ./bin/gremlin.sh
 
 clean:
-	docker-compose down --remove-orphans
+	docker-compose -f configurations/${CONFIG}.yml down --remove-orphans

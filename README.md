@@ -8,14 +8,14 @@
     ```
 2. Build the current configuration
     ```sh
-    docker-compose build
+    make CONFIG=janusgraph-<storage>-<index>
     ```
 3. Start the gremlin client (and the backend services in the background)
     ```sh
-    docker-compose run --rm -e GREMLIN_REMOTE_HOSTS=janusgraph gremlin-client ./bin/gremlin.sh
+    make CONFIG=janusgraph-<storage>-<index> run
     ```
 4. Stop all services
-    docker-compose stop
+    make CONFIG=janusgraph-<storage>-<index> clean
 
 ## What to do from the gremlin console
 

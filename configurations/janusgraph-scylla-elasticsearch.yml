@@ -3,7 +3,7 @@ version: "3"
 services:
     janusgraph:
         build:
-            context: janusgraph
+            context: ../services/janusgraph
             args:
                 VERSION: latest
         ports:
@@ -21,7 +21,7 @@ services:
 
     gremlin-client:
         build:
-            context: gremlin-client
+            context: ../services/gremlin-client
             args:
                 VERSION: latest
         stdin_open: true
@@ -31,7 +31,7 @@ services:
     # from sunsided/janusgraph-docker
     scylla:
         build:
-            context: scylla
+            context: ../services/scylla
             args:
                 VERSION: 3.0.8
         ports:
@@ -48,7 +48,7 @@ services:
     # from sunsided/janusgraph-docker
     elasticsearch:
         build:
-            context: elasticsearch
+            context: ../services/elasticsearch
             args:
                 VERSION: 6.6.0
         ports:
