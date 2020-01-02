@@ -7,6 +7,8 @@ services:
             args:
                 VERSION: latest
         image: janusgraph
+        ports:
+            - "8182:8182"
         depends_on:
             - scylla
             - elasticsearch
@@ -58,17 +60,10 @@ services:
 
     # from sunsided/janusgraph-docker
     elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+        build:
+            context: elasticsearch
+            args:
+                VERSION: 6.6.0
         ports:
             - "9200:9200"
             - "9300:9300"
-        environment:
-            - discovery.type=single-node
-            - http.host=0.0.0.0
-            - transport.host=127.0.0.1
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:9200"]
-            interval: 1s
-            timeout: 30s
-            retries: 30
-        user: "1000"
