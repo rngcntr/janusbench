@@ -6,7 +6,6 @@ services:
             context: janusgraph
             args:
                 VERSION: latest
-        image: janusgraph
         ports:
             - "8182:8182"
         depends_on:
@@ -15,23 +14,19 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=scylla
-            - janusgraph.storage.keyspace=airlines
             - janusgraph.cache.db-cache=true
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
-            - janusgraph.index.search.index-name=airlines
             - janusgraph.index.search.elasticsearch.client-only=true
 
     gremlin-client:
-        image: janusgraph/janusgraph:latest
-        command: "./bin/gremlin.sh"
+        build:
+            context: gremlin-client
+            args:
+                VERSION: latest
         stdin_open: true
-        volumes:
-            - "./gremlin-client/data:/data"
         depends_on:
             - janusgraph
-        environment:
-            - GREMLIN_REMOTE_HOSTS=janusgraph
 
     # from sunsided/janusgraph-docker
     scylla:
@@ -41,19 +36,13 @@ services:
                 VERSION: 3.0.8
         ports:
             # http://docs.scylladb.com/kb/posix/
-            # REST API
-            - "10000:10000"
-              # CQL ports (native_transport_port)
-            - "9042:9042"
-              # Thrift (rpc_port)
-            - "9160:9160"
-              # Internode
-            - "7000:7000"
+            - "10000:10000" # REST API
+            - "9042:9042" # CQL ports (native_transport_port)
+            - "9160:9160" # Thrift (rpc_port)
+            - "7000:7000" # Internode
             - "7001:7001"
-              # JMX
-            - "7199:7199"
-              # Prometheus monitoring
-            - "9180:9180"
+            - "7199:7199" # JMX
+            - "9180:9180" # Prometheus monitoring
             - "9100:9100"
 
     # from sunsided/janusgraph-docker
