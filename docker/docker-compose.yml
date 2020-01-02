@@ -1,0 +1,88 @@
+version: "3"
+
+services:
+    janusgraph:
+        image: janusgraph/janusgraph:latest
+        copy:
+            src/gremlin-server.yaml ${JANUS_HOME}/conf/gremlin-server/gremlin-server.yaml
+        environment:
+            # keys must begin with "janusgraph."
+            - janusgraph.gremlin.graph=org.janusgraph.core.JanusGraphFactory
+            - janusgraph.graph.graphname=airlines
+
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=scylla
+            - janusgraph.storage.keyspace=airlines
+
+            - janusgraph.cache.db-cache=true
+
+            - janusgraph.index.search.backend=elasticsearch
+            - janusgraph.index.search.hostname=elasticsearch
+            - janusgraph.index.search.index-name=airlines
+            - janusgraph.index.search.elasticsearch.client-only=true
+        ports:
+            - "8182:8182"
+        volumes:
+            - "./janusgraph/docker-entrypoint-initdb.d:/docker-entrypoint/initdb.d"
+            - "./janusgraph/data:/data"
+        depends_on:
+            - scylla
+            - elasticsearch
+
+    gremlin-client:
+        image: janusgraph/janusgraph:latest
+        command: "./bin/gremlin.sh"
+        stdin_open: true
+        environment:
+            - GREMLIN_REMOTE_HOSTS=janusgraph
+        volumes:
+            - "./gremlin-client/docker-entrypoint-initdb.d:/docker-entrypoint/initdb.d"
+            - "./gremlin-client/data:/data"
+        depends_on:
+            - janusgraph
+
+    # from sunsided/janusgraph-docker
+    scylla:
+        image: scylladb/scylla:3.0.8
+        ports:
+            # http://docs.scylladb.com/kb/posix/
+            # REST API
+            - "10000:10000"
+              # CQL ports (native_transport_port)
+            - "9042:9042"
+              # Thrift (rpc_port)
+            - "9160:9160"
+              # Internode
+            - "7000:7000"
+            - "7001:7001"
+              # JMX
+            - "7199:7199"
+              # Prometheus monitoring
+            - "9180:9180"
+            - "9100:9100"
+        healthcheck:
+            test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+        volumes:
+            - ./scylla/data:/var/lib/scylla
+
+    # from sunsided/janusgraph-docker
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            - discovery.type=single-node
+            - http.host=0.0.0.0
+            - transport.host=127.0.0.1
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:9200"]
+            interval: 1s
+            timeout: 30s
+            retries: 30
+        user: "1000"
+        volumes:
+            - ./elasticsearch/data:/usr/share/elasticsearch/data
