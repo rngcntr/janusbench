@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        environment:
+            - janusgraph.storage.backend=inmemory
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true

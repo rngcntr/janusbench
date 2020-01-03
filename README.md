@@ -23,7 +23,7 @@
     make CONFIG=janusgraph-<storage>-<index> clean
     ```
 
-## What to do from the gremlin console
+## What to do from here?
 
 ### Connect to the gremlin server
 ```groovy

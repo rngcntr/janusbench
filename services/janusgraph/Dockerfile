@@ -2,7 +2,8 @@ ARG VERSION
 FROM janusgraph/janusgraph:${VERSION}
 
 ENV janusgraph.gremlin.graph=org.janusgraph.core.JanusGraphFactory \
-    janusgraph.graph.graphname=graph
+    janusgraph.graph.graphname=graph \
+    JANUS_STORAGE_TIMEOUT=20
 
 # only needed for berkeley
 RUN mkdir -p /db/berkeley && chmod 777 /db/berkeley
