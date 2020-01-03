@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - elasticsearch
+        environment:
+            - janusgraph.storage.backend=berkeleyje
+            - janusgraph.storage.directory=/db/berkeley
+            - janusgraph.index.search.backend=elasticsearch
+            - janusgraph.index.search.hostname=elasticsearch
+            - janusgraph.index.search.elasticsearch.client-only=true
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    # from sunsided/janusgraph-docker
+    elasticsearch:
+        build:
+            context: ../services/elasticsearch
+            args:
+                VERSION: 6.6.0
+        ports:
+            - "9200:9200"
+            - "9300:9300"
