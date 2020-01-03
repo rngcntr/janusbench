@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - scylla
+        environment:
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=scylla
+            - janusgraph.cache.db-cache=true
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    # from sunsided/janusgraph-docker
+    scylla:
+        build:
+            context: ../services/scylla
+            args:
+                VERSION: 3.0.8
+        ports:
+            # http://docs.scylladb.com/kb/posix/
+            - "10000:10000" # REST API
+            - "9042:9042" # CQL ports (native_transport_port)
+            - "9160:9160" # Thrift (rpc_port)
+            - "7000:7000" # Internode
+            - "7001:7001"
+            - "7199:7199" # JMX
+            - "9180:9180" # Prometheus monitoring
+            - "9100:9100"
