@@ -6,22 +6,45 @@
     ```sh
     git clone https://github.com/rngcntr/janusbench.git && cd janusbench
     ```
-2. Build the current configuration
+2. Build the current configuration ...
+    ... with an external index backend:
     ```sh
-    make CONFIG=janusgraph-<storage>-<index>
+    make storage=<...> index=<...>
     ```
+    ... or without an external index backend:
+    ```sh
+    make storage=<...>
+    ```
+    The same syntax applies to all subsequent commands.
 3. Start the gremlin client (and the backend services in the background)
     ```sh
-    make CONFIG=janusgraph-<storage>-<index> run
+    make storage=<...> index=<...> run
     ```
 4. Stop all services
     ```sh
-    make CONFIG=janusgraph-<storage>-<index> stop
+    make storage=<...> index=<...> stop
     ```
 5. Reset all services including database storage
     ```sh
-    make CONFIG=janusgraph-<storage>-<index> clean
+    make storage=<...> index=<...> clean
     ```
+
+### Available Backends
+- Storage:
+    - cassandra
+    - scylla
+    - berkeleyje
+    - hbase
+    - inmemory
+- Index:
+    - elasticsearch
+    - solr
+
+### Compatibility Matrix
+|                   | cassandra | scylla   | berkeleyje | hbase    | inmemory |
+|:------------------|:---------:|:--------:|:----------:|:--------:|:--------:|
+| **elasticsearch** | &#10004;  | &#10004; | &#10004;   | &#10004; | &#10008; |
+| **solr**          | &#10004;  | &#10004; | &#10004;   | &#10004; | &#10008; |
 
 ## What to do from here?
 
