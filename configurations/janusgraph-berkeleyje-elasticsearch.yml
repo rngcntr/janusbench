@@ -12,7 +12,7 @@ services:
             - elasticsearch
         environment:
             - janusgraph.storage.backend=berkeleyje
-            - janusgraph.storage.directory=/db/berkeley
+            - janusgraph.storage.directory=/tmp/berkeleyje
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true

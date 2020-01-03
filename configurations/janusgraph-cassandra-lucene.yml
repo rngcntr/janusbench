@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - cassandra
+        environment:
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=cassandra
+            - janusgraph.cache.db-cache=true
+            - janusgraph.index.search.backend=lucene
+            - janusgraph.index.search.directory=/tmp/searchindex
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    cassandra:
+        build:
+            context: ../services/cassandra
+            args:
+                VERSION: 3.11
+        ports:
+            - "9042:9042" # CQL ports (native_transport_port)
+            - "9160:9160" # Thrift (rpc_port)
+            - "7000:7000" # Internode
+            - "7001:7001"
+            - "7199:7199"

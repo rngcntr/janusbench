@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - hbase
+        environment:
+            - janusgraph.storage.backend=hbase
+            - janusgraph.storage.hostname=hbase
+            - janusgraph.cache.db-cache=true
+            - janusgraph.index.search.backend=lucene
+            - janusgraph.index.search.directory=/tmp/searchindex
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    hbase:
+        build:
+            context: ../services/hbase
+            args:
+                VERSION: 2.1
+        ports:
+            - "16010:16010" # Master Server
+            - "9095:9095" # Thrift
+            - "8085:8085" # REST server UI
