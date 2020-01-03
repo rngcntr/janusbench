@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        environment:
+            - janusgraph.storage.backend=berkeleyje
+            - janusgraph.storage.directory=/db/berkeley
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
