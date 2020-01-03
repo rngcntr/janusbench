@@ -12,7 +12,7 @@ services:
             - hbase
             - elasticsearch
         environment:
-            - janusgraph.storage.backend=cql
+            - janusgraph.storage.backend=hbase
             - janusgraph.storage.hostname=hbase
             - janusgraph.cache.db-cache=true
             - janusgraph.index.search.backend=elasticsearch
