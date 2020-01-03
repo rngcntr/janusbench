@@ -1,0 +1,66 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - cassandra
+            - solr
+        environment:
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=cassandra
+            - janusgraph.cache.db-cache=true
+            - janusgraph.index.search.backend=solr
+            - janusgraph.index.search.solr.mode=cloud
+            - janusgraph.index.search.solr.zookeeper-url=zookeeper:2181
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    cassandra:
+        build:
+            context: ../services/cassandra
+            args:
+                VERSION: 3.11
+        ports:
+            - "9042:9042" # CQL ports (native_transport_port)
+            - "9160:9160" # Thrift (rpc_port)
+            - "7000:7000" # Internode
+            - "7001:7001"
+            - "7199:7199"
+
+    solr:
+        build:
+            context: ../services/solr
+            args:
+                VERSION: 7.7.2
+        environment:
+            - ZK_HOST=zookeeper:2181
+        ports:
+            - "8983:8983"
+        depends_on:
+            - zookeeper
+
+    # from: https://github.com/docker-solr/docker-solr-examples/blob/master/docker-compose/docker-compose.yml
+    zookeeper:
+        build:
+            context: ../services/zookeeper
+            args:
+                VERSION: 3.5
+        restart: always
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
+        ports:
+            - "2181:2181"

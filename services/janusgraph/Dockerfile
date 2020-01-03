@@ -3,7 +3,7 @@ FROM janusgraph/janusgraph:${VERSION}
 
 ENV janusgraph.gremlin.graph=org.janusgraph.core.JanusGraphFactory \
     janusgraph.graph.graphname=graph \
-    JANUS_STORAGE_TIMEOUT=20
+    JANUS_STORAGE_TIMEOUT=30
 
 # only needed for berkeley
 RUN mkdir -p /db/berkeley && chmod 777 /db/berkeley
