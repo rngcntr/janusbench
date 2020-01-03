@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+    janusgraph:
+        build:
+            context: ../services/janusgraph
+            args:
+                VERSION: latest
+        ports:
+            - "8182:8182"
+        depends_on:
+            - hbase
+            - elasticsearch
+        environment:
+            - janusgraph.storage.backend=cql
+            - janusgraph.storage.hostname=hbase
+            - janusgraph.cache.db-cache=true
+            - janusgraph.index.search.backend=elasticsearch
+            - janusgraph.index.search.hostname=elasticsearch
+            - janusgraph.index.search.elasticsearch.client-only=true
+
+    gremlin-client:
+        build:
+            context: ../services/gremlin-client
+            args:
+                VERSION: latest
+        stdin_open: true
+        depends_on:
+            - janusgraph
+
+    hbase:
+        build:
+            context: ../services/hbase
+            args:
+                VERSION: 2.1
+        ports:
+            - "16010:16010" # Master Server
+            - "9095:9095" # Thrift
+            - "8085:8085" # REST server UI
+
+    # from sunsided/janusgraph-docker
+    elasticsearch:
+        build:
+            context: ../services/elasticsearch
+            args:
+                VERSION: 6.6.0
+        ports:
+            - "9200:9200"
+            - "9300:9300"
