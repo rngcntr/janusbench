@@ -4,7 +4,7 @@
 ## Getting Started
 1. Clone the repository
     ```sh
-    git clone https://github.com/rngcntr/janusbench.git && cd janusbench/docker
+    git clone https://github.com/rngcntr/janusbench.git && cd janusbench
     ```
 2. Build the current configuration
     ```sh
@@ -15,7 +15,13 @@
     make CONFIG=janusgraph-<storage>-<index> run
     ```
 4. Stop all services
+    ```sh
+    make CONFIG=janusgraph-<storage>-<index> stop
+    ```
+5. Reset all services including database storage
+    ```sh
     make CONFIG=janusgraph-<storage>-<index> clean
+    ```
 
 ## What to do from the gremlin console
 
@@ -69,8 +75,43 @@ gremlin>
 
 </p></details>
 
-### Load the sample graph
+### Send queries to the server
+
+Gremlin has two built-in methods of benchmarking query processing performance.
+An easy way is to use `clockWithResult(n) {...}` where `n` is the number of replications to run.
+The following command returns the average runtime in milliseconds of 100 replications of the contained query (which searches for all single stop flights from Düsseldorf to Ålesund).
 
 ```groovy
-gremlin> :load /data/loadGraph.groovy
+gremlin> clockWithResult(100) {g.V().has('code','DUS').out().out().has('code','AES').path().by('city').toList()}
+==>65.01110942999999
+==>[path[Dusseldorf, London, Ålesund], path[Dusseldorf, Alicante, Ålesund], path[Dusseldorf, Oslo, Ålesund], path[Dusseldorf, Amsterdam, Ålesund], path[Dusseldorf, Copenhagen, Ålesund], path[Dusseldorf, Riga, Ålesund]]
+e
+```
+
+A more sophisticated performance measurement is provided by `.profile()`.
+For instance, this is the profile of a query that returns all airports directly reachable from Düsseldorf:
+
+```groovy
+gremlin> g.V().has('code','DUS').out().profile()
+==>Traversal Metrics
+Step                                                               Count  Traversers       Time (ms)    % Dur
+=============================================================================================================
+JanusGraphStep([],[code.eq(DUS)])                                      1           1           0.360    41.96
+    \_condition=(code = DUS)
+    \_orders=[]
+    \_isFitted=true
+    \_isOrdered=true
+    \_query=multiKSQ[1]@2147483647
+    \_index=airportIndex
+  optimization                                                                                 0.016
+  optimization                                                                                 0.093
+JanusGraphVertexStep(OUT,vertex)                                     166         166           0.498    58.04
+    \_condition=(EDGE AND visibility:normal)
+    \_orders=[]
+    \_isFitted=false
+    \_isOrdered=true
+    \_query=org.janusgraph.diskstorage.keycolumnvalue.SliceQuery@801a60ee
+    \_vertices=1
+  optimization                                                                                 0.002
+                                            >TOTAL                     -           -           0.859        -
 ```
