@@ -25,6 +25,8 @@ services:
             args:
                 VERSION: latest
         stdin_open: true
+        environment:
+            - GREMLIN_REMOTE_HOSTS=janusgraph
         depends_on:
             - janusgraph
 
