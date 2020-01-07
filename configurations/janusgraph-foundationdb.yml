@@ -16,7 +16,6 @@ services:
             - janusgraph.storage.backend=com.experoinc.janusgraph.diskstorage.foundationdb.FoundationDBStoreManager
             - janusgraph.storage.hostname=foundationdb
             - janusgraph.storage.fdb.isolation-level=read_committed_with_write # not to use for production
-            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:

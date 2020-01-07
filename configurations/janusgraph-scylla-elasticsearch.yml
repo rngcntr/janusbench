@@ -14,7 +14,6 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=scylla
-            - janusgraph.cache.db-cache=true
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true

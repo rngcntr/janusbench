@@ -14,7 +14,6 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=scylla
-            - janusgraph.cache.db-cache=true
             - janusgraph.index.search.backend=solr
             - janusgraph.index.search.solr.mode=cloud
             - janusgraph.index.search.solr.zookeeper-url=zookeeper:2181

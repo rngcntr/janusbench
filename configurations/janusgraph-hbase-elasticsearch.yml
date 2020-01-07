@@ -14,7 +14,6 @@ services:
         environment:
             - janusgraph.storage.backend=hbase
             - janusgraph.storage.hostname=hbase
-            - janusgraph.cache.db-cache=true
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true

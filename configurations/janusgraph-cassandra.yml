@@ -13,7 +13,6 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=cassandra
-            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:
