@@ -8,6 +8,7 @@ keepAliveInterval: 300000
 channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
 graphManager: org.janusgraph.graphdb.management.JanusGraphManager
 graphs: {
+    ConfigurationManagementGraph: /etc/opt/janusgraph/janusgraph.properties,
     graph: /etc/opt/janusgraph/janusgraph.properties
 }
 scriptEngines: {
