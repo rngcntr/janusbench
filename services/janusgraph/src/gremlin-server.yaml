@@ -2,9 +2,9 @@ host: 0.0.0.0
 port: 8182
 threadPoolWorker: 1
 gremlinPool: 16
-scriptEvaluationTimeout: 30000
-idleConnectionTimeout: 45000
-keepAliveInterval: 30000
+scriptEvaluationTimeout: 300000
+idleConnectionTimeout: 450000
+keepAliveInterval: 300000
 channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
 graphManager: org.janusgraph.graphdb.management.JanusGraphManager
 graphs: {
