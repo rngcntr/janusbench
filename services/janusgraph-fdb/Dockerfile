@@ -24,13 +24,11 @@ WORKDIR /foundationdb/janusgraph-foundationdb-0.1.0
 RUN /foundationdb/janusgraph-foundationdb-0.1.0/install.sh ${JANUS_HOME}
 WORKDIR ${JANUS_HOME}
 
-COPY --chown=janusgraph:janusgraph src/log4j-server.properties ${JANUS_HOME}/conf/gremlin-server/
-
 COPY --chown=janusgraph:janusgraph src/gremlin-server.yaml ${JANUS_HOME}/conf/gremlin-server/gremlin-server.yaml
 COPY --chown=janusgraph:janusgraph src/initialize-server.groovy /opt/initialize-server.groovy
 
 COPY --chown=janusgraph:janusgraph src/air-routes.graphml /data/air-routes.graphml
-#COPY --chown=janusgraph:janusgraph src/loadGraph.groovy /docker-entrypoint-initdb.d/loadGraph.groovy
+COPY --chown=janusgraph:janusgraph src/loadGraph.groovy /docker-entrypoint-initdb.d/loadGraph.groovy
 
 COPY --chown=janusgraph:janusgraph src/foundationdb-clients_6.2.7-1_amd64.deb /data/foundationdb-clients.deb
 RUN dpkg -i /data/foundationdb-clients.deb
