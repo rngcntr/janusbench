@@ -1,4 +1,6 @@
 def insertVertices (num) {
+    println ">> Preparing Vertices"
+    // prepare vertices to insert
     names = new String[num]; []
     ages  = new int[num]; []
 
@@ -15,11 +17,15 @@ def insertVertices (num) {
 
     index = 0;
 
+    println ">> Inserting Vertices"
     // statement within clock(N) is run N+1 times
-    clock(num - 1) {
+    time = clock(num - 1) {
         g.addV('person').
             property('name', names[index]).
             property('age', ages[index++]).
             next()
     }
+
+    println ">> Done"
+    return time
 }
