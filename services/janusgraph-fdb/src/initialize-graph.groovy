@@ -6,7 +6,7 @@ println "Defining labels";[]
 println "===============\n";[]
 ;[]// Define edge labels and usage
 mgmt = graph.openManagement()
-mgmt.makeEdgeLabel('follows').multiplicity(SIMPLE).make()
+mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).make()
 
 ;[]// Define vertex labels
 mgmt.makeVertexLabel('person').make()
@@ -19,7 +19,7 @@ mgmt.makePropertyKey('name').dataType(String.class).cardinality(SINGLE).make()
 mgmt.makePropertyKey('age').dataType(Integer.class).cardinality(SINGLE).make()
 
 ;[]// Define edge property keys
-mgmt.makePropertyKey('since').dataType(Date.class).cardinality(SINGLE).make()
+mgmt.makePropertyKey('lastSeen').dataType(Date.class).cardinality(SINGLE).make()
 
 println "\n==============";[]
 println "Building index";[]
@@ -30,15 +30,15 @@ graph.tx().rollback();[]
 
 idx0 = mgmt.buildIndex('nameIndex',Vertex.class)
 idx1 = mgmt.buildIndex('ageIndex',Vertex.class)
-idx2 = mgmt.buildIndex('sinceIndex',Vertex.class)
+idx2 = mgmt.buildIndex('lastSeenIndex',Vertex.class)
 
 name  = mgmt.getPropertyKey('name')
 age   = mgmt.getPropertyKey('age')
-since = mgmt.getPropertyKey('since')
+lastSeen = mgmt.getPropertyKey('lastSeen')
 
 idx0.addKey(name).buildCompositeIndex()
 idx1.addKey(age).buildCompositeIndex()
-idx2.addKey(since).buildCompositeIndex()
+idx2.addKey(lastSeen).buildCompositeIndex()
 
 println "\n==================";[]
 println "Committing changes";[]
@@ -56,7 +56,7 @@ mgmt.awaitGraphIndexStatus(graph, 'nameIndex').
 mgmt.awaitGraphIndexStatus(graph, 'ageIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
-mgmt.awaitGraphIndexStatus(graph, 'sinceIndex').
+mgmt.awaitGraphIndexStatus(graph, 'lastSeenIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
 println "\n==========================";[]
