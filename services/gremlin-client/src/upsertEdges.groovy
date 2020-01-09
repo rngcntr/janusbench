@@ -3,11 +3,23 @@ def upsertEdges (num) {
     // prepare edges to insert
     a = new org.apache.tinkerpop.gremlin.structure.Vertex[num]; []
     b = new org.apache.tinkerpop.gremlin.structure.Vertex[num]; []
+    
+    // get a list of all vertices to select from
+    allVertices = g.V().toList()
+    rand = new Random(System.currentTimeMillis()); []
 
     for (i = 0; i < num; ++i) {
-        twoVertices = g.V().sample(2).toList()
-        a[i] = twoVertices[0]
-        b[i] = twoVertices[1]
+        // randomly choose an incoming vertex
+        selectedIndexA = rand.nextInt(allVertices.size())
+        a[i] = allVertices[selectedIndexA]
+
+        // one vertex less to sample from
+        selectedIndexB = rand.nextInt(allVertices.size() - 1)
+        if (selectedIndexA == selectedIndexB) {
+            // if the same index is selected, use another vertex instead
+            selectedIndexB = allVertices.size() - 1;
+        }
+        b[i] = allVertices[selectedIndexB]
     }
 
     index = 0;
