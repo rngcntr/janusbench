@@ -13,6 +13,7 @@ services:
         environment:
             - janusgraph.storage.backend=hbase
             - janusgraph.storage.hostname=hbase
+            - JANUS_STORAGE_TIMEOUT=50 # hbase takes longer than other backends
             - janusgraph.index.search.backend=lucene
             - janusgraph.index.search.directory=/tmp/searchindex
 

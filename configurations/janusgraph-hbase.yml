@@ -13,6 +13,7 @@ services:
         environment:
             - janusgraph.storage.backend=hbase
             - janusgraph.storage.hostname=hbase
+            - JANUS_STORAGE_TIMEOUT=50 # hbase takes longer than other backends
 
     gremlin-client:
         build:

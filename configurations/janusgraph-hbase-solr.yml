@@ -14,6 +14,7 @@ services:
         environment:
             - janusgraph.storage.backend=hbase
             - janusgraph.storage.hostname=hbase
+            - JANUS_STORAGE_TIMEOUT=50 # hbase takes longer than other backends
             - janusgraph.index.search.backend=solr
             - janusgraph.index.search.solr.mode=cloud
             - janusgraph.index.search.solr.zookeeper-url=zookeeper:2181
