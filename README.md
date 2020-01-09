@@ -16,10 +16,11 @@
     make storage=<...>
     ```
     The same syntax applies to all subsequent commands.
-3. Start the gremlin client (and the backend services in the background)
+3. Start a gremlin client (and the backend services in the background)
     ```sh
     make storage=<...> index=<...> run
     ```
+    Multiple gremlin clients can be started by running this command concurrently from different terminals. All required backends will be started once only. Therefore, all concurrent gremlin clients will communicate with the same JanusGraph instances and share the same data.
 4. Stop all services
     ```sh
     make storage=<...> index=<...> stop
@@ -30,15 +31,17 @@
     ```
 
 ### Available Backends
-- Storage:
+- Storage (one required):
     - cassandra
     - scylla
     - berkeleyje
     - hbase
+    - foundationdb
     - inmemory
-- Index:
+- Index (optional):
     - elasticsearch
     - solr
+    - lucene
 
 ### Compatibility Matrix
 |                   | cassandra | scylla   | berkeleyje | hbase    | foundationdb | inmemory |
@@ -55,6 +58,24 @@
 &#10008; incompatible by design
 
 ## What to do from here?
+
+### Show logs of different services
+
+Docker provides an easy way to show log output of running (and stopped) services.
+After deploying the services (e.g. via `make storage=scylla index=solr run`), `docker ps` should show something similar to this:
+
+```
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS          PORTS                                                                                                                                                                                NAMES
+6093ed5570d6        configurations_gremlin-client   "docker-entrypoint.s…"   32 seconds ago      Up 31 seconds   8182/tcp                                                                                                                                                                             configurations_gremlin-client_run_671eeb90f2cd
+37bcecf57464        configurations_janusgraph       "docker-entrypoint.s…"   33 seconds ago      Up 31 seconds   0.0.0.0:8182->8182/tcp                                                                                                                                                               configurations_janusgraph_1
+2634c8ee8223        configurations_solr             "docker-entrypoint.s…"   33 seconds ago      Up 32 seconds   0.0.0.0:8983->8983/tcp                                                                                                                                                               configurations_solr_1
+09b6b16f0eb4        configurations_zookeeper        "/docker-entrypoint.…"   34 seconds ago      Up 33 seconds   2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp, 8080/tcp                                                                                                                                 configurations_zookeeper_1
+327fb9251398        configurations_scylla           "/docker-entrypoint.…"   34 seconds ago      Up 32 seconds   0.0.0.0:7000-7001->7000-7001/tcp, 0.0.0.0:7199->7199/tcp, 0.0.0.0:9042->9042/tcp, 0.0.0.0:9100->9100/tcp, 0.0.0.0:9160->9160/tcp, 0.0.0.0:9180->9180/tcp, 0.0.0.0:10000->10000/tcp   configurations_scylla_1
+```
+
+The rightmost colum, `NAMES` shows the name of each container which can be used to reference it.
+So in order to view the logs produced by our JanusGraph instance, we use `docker logs configurations_janusgraph_1`.
+As a more interactive solution, we can also use `docker logs --follow`.
 
 ### Connect to the gremlin server
 ```groovy
@@ -110,7 +131,10 @@ gremlin>
 
 Gremlin has two built-in methods of benchmarking query processing performance.
 An easy way is to use `clockWithResult(n) {...}` where `n` is the number of replications to run.
-The following command returns the average runtime in milliseconds of 100 replications of the contained query (which searches for all single stop flights from Düsseldorf to Ålesund).
+After following the instructions to load the [air-routes graph](https://github.com/krlawrence/graph/tree/master/sample-data), the following command returns the average runtime in milliseconds of 100 replications of the contained query (which searches for all single stop flights from Düsseldorf to Ålesund).
+
+Info: The air-routes graph is not included in this project.
+In order to use it, make sure the `janusgraph` container has access to the required `.graphml` file.
 
 ```groovy
 gremlin> clockWithResult(100) {g.V().has('code','DUS').out().out().has('code','AES').path().by('city').toList()}
@@ -146,3 +170,16 @@ JanusGraphVertexStep(OUT,vertex)                                     166        
   optimization                                                                                 0.002
                                             >TOTAL                     -           -           0.859        -
 ```
+
+### Build your own graph
+
+This project includes two example scripts which provide the functions `insertVertices(N)` and `upsertEdges(N)`.
+Both functions assume a schema of a social graph with persons represented by vertices and relations represented by edges.
+A person has a name and an age and knows other persons.
+Each "knows" edge has a property which denotes the latest time these persons have seen each other.
+
+- `insertVertices(N)` inserts N randomly generated Vertices into the graph.
+- `upsertEdges(N)` randomly chooses N pairs of Vertices and creates an edge between them using the current date as a value for `lastSeen`. In case an edge already exists, the `lastSeen` property is updated without modifying the edge in any other way.
+
+All scripts provided in `/services/gremlin-client/src/` can be loaded using `:load /data/<filename>.groovy`
+You are encouraged to use the given ones as a starting point to write your own scripts and define your own graph!

@@ -1,8 +1,8 @@
 ARG VERSION
 FROM janusgraph/janusgraph:${VERSION}
 
-COPY --chown=janusgraph:janusgraph src/connect.groovy /data/connect.groovy
-COPY --chown=janusgraph:janusgraph src/upsertEdges.groovy /data/upsertEdges.groovy
-COPY --chown=janusgraph:janusgraph src/insertVertices.groovy /data/insertVertices.groovy
+ADD --chown=janusgraph:janusgraph src /data/
+ADD --chown=janusgraph:janusgraph src /data/
+ADD --chown=janusgraph:janusgraph src /data/
 
 CMD ./bin/gremlin.sh
