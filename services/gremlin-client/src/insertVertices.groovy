@@ -28,4 +28,4 @@ def insertVertices (num) {
 
     println ">> Done"
     return time
-}
+}; []

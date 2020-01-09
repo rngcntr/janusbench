@@ -16,8 +16,8 @@ services:
         environment:
             - janusgraph.storage.backend=com.experoinc.janusgraph.diskstorage.foundationdb.FoundationDBStoreManager
             - janusgraph.storage.hostname=foundationdb
-              - janusgraph.storage.fdb.isolation-level=serializable
-              #- janusgraph.storage.fdb.isolation-level=read_committed_with_write # not to use for production
+            - janusgraph.storage.fdb.isolation-level=read_committed_with_write # not to use for production
+            #  - janusgraph.storage.fdb.isolation-level=serializable
             - janusgraph.index.search.backend=solr
             - janusgraph.index.search.solr.mode=cloud
             - janusgraph.index.search.solr.zookeeper-url=zookeeper:2181
