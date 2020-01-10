@@ -13,9 +13,12 @@ services:
         environment:
             - janusgraph.storage.backend=berkeleyje
             - janusgraph.storage.directory=/tmp/berkeleyje
+
             - janusgraph.index.search.backend=solr
             - janusgraph.index.search.solr.mode=cloud
             - janusgraph.index.search.solr.zookeeper-url=zookeeper:2181
+
+            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:

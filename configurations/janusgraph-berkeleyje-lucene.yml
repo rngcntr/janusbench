@@ -11,8 +11,11 @@ services:
         environment:
             - janusgraph.storage.backend=berkeleyje
             - janusgraph.storage.directory=/tmp/berkeleyje
+
             - janusgraph.index.search.backend=lucene
             - janusgraph.index.search.directory=/tmp/searchindex
+
+            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:

@@ -12,6 +12,8 @@ services:
             - janusgraph.storage.backend=berkeleyje
             - janusgraph.storage.directory=/tmp/berkeleyje
 
+            - janusgraph.cache.db-cache=true
+
     gremlin-client:
         build:
             context: ../services/gremlin-client

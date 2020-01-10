@@ -18,6 +18,8 @@ services:
             - janusgraph.storage.fdb.isolation-level=read_committed_with_write # not to use for production
             # - janusgraph.storage.fdb.isolation-level=serializable
 
+            - janusgraph.cache.db-cache=true
+
     gremlin-client:
         build:
             context: ../services/gremlin-client

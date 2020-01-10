@@ -18,9 +18,12 @@ services:
             - janusgraph.storage.hostname=foundationdb
             - janusgraph.storage.fdb.isolation-level=read_committed_with_write # not to use for production
             # - janusgraph.storage.fdb.isolation-level=serializable
+ 
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true
+
+            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:

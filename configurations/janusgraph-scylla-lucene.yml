@@ -13,8 +13,11 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=scylla
+
             - janusgraph.index.search.backend=lucene
             - janusgraph.index.search.directory=/tmp/searchindex
+
+            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:

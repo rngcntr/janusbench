@@ -14,6 +14,8 @@ services:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=scylla
 
+            - janusgraph.cache.db-cache=true
+
     gremlin-client:
         build:
             context: ../services/gremlin-client

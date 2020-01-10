@@ -14,9 +14,12 @@ services:
         environment:
             - janusgraph.storage.backend=cql
             - janusgraph.storage.hostname=cassandra
+
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true
+
+            - janusgraph.cache.db-cache=true
 
     gremlin-client:
         build:
