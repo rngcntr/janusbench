@@ -8,16 +8,20 @@ public class UpsertRandomEdgeBenchmark extends AbstractBenchmark {
         super(g);
     }
 
-    public void buildUp(int amount) {
+    public UpsertRandomEdgeBenchmark(GraphTraversalSource g, int stepSize) {
+        super(g, stepSize);
+    }
+
+    public void buildUp() {
         // prepare edges to insert
-        a = new Vertex[amount];
-        b = new Vertex[amount];
+        a = new Vertex[stepSize];
+        b = new Vertex[stepSize];
         
         // get a list of all vertices to select from
         ArrayList<Vertex> allVertices = g.V().toList()
         rand = new Random(System.currentTimeMillis());
 
-        for (int i = 0; i < amount; ++i) {
+        for (int i = 0; i < stepSize; ++i) {
             // randomly choose an incoming vertex
             int selectedIndexA = rand.nextInt(allVertices.size())
             a[i] = allVertices[selectedIndexA]
@@ -32,11 +36,11 @@ public class UpsertRandomEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(int amount) {
-        for (int index = 0; index < amount; ++index) {
-            if (g.V(a[index]).out('knows').where(is(b[index])).hasNext()) {
+    public void performAction() {
+        for (int index = 0; index < stepSize; ++index) {
+            if (g.V(a[index]).in('knows').where(is(b[index])).hasNext()) {
                 // edge already exists -> update
-                Edge e = g.V(a[index]).outE('knows').as('e').inV().where(is(b[index])).select('e').next()
+                Edge e = g.V(a[index]).inE('knows').as('e').outV().where(is(b[index])).select('e').next()
                 e.property('lastSeen', new Date())
             } else {
                 // edge does not exist -> insert
@@ -45,7 +49,7 @@ public class UpsertRandomEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void tearDown(int amount) {
+    public void tearDown() {
     }
 }
 

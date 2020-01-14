@@ -1,4 +1,6 @@
-public class InsertVerticesBenchmark extends AbstractBenchmark {
+public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
+    private Vertex supernode;
+
     private String[] names;
     private int[] ages;
 
@@ -8,12 +10,14 @@ public class InsertVerticesBenchmark extends AbstractBenchmark {
 
     private Random rand;
 
-    public InsertVerticesBenchmark(GraphTraversalSource g) {
-        super(g);
+    public InsertSupernodeVerticesBenchmark(GraphTraversalSource g, int stepSize, Vertex supernode) {
+        super(g, stepSize);
+        this.supernode = supernode;
     }
 
-    public InsertVerticesBenchmark(GraphTraversalSource g, int stepSize) {
-        super(g, stepSize);
+    public InsertSupernodeVerticesBenchmark(GraphTraversalSource g, Vertex supernode) {
+        super(g);
+        this.supernode = supernode;
     }
 
     public void buildUp() {
@@ -33,10 +37,12 @@ public class InsertVerticesBenchmark extends AbstractBenchmark {
 
     public void performAction() {
         for (int index = 0; index < stepSize; ++index) {
-            g.addV('person').
+            // assume vertex does not exist -> insert
+            Vertex insertedVertex = g.addV('person').
                 property('name', names[index]).
                 property('age', ages[index]).
                 next()
+            g.addE('knows').from(supernode).to(insertedVertex).property('lastSeen', new Date()).next()
         }
     }
 

@@ -10,31 +10,36 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
 
     private Random rand;
 
+    public UpsertSupernodeVerticesBenchmark(GraphTraversalSource g, int stepSize, Vertex supernode) {
+        super(g, stepSize);
+        this.supernode = supernode;
+    }
+
     public UpsertSupernodeVerticesBenchmark(GraphTraversalSource g, Vertex supernode) {
         super(g);
         this.supernode = supernode;
     }
 
-    public void buildUp(int amount) {
-        names = new String[amount];
-        ages = new int[amount];
+    public void buildUp() {
+        names = new String[stepSize];
+        ages = new int[stepSize];
         charPool = ['a'..'z', 'A'..'Z', 0..9].flatten();
         minAge = 18;
         maxAge = 100;
         rand = new Random(System.currentTimeMillis());
 
-        for (int i = 0; i < amount; ++i) {
+        for (int i = 0; i < stepSize; ++i) {
             char[] nameChars = (0..7).collect { charPool[rand.nextInt(charPool.size())] };
             names[i] = nameChars.join();
             ages[i] = rand.nextInt(maxAge - minAge) + minAge;
         }
     }
 
-    public void performAction(int amount) {
-        for (int index = 0; index < amount; ++index) {
-            if (g.V(supernode).out('knows').has('name', names[index]).hasNext()) {
+    public void performAction() {
+        for (int index = 0; index < stepSize; ++index) {
+            if (g.V().has('name', names[index]).in('knows').where(is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
-                Edge e = g.V(supernode).outE('knows').as('e').inV().has('name', names[index]).select('e').next()
+                Edge e = g.V().has('name', names[index]).inE('knows').as('e').outV().where(is(supernode)).select('e').next()
                 e.property('lastSeen', new Date())
             } else {
                 // vertex does not exist -> insert
@@ -47,5 +52,5 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void tearDown(int amount) {}
+    public void tearDown() {}
 }
