@@ -5,11 +5,14 @@ public abstract class AbstractBenchmark implements Runnable {
     protected int stepSize;
     protected int numThreads;
 
+    private boolean collectStats;
+
     public AbstractBenchmark(GraphTraversalSource g) {
         this.results = new ArrayList<BenchmarkResult>();
         this.g = g;
         this.stepSize = 1;
         this.numThreads = 1;
+        this.collectStats = true;
     }
 
     public AbstractBenchmark(GraphTraversalSource g, int stepSize) {
@@ -20,8 +23,11 @@ public abstract class AbstractBenchmark implements Runnable {
     public void run() {
         BenchmarkResult result = new BenchmarkResult(this);
         buildUp();
-        result.vBefore = g.V().count().next();
-        result.eBefore = g.E().count().next();
+
+        if (collectStats) {
+            result.statsBefore = new GraphStatistics(g);
+        }
+
         result.stepSize = stepSize;
 
         long startTime = System.nanoTime();
@@ -30,8 +36,11 @@ public abstract class AbstractBenchmark implements Runnable {
         long stopTime = System.nanoTime();
 
         result.time = (stopTime - startTime) * 0.000001 / stepSize;
-        result.vAfter = g.V().count().next();
-        result.eAfter = g.E().count().next();
+
+        if (collectStats) {
+            result.statsBefore = new GraphStatistics(g);
+        }
+
         tearDown();
 
         results.add(result);
@@ -62,14 +71,16 @@ public abstract class AbstractBenchmark implements Runnable {
         this.numThreads = numThreads;
     }
 
+    public void setCollectStats(boolean collectStats) {
+        this.collectStats = collectStats;
+    }
+
     public class BenchmarkResult {
         private AbstractBenchmark action;
         private int stepSize;
 
-        private int vBefore;
-        private int eBefore;
-        private int vAfter;
-        private int eAfter;
+        private GraphStatistics statsBefore;
+        private GraphStatistics statsAfter;
 
         private double time;
 
@@ -81,20 +92,12 @@ public abstract class AbstractBenchmark implements Runnable {
             return stepSize;
         }
 
-        public int getVBefore() {
-            return vBefore;
+        public int getStatsBefore() {
+            return statsBefore;
         }
 
-        public int getEBefore() {
-            return eBefore;
-        }
-
-        public int getVAfter() {
-            return vAfter;
-        }
-
-        public int getEAfter() {
-            return eAfter;
+        public int getStatsAfter() {
+            return statsAfter;
         }
 
         public double getTime() {
@@ -102,15 +105,49 @@ public abstract class AbstractBenchmark implements Runnable {
         }
 
         public String toString() {
-            return String.format("RESULT" +
-                " action=%s" +
-                " stepSize=%d" +
-                " v_before=%d" +
-                " e_before=%d" +
-                " v_after=%d" +
-                " e_after=%d" +
-                " time=%.3f",
-                action.getClass().getName(), stepSize, vBefore, eBefore, vAfter, eAfter, time);
+            if (statsBefore != null && statsAfter != null) {
+                return String.format("RESULT" +
+                    " action=%s" +
+                    " stepSize=%d" +
+                    " v_before=%d" +
+                    " e_before=%d" +
+                    " v_after=%d" +
+                    " e_after=%d" +
+                    " time=%.3f",
+                    action.getClass().getName(),
+                    stepSize,
+                    statsBefore.getNumVertices(),
+                    statsBefore.getNumEdges(),
+                    statsAfter.getNumVertices(),
+                    statsAfter.getNumEdges(),
+                    time);
+            } else {
+                return String.format("RESULT" +
+                    " action=%s" +
+                    " stepSize=%d" +
+                    " time=%.3f",
+                    action.getClass().getName(),
+                    stepSize,
+                    time);
+            }
+        }
+    }
+
+    public class GraphStatistics {
+        private int numVertices;
+        private int numEdges;
+
+        public GraphStatistics(GraphTraversalSource g) {
+            this.numVertices = g.V().count().next();
+            this.numEdges = g.E().count().next();
+        }
+
+        public int getNumVertices() {
+            return numVertices;
+        }
+
+        public int getNumEdges() {
+            return numEdges;
         }
     }
 }

@@ -23,7 +23,7 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
     public void buildUp() {
         names = new String[stepSize];
         ages = new int[stepSize];
-        charPool = ['a'..'z', 'A'..'Z', 0..9].flatten();
+        charPool = ['a'..'z', 'A'..'Z', '0'..'9'].flatten();
         minAge = 18;
         maxAge = 100;
         rand = new Random(System.currentTimeMillis());
@@ -47,4 +47,8 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
     }
 
     public void tearDown() {}
+
+    public String[] getNames() {
+        return names;
+    }
 }
