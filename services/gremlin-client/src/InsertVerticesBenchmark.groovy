@@ -22,7 +22,7 @@ public class InsertVerticesBenchmark extends AbstractBenchmark {
         charPool = ['a'..'z', 'A'..'Z', 0..9].flatten();
         minAge = 18;
         maxAge = 100;
-        rand = new Random(System.currentTimeMillis());
+        rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
             char[] nameChars = (0..7).collect { charPool[rand.nextInt(charPool.size())] };

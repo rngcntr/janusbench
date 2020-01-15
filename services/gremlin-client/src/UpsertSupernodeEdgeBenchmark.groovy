@@ -19,7 +19,7 @@ public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
         
         // get a list of all vertices to select from
         ArrayList<Vertex> allVertices = g.V().not(is(supernode)).toList()
-        rand = new Random(System.currentTimeMillis());
+        rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
             // randomly choose an incoming vertex
