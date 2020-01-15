@@ -1,6 +1,3 @@
-:remote connect tinkerpop.server conf/remote.yaml session-managed
-:remote console
-
 println "\n===============";[]
 println "Defining labels";[]
 println "===============\n";[]
