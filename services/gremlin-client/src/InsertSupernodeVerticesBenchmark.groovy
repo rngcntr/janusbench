@@ -35,14 +35,19 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction() {
+    public void performAction(AbstractBenchmark.BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             Vertex insertedVertex = g.addV('person').
                 property('name', names[index]).
                 property('age', ages[index]).
                 next()
-            g.addE('knows').from(supernode).to(insertedVertex).property('lastSeen', new Date()).next()
+            g.addE('knows').
+                from(supernode).
+                to(insertedVertex).
+                property('lastSeen', new Date()).
+                property('inVertexID', insertedVertex.id()).
+                property('outVertexID', supernode.id()).next()
         }
     }
 

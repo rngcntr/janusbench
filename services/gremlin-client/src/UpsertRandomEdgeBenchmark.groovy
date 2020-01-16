@@ -36,7 +36,7 @@ public class UpsertRandomEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction() {
+    public void performAction(AbstractBenchmark.BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(a[index]).in('knows').where(is(b[index])).hasNext()) {
                 // edge already exists -> update

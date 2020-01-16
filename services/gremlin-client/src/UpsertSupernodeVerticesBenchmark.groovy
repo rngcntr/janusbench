@@ -35,7 +35,7 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction() {
+    public void performAction(AbstractBenchmark.BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has('name', names[index]).in('knows').where(is(supernode)).hasNext()) {
                 // vertex already exists -> update edge

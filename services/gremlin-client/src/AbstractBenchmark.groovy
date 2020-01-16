@@ -25,20 +25,30 @@ public abstract class AbstractBenchmark implements Runnable {
         buildUp();
 
         if (collectStats) {
-            result.statsBefore = new GraphStatistics(g);
+            result.injectBenchmarkProperty("vBefore", g.V().count().next());
+            result.injectBenchmarkProperty("eBefore", g.E().count().next());
         }
 
-        result.stepSize = stepSize;
+        result.injectBenchmarkProperty("stepSize", stepSize);
 
         long startTime = System.nanoTime();
-        performAction();
-        g.tx().commit();
+        performAction(result);
+
+        boolean committed = false;
+        while (!committed) {
+            try {
+                g.tx().commit();
+                committed = true;
+            } catch (Exception ex) {}
+        }
+
         long stopTime = System.nanoTime();
 
-        result.time = (stopTime - startTime) * 0.000001 / stepSize;
+        result.injectBenchmarkProperty("time", (stopTime - startTime) * 0.000001 / stepSize);
 
         if (collectStats) {
-            result.statsBefore = new GraphStatistics(g);
+            result.injectBenchmarkProperty("vAfter", g.V().count().next());
+            result.injectBenchmarkProperty("eAfter", g.E().count().next());
         }
 
         tearDown();
@@ -56,7 +66,7 @@ public abstract class AbstractBenchmark implements Runnable {
     }
 
     public abstract void buildUp();
-    public abstract void performAction();
+    public abstract void performAction(BenchmarkResult result);
     public abstract void tearDown();
 
     public ArrayList<BenchmarkResult> getResults() {
@@ -76,78 +86,31 @@ public abstract class AbstractBenchmark implements Runnable {
     }
 
     public class BenchmarkResult {
-        private AbstractBenchmark action;
-        private int stepSize;
-
-        private GraphStatistics statsBefore;
-        private GraphStatistics statsAfter;
-
-        private double time;
+        private HashMap<String, Object> benchmarkProperties;
 
         public BenchmarkResult(AbstractBenchmark action) {
-            this.action = action;
+            this.benchmarkProperties = new HashMap<String, Object>();
+            injectBenchmarkProperty("action", action.getClass().getName());
         }
 
-        public int getStepSize() {
-            return stepSize;
+        public void injectBenchmarkProperty (String name, Object value) {
+            benchmarkProperties.put(name, value);
         }
 
-        public int getStatsBefore() {
-            return statsBefore;
-        }
-
-        public int getStatsAfter() {
-            return statsAfter;
-        }
-
-        public double getTime() {
-            return time;
+        public Object getBenchmarkProperty (String name) {
+            return benchmarkProperties.get(name);
         }
 
         public String toString() {
-            if (statsBefore != null && statsAfter != null) {
-                return String.format("RESULT" +
-                    " action=%s" +
-                    " stepSize=%d" +
-                    " v_before=%d" +
-                    " e_before=%d" +
-                    " v_after=%d" +
-                    " e_after=%d" +
-                    " time=%.3f",
-                    action.getClass().getName(),
-                    stepSize,
-                    statsBefore.getNumVertices(),
-                    statsBefore.getNumEdges(),
-                    statsAfter.getNumVertices(),
-                    statsAfter.getNumEdges(),
-                    time);
-            } else {
-                return String.format("RESULT" +
-                    " action=%s" +
-                    " stepSize=%d" +
-                    " time=%.3f",
-                    action.getClass().getName(),
-                    stepSize,
-                    time);
+            StringBuilder sb = new StringBuilder("RESULT");
+            for (Map.Entry property : benchmarkProperties.entrySet()) {
+                sb.append(" ");
+                sb.append(property.getKey().toString());
+                sb.append("=");
+                sb.append(property.getValue().toString());
             }
-        }
-    }
 
-    public class GraphStatistics {
-        private int numVertices;
-        private int numEdges;
-
-        public GraphStatistics(GraphTraversalSource g) {
-            this.numVertices = g.V().count().next();
-            this.numEdges = g.E().count().next();
-        }
-
-        public int getNumVertices() {
-            return numVertices;
-        }
-
-        public int getNumEdges() {
-            return numEdges;
+            return sb.toString();
         }
     }
 }
