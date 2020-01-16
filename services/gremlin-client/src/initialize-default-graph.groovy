@@ -27,7 +27,6 @@ graph.tx().rollback();[]
 
 idx0 = mgmt.buildIndex('nameIndex',Vertex.class)
 idx1 = mgmt.buildIndex('ageIndex',Vertex.class)
-idx2 = mgmt.buildIndex('lastSeenIndex',Vertex.class)
 
 name  = mgmt.getPropertyKey('name')
 age   = mgmt.getPropertyKey('age')
@@ -35,7 +34,6 @@ lastSeen = mgmt.getPropertyKey('lastSeen')
 
 idx0.addKey(name).buildCompositeIndex()
 idx1.addKey(age).buildCompositeIndex()
-idx2.addKey(lastSeen).buildCompositeIndex()
 
 println "\n==================";[]
 println "Committing changes";[]
@@ -51,9 +49,6 @@ mgmt.awaitGraphIndexStatus(graph, 'nameIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
 mgmt.awaitGraphIndexStatus(graph, 'ageIndex').
-     status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
-
-mgmt.awaitGraphIndexStatus(graph, 'lastSeenIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
 println "\n==========================";[]
