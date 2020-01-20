@@ -36,7 +36,7 @@ services:
 
     # from sunsided/janusgraph-docker
     scylla:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/scylla:3.0.8
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/scylla:3.0.8-1
         build:
             context: ../services/scylla
             args:
