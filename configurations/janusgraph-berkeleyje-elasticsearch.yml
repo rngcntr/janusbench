@@ -2,6 +2,7 @@ version: "3"
 
 services:
     janusgraph:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0
         build:
             context: ../services/janusgraph
             args:
@@ -21,6 +22,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0
         build:
             context: ../services/gremlin-client
             args:
@@ -33,6 +35,7 @@ services:
 
     # from sunsided/janusgraph-docker
     elasticsearch:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/elasticsearch:6.6.0
         build:
             context: ../services/elasticsearch
             args:

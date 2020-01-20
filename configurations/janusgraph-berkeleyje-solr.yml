@@ -2,6 +2,7 @@ version: "3"
 
 services:
     janusgraph:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0
         build:
             context: ../services/janusgraph
             args:
@@ -21,6 +22,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0
         build:
             context: ../services/gremlin-client
             args:
@@ -32,6 +34,8 @@ services:
             - janusgraph
 
     solr:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/solr:7.7.2
+        build:
         build:
             context: ../services/solr
             args:
@@ -45,6 +49,7 @@ services:
 
     # from: https://github.com/docker-solr/docker-solr-examples/blob/master/docker-compose/docker-compose.yml
     zookeeper:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/zookeeper:3.5
         build:
             context: ../services/zookeeper
             args:

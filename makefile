@@ -16,3 +16,6 @@ stop:
 
 clean:
 	docker-compose -f $(config) down --remove-orphans
+
+push:
+	docker-compose -f $(config) push

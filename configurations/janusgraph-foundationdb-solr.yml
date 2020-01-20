@@ -2,6 +2,7 @@ version: "3"
 
 services:
     janusgraph-fdb:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph-fdb:0.4.0
         build:
             context: ../services/janusgraph-fdb
             args:
@@ -26,6 +27,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0
         build:
             context: ../services/gremlin-client
             args:
@@ -37,6 +39,7 @@ services:
             - janusgraph-fdb
 
     foundationdb:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/foundationdb:6.2.11
         build:
             context: ../services/foundationdb
             args:
@@ -49,6 +52,8 @@ services:
             - "4500:4500"
 
     solr:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/solr:7.7.2
+        build:
         build:
             context: ../services/solr
             args:
@@ -62,6 +67,7 @@ services:
 
     # from: https://github.com/docker-solr/docker-solr-examples/blob/master/docker-compose/docker-compose.yml
     zookeeper:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/zookeeper:3.5
         build:
             context: ../services/zookeeper
             args:
