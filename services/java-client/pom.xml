@@ -27,8 +27,14 @@
 
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-core</artifactId>
+            <version>3.4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
             <artifactId>gremlin-driver</artifactId>
-            <version>3.4.1</version> <!-- more recent versions produce BytecodeUtil errors -->
+            <version>3.4.4</version>
         </dependency>
 
         <dependency>
@@ -36,6 +42,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
