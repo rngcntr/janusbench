@@ -42,17 +42,6 @@ public abstract class AbstractBenchmark implements Runnable {
 
         long startTime = System.nanoTime();
         performAction(result);
-
-        boolean committed = false;
-        while (!committed) {
-            try {
-                // g.tx().commit(); <-- unable to commit using withRemote()
-                committed = true;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
         long stopTime = System.nanoTime();
 
         result.injectBenchmarkProperty("time", (stopTime - startTime) * 0.000001 / stepSize);
