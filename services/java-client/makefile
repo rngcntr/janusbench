@@ -1,8 +1,8 @@
 all:
-	mvn package
+	mvn clean install
 
 run:
-	java -jar target/janusbench-0.0.1-jar-with-dependencies.jar
+	mvn exec:java -Dexec.mainClass=de.rngcntr.janusbench.JanusBench
 
 clean:
 	mvn clean
