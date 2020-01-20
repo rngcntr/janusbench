@@ -4,6 +4,8 @@ ARG VERSION
 FROM alpine/git
 WORKDIR /foundationdb
 RUN git clone -b janusgraph-04 https://github.com/farodin91/janusgraph-foundationdb .
+# Patch http:// to https:// in pom.xml
+RUN sed -i 's/http:/https:/g' pom.xml
 
 
 FROM maven:3.5-jdk-8-alpine
