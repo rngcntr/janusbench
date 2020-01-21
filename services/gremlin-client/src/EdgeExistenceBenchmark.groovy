@@ -24,8 +24,9 @@ public class EdgeExistenceBenchmark<T> extends AbstractBenchmark {
         result.injectBenchmarkProperty("useEdgeIndex", useEdgeIndex);
         if (useEdgeIndex) {
             for (int index = 0; index < stepSize; ++index) {
-                if (g.V().has(propertyName, nodeProperties[index]).hasNext()) {
-                    Vertex testNode = g.V().has(propertyName, nodeProperties[index]).next();
+                List<Vertex> candidates = g.V().has(propertyName, nodeProperties[index]).limit(1).toList();
+                if (candidates.size() > 0) {
+                    Vertex testNode = candidates.get(0);
                     g.V(supernode).outE().has('inVertexID', testNode.id()).hasNext();
                 }
             }
