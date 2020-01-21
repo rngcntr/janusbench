@@ -23,12 +23,12 @@
             <groupId>org.janusgraph</groupId>
             <artifactId>janusgraph-core</artifactId>
             <version>0.4.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tinkerpop</groupId>
-            <artifactId>gremlin-core</artifactId>
-            <version>3.4.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tinkerpop</groupId>
+                    <artifactId>gremlin-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
