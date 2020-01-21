@@ -2,7 +2,7 @@ version: "3"
 
 services:
     janusgraph:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0-1
         build:
             context: ../services/janusgraph
             args:
