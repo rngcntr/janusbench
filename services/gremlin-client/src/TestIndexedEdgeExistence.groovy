@@ -1,10 +1,10 @@
 :load /data/benchmark.groovy
-:load /data/initialize-default-graph.groovy
+:load /data/initialize-edge-indexed-graph.groovy
 
 ivb = new InsertVerticesBenchmark(g, 2); []
 ivb.run(); []
 
-useEdgeIndex = false
+useEdgeIndex = true
 
 supernode = g.V().next(); []
 unconnectedNode = g.V().not(where(is(supernode))).next(); []

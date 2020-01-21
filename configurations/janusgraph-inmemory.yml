@@ -13,7 +13,7 @@ services:
             - janusgraph.storage.backend=inmemory
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-2
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-3
         build:
             context: ../services/gremlin-client
             args:
