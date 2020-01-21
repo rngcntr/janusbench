@@ -1,13 +1,8 @@
 println "\n===============";[]
 println "Defining labels";[]
 println "===============\n";[]
-;[]// Define edge labels and usage
-mgmt = graph.openManagement()
-mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).make()
-knows = mgmt.getEdgeLabel('knows')
 
-;[]// Define vertex labels
-mgmt.makeVertexLabel('person').make()
+mgmt = graph.openManagement()
 
 println "\n=============";[]
 println "Creating keys";[]
@@ -28,17 +23,25 @@ println "==============\n";[]
 ;[]// Construct a composite index for a few commonly used property keys
 graph.tx().rollback();[]
 
+name  = mgmt.getPropertyKey('name')
+age   = mgmt.getPropertyKey('age')
+
+;[]// Define vertex labels
+mgmt.makeVertexLabel('person').make()
+
 idx0 = mgmt.buildIndex('nameIndex',Vertex.class)
 idx1 = mgmt.buildIndex('ageIndex',Vertex.class)
 
-name  = mgmt.getPropertyKey('name')
-age   = mgmt.getPropertyKey('age')
+idx0.addKey(name).buildCompositeIndex()
+idx1.addKey(age).buildCompositeIndex()
+
+;[] // Define Edge Labels
 lastSeen = mgmt.getPropertyKey('lastSeen')
 inVertexID  = mgmt.getPropertyKey('inVertexID')
 outVertexID = mgmt.getPropertyKey('outVertexID')
 
-idx0.addKey(name).buildCompositeIndex()
-idx1.addKey(age).buildCompositeIndex()
+mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen, inVertexID, outVertexID).make()
+knows = mgmt.getEdgeLabel('knows')
 
 ;[] // Vertex Centric Indices
 mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, Order.decr, inVertexID)

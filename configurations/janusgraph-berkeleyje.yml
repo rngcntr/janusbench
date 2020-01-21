@@ -16,7 +16,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-1
         build:
             context: ../services/gremlin-client
             args:
