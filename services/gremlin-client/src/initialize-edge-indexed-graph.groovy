@@ -37,15 +37,11 @@ idx1.addKey(age).buildCompositeIndex()
 
 ;[] // Define Edge Labels
 lastSeen = mgmt.getPropertyKey('lastSeen')
-inVertexID  = mgmt.getPropertyKey('inVertexID')
-outVertexID = mgmt.getPropertyKey('outVertexID')
 
-mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen, inVertexID, outVertexID).make()
+mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).make()
 knows = mgmt.getEdgeLabel('knows')
 
 ;[] // Vertex Centric Indices
-//mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, Order.decr, inVertexID)
-//mgmt.buildEdgeIndex(knows, 'knowsByOutID', Direction.BOTH, Order.decr, outVertexID)
 mgmt.buildEdgeIndex(knows, 'knowsByAdjacentID', Direction.BOTH, Order.decr, org.janusgraph.graphdb.types.system.ImplicitKey.ADJACENT_ID)
 
 println "\n==================";[]
