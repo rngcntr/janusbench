@@ -37,7 +37,7 @@ idx0.addKey(name).buildCompositeIndex()
 idx1.addKey(age).buildCompositeIndex()
 
 ;[] // Vertex edge label an dbuild index
-mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen, inVertexID, outVertexID).make()
+mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen).make()
 knows = mgmt.getEdgeLabel('knows')
 
 mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, Order.decr, inVertexID)
