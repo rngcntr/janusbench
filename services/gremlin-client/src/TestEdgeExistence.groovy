@@ -1,10 +1,5 @@
-:load /data/benchmark.groovy
-:load /data/initialize-default-graph.groovy
-
 ivb = new InsertVerticesBenchmark(g, 2); []
 ivb.run(); []
-
-useEdgeIndex = false
 
 supernode = g.V().next(); []
 unconnectedNode = g.V().not(where(is(supernode))).next(); []
@@ -37,7 +32,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -63,7 +60,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -89,7 +88,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -115,7 +116,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -141,7 +144,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -167,7 +172,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -193,7 +200,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -219,7 +228,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -245,7 +256,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -271,7 +284,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -297,7 +312,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -323,7 +340,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -349,7 +368,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -375,7 +396,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -401,7 +424,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -427,7 +452,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -453,7 +480,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -479,7 +508,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -505,7 +536,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);
@@ -531,7 +564,9 @@ for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIteratio
 ++iterationIdx; []
 eeb = new EdgeExistenceBenchmark<String>(g, supernode, 'name', (String[]) [ unconnectedName ]); []
 eeb.setCollectStats(false); []
-eeb.setUseEdgeIndex(useEdgeIndex); []
+eeb.setUseEdgeIndex(true); []
+try{ eeb.run(); } catch (Exception e) {}; []
+eeb.setUseEdgeIndex(false); []
 try{ eeb.run(); } catch (Exception e) {}; []
 for (AbstractBenchmark.BenchmarkResult r : eeb.getResults()) {
     r.injectBenchmarkProperty("connectedVertices", g.V().count().next() - 2);

@@ -37,12 +37,15 @@ idx1.addKey(age).buildCompositeIndex()
 
 ;[] // Define Edge Labels
 lastSeen = mgmt.getPropertyKey('lastSeen')
+inVertexID  = mgmt.getPropertyKey('inVertexID')
+outVertexID = mgmt.getPropertyKey('outVertexID')
 
-mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).make()
+mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen, inVertexID, outVertexID).make()
 knows = mgmt.getEdgeLabel('knows')
 
 ;[] // Vertex Centric Indices
-mgmt.buildEdgeIndex(knows, 'knowsByAdjacentID', Direction.BOTH, Order.decr, org.janusgraph.graphdb.types.system.ImplicitKey.ADJACENT_ID)
+mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, Order.decr, inVertexID)
+mgmt.buildEdgeIndex(knows, 'knowsByOutID', Direction.BOTH, Order.decr, outVertexID)
 
 println "\n==================";[]
 println "Committing changes";[]
@@ -60,13 +63,10 @@ mgmt.awaitGraphIndexStatus(graph, 'nameIndex').
 mgmt.awaitGraphIndexStatus(graph, 'ageIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
-//mgmt.awaitRelationIndexStatus(graph, 'knowsByInID', 'knows').
-    //status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
+mgmt.awaitRelationIndexStatus(graph, 'knowsByInID', 'knows').
+    status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
 
-//mgmt.awaitRelationIndexStatus(graph, 'knowsByOutID', 'knows').
-    //status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
-
-mgmt.awaitRelationIndexStatus(graph, 'knowsByAdjacentID', 'knows').
+mgmt.awaitRelationIndexStatus(graph, 'knowsByOutID', 'knows').
     status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
 
 println "\n==========================";[]
