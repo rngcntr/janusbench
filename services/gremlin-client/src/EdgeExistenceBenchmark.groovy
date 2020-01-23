@@ -27,7 +27,7 @@ public class EdgeExistenceBenchmark<T> extends AbstractBenchmark {
                 List<Vertex> candidates = g.V().has(propertyName, nodeProperties[index]).limit(1).toList();
                 if (candidates.size() > 0) {
                     Vertex testNode = candidates.get(0);
-                    g.V(supernode).outE().has('inVertexID', testNode.id()).hasNext();
+                    g.V(supernode).out().hasId(testNode.id()).hasNext();
                 }
             }
         } else {
