@@ -5,28 +5,18 @@ supernode = g.V().next(); []
 unconnectedNode = g.V().not(where(is(supernode))).next(); []
 unconnectedName = g.V(unconnectedNode).values('name').next(); []
 
-threadNum = 5; []
-stepSize = 100; []
+stepSize = 500; []
 innerIterations = 100; []
 
 unconnectedResults = new ArrayList<AbstractBenchmark.BenchmarkResult>(); []
 
-threads = new Thread[threadNum]; []
 iterationIdx = 0;[]
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -42,17 +32,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -68,17 +50,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -94,17 +68,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -120,17 +86,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -146,17 +104,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -172,17 +122,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -198,17 +140,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -224,17 +158,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -250,17 +176,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -276,17 +194,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -302,17 +212,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -328,17 +230,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -354,17 +248,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -380,17 +266,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -406,17 +284,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -432,17 +302,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -458,17 +320,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -484,17 +338,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
@@ -510,17 +356,9 @@ eeb.getResults()
 
 
 for (innerIterationIdx = 0; innerIterationIdx < innerIterations; ++innerIterationIdx) {
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx] = Thread.start {
-            isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
-            isvb.setCollectStats(false);
-            isvb.run();
-        }
-    }; []
-
-    for (threadIdx = 0; threadIdx < threadNum; ++threadIdx) {
-        threads[threadIdx].join();
-    }; []
+    isvb = new InsertSupernodeVerticesBenchmark(g, stepSize, supernode);
+    isvb.setCollectStats(false);
+    isvb.run();
 }
 
 ++iterationIdx; []
