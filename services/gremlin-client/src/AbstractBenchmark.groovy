@@ -73,6 +73,10 @@ public abstract class AbstractBenchmark implements Runnable {
         return results;
     }
 
+    public void resetResults() {
+        results.clear();
+    }
+
     public void setStepSize(int stepSize) {
         this.stepSize = stepSize;
     }
