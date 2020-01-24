@@ -2,7 +2,7 @@ version: "3"
 
 services:
     janusgraph-fdb:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph-fdb:0.4.0-1
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph-fdb:0.4.0
         build:
             context: ../services/janusgraph-fdb
             args:
@@ -22,7 +22,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-3
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-2
         build:
             context: ../services/gremlin-client
             args:
