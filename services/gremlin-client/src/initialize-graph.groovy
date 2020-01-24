@@ -17,10 +17,9 @@ age  = mgmt.getPropertyKey('age')
 ;[]// Define edge property keys
 mgmt.makePropertyKey('lastSeen').dataType(Date.class).cardinality(SINGLE).make()
 mgmt.makePropertyKey('inVertexID').dataType(Integer.class).cardinality(SINGLE).make() // TODO: delete
-mgmt.makePropertyKey('outVertexID').dataType(Integer.class).cardinality(SINGLE).make() // TODO: delete
 lastSeen    = mgmt.getPropertyKey('lastSeen')
 inVertexID  = mgmt.getPropertyKey('inVertexID')
-outVertexID = mgmt.getPropertyKey('outVertexID')
+adjacentID  = org.janusgraph.graphdb.types.system.ImplicitKey.ADJACENT_ID;
 
 println "\n==============";[]
 println "Building index";[]
@@ -40,8 +39,9 @@ idx1.addKey(age).buildCompositeIndex()
 mgmt.makeEdgeLabel('knows').multiplicity(SIMPLE).signature(lastSeen).make()
 knows = mgmt.getEdgeLabel('knows')
 
-mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, Order.decr, inVertexID)
-mgmt.buildEdgeIndex(knows, 'knowsByOutID', Direction.BOTH, Order.decr, outVertexID)
+//mgmt.buildEdgeIndex(knows, 'knowsByLastSeen', Direction.BOTH, lastSeen)
+mgmt.buildEdgeIndex(knows, 'knowsByInID', Direction.BOTH, inVertexID)
+mgmt.buildEdgeIndex(knows, 'knowsByAdjacentID', Direction.BOTH, adjacentID)
 
 println "\n==================";[]
 println "Committing changes";[]
@@ -53,17 +53,20 @@ println "Waiting for the index to be ready";[]
 println "=================================\n";[]
 
 ;[] // wait for vertex indexes
-mgmt.awaitGraphIndexStatus(graph, 'nameIndex').
+ManagementSystem.awaitGraphIndexStatus(graph, 'nameIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
-mgmt.awaitGraphIndexStatus(graph, 'ageIndex').
+ManagementSystem.awaitGraphIndexStatus(graph, 'ageIndex').
      status(SchemaStatus.REGISTERED,SchemaStatus.ENABLED).call()
 
 ;[] // wait for edge indexes
-mgmt.awaitRelationIndexStatus(graph, 'knowsByInID', 'knows').
+//ManagementSystem.awaitRelationIndexStatus(graph, 'knowsByLastSeen', 'knows').
+//    status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
+
+ManagementSystem.awaitRelationIndexStatus(graph, 'knowsByInID', 'knows').
     status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
 
-mgmt.awaitRelationIndexStatus(graph, 'knowsByOutID', 'knows').
+ManagementSystem.awaitRelationIndexStatus(graph, 'knowsByAdjacentID', 'knows').
     status(SchemaStatus.REGISTERED, SchemaStatus.ENABLED).call()
 
 println "\n==========================";[]
