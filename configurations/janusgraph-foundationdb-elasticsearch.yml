@@ -27,7 +27,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-2
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-4
         build:
             context: ../services/gremlin-client
             args:
@@ -37,6 +37,8 @@ services:
             - GREMLIN_REMOTE_HOSTS=janusgraph-fdb
         depends_on:
             - janusgraph-fdb
+        volumes:
+            - ../services/gremlin-client/src:/data
 
     foundationdb:
         image: artifactory.gdata.de:6555/development/gaia/janusbench/foundationdb:6.2.11

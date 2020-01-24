@@ -22,7 +22,7 @@ services:
             - janusgraph.cache.db-cache=true
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-2
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-4
         build:
             context: ../services/gremlin-client
             args:
@@ -32,6 +32,8 @@ services:
             - GREMLIN_REMOTE_HOSTS=janusgraph
         depends_on:
             - janusgraph
+        volumes:
+            - ../services/gremlin-client/src:/data
 
     # from sunsided/janusgraph-docker
     elasticsearch:
