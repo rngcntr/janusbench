@@ -35,7 +35,7 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
+    public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             Vertex insertedVertex = g.addV('person').

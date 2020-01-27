@@ -31,7 +31,7 @@ public class InsertVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
+    public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             g.addV('person').
                 property('name', names[index]).

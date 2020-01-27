@@ -20,8 +20,9 @@ public class EdgeExistenceBenchmark<T> extends AbstractBenchmark {
         this.useEdgeIndex = useEdgeIndex;
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
-        result.injectBenchmarkProperty("useEdgeIndex", useEdgeIndex);
+    public void performAction(BenchmarkResult result) {
+        AbstractBenchmark.BenchmarkProperty useEdgeIndexProperty = new AbstractBenchmark.BenchmarkProperty("useEdgeIndex", useEdgeIndex);
+        result.injectBenchmarkProperty(useEdgeIndexProperty);
         if (useEdgeIndex) {
             for (int index = 0; index < stepSize; ++index) {
                 List<Vertex> candidates = g.V().has(propertyName, nodeProperties[index]).limit(1).toList();

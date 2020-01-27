@@ -28,7 +28,7 @@ public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
+    public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(neighbours[index]).in('knows').where(is(supernode)).hasNext()) {
                 // edge already exists -> update

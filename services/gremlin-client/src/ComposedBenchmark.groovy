@@ -7,6 +7,11 @@ public class ComposedBenchmark extends AbstractBenchmark {
         components = new ArrayList<AbstractBenchmark>();
     }
 
+    public ComposedBenchmark (GraphTraversalSource g, int stepSize) {
+        super(g, stepSize);
+        components = new ArrayList<AbstractBenchmark>();
+    }
+
     public void addComponent (AbstractBenchmark component) {
         if (component != this) {
             components.add(component);
@@ -24,10 +29,12 @@ public class ComposedBenchmark extends AbstractBenchmark {
     public void buildUp() {}
 
     public void performAction(BenchmarkResult result) {
-        for (AbstractBenchmark component : components) {
-            component.run();
-            results.addAll(component.getResults());
-            component.resetResults();
+        for (int step = 0; step < stepSize; ++step) {
+            for (AbstractBenchmark component : components) {
+                component.run();
+                results.addAll(component.getResults());
+                component.resetResults();
+            }
         }
     }
 
