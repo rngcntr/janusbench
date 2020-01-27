@@ -73,6 +73,12 @@ public abstract class AbstractBenchmark implements Runnable {
         return results;
     }
 
+    public ArrayList<BenchmarkResult> getResults(Class cls) {
+        return results.findAll{
+            r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName())
+        }
+    }
+
     public void resetResults() {
         results.clear();
     }
@@ -94,7 +100,7 @@ public abstract class AbstractBenchmark implements Runnable {
 
         public BenchmarkResult(AbstractBenchmark action) {
             this.benchmarkProperties = new HashMap<String, Object>();
-            injectBenchmarkProperty("action", action.getClass().getName());
+            injectBenchmarkProperty("action", action.getClass().getSimpleName());
         }
 
         public void injectBenchmarkProperty (String name, Object value) {

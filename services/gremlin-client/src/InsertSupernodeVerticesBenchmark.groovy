@@ -45,7 +45,9 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
             g.addE('knows').
                 from(supernode).
                 to(insertedVertex).
-                property('lastSeen', new Date()).next()
+                property('lastSeen', new Date()).
+                property('timesSeen', rand.nextInt()).
+                next()
         }
     }
 
