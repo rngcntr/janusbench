@@ -5,3 +5,4 @@
 :load /data/UpsertRandomEdgeBenchmark.groovy
 :load /data/UpsertSupernodeEdgeBenchmark.groovy
 :load /data/EdgeExistenceBenchmark.groovy
+:load /data/ComposedBenchmark.groovy

@@ -36,15 +36,19 @@ public class UpsertRandomEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
+    public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(a[index]).in('knows').where(is(b[index])).hasNext()) {
                 // edge already exists -> update
                 Edge e = g.V(a[index]).inE('knows').as('e').outV().where(is(b[index])).select('e').next()
                 e.property('lastSeen', new Date())
+                e.property('timesSeen', rand.nextInt())
             } else {
                 // edge does not exist -> insert
-                g.addE('knows').from(a[index]).to(b[index]).property('lastSeen', new Date()).next()
+                g.addE('knows').from(a[index]).to(b[index]).
+                    property('lastSeen', new Date()).
+                    property('timesSeen', rand.nextInt()).
+                    next()
             }
         }
     }

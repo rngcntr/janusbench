@@ -35,19 +35,23 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
-    public void performAction(AbstractBenchmark.BenchmarkResult result) {
+    public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has('name', names[index]).in('knows').where(is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
                 Edge e = g.V().has('name', names[index]).inE('knows').as('e').outV().where(is(supernode)).select('e').next()
                 e.property('lastSeen', new Date())
+                e.property('timesSeen', rand.nextInt())
             } else {
                 // vertex does not exist -> insert
                 Vertex insertedVertex = g.addV('person').
                     property('name', names[index]).
                     property('age', ages[index]).
                     next()
-                g.addE('knows').from(supernode).to(insertedVertex).property('lastSeen', new Date()).next()
+                g.addE('knows').from(supernode).to(insertedVertex).
+                    property('lastSeen', new Date()).
+                    property('timesSeen', rand.nextInt()).
+                    next()
             }
         }
     }

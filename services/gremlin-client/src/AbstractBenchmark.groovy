@@ -3,16 +3,16 @@ public abstract class AbstractBenchmark implements Runnable {
     protected GraphTraversalSource g;
 
     protected int stepSize;
-    protected int numThreads;
 
-    private boolean collectStats;
+    private ArrayList<BenchmarkProperty> trackBeforeRun;
+    private ArrayList<BenchmarkProperty> trackAfterRun;
 
     public AbstractBenchmark(GraphTraversalSource g) {
-        this.results = new ArrayList<BenchmarkResult>();
         this.g = g;
         this.stepSize = 1;
-        this.numThreads = 1;
-        this.collectStats = true;
+        this.results = new ArrayList<BenchmarkResult>();
+        this.trackBeforeRun = new ArrayList<BenchmarkProperty>();
+        this.trackAfterRun = new ArrayList<BenchmarkProperty>();
     }
 
     public AbstractBenchmark(GraphTraversalSource g, int stepSize) {
@@ -24,12 +24,12 @@ public abstract class AbstractBenchmark implements Runnable {
         BenchmarkResult result = new BenchmarkResult(this);
         buildUp();
 
-        if (collectStats) {
-            result.injectBenchmarkProperty("vBefore", g.V().count().next());
-            result.injectBenchmarkProperty("eBefore", g.E().count().next());
-        }
+        BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
+        result.injectBenchmarkProperty(stepSizeProperty);
 
-        result.injectBenchmarkProperty("stepSize", stepSize);
+        for (BenchmarkProperty beforeProperty : trackBeforeRun) {
+            result.injectBenchmarkProperty(beforeProperty);
+        }
 
         long startTime = System.nanoTime();
         performAction(result);
@@ -44,12 +44,12 @@ public abstract class AbstractBenchmark implements Runnable {
 
         long stopTime = System.nanoTime();
 
-        result.injectBenchmarkProperty("time", (stopTime - startTime) * 0.000001 / stepSize);
-
-        if (collectStats) {
-            result.injectBenchmarkProperty("vAfter", g.V().count().next());
-            result.injectBenchmarkProperty("eAfter", g.E().count().next());
+        for (BenchmarkProperty afterProperty : trackAfterRun) {
+            result.injectBenchmarkProperty(afterProperty);
         }
+
+        BenchmarkProperty timeProperty = new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0 / stepSize);
+        result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
 
@@ -73,28 +73,78 @@ public abstract class AbstractBenchmark implements Runnable {
         return results;
     }
 
+    public ArrayList<BenchmarkResult> getResults(Class cls) {
+        return results.findAll{
+            r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName())
+        }
+    }
+
+    public void resetResults() {
+        results.clear();
+    }
+
     public void setStepSize(int stepSize) {
         this.stepSize = stepSize;
     }
 
-    public void setNumThreads(int numThreads) {
-        this.numThreads = numThreads;
+    public void collectBenchmarkProperty (BenchmarkProperty property, BenchmarkProperty.Tracking tracking) {
+        switch (tracking) {
+            case BenchmarkProperty.BEFORE:
+                trackBeforeRun.add(property);
+                break;
+            case BenchmarkProperty.AFTER:
+                trackAfterRun.add(property);
+                break;
+        }
     }
 
-    public void setCollectStats(boolean collectStats) {
-        this.collectStats = collectStats;
+    public static class BenchmarkProperty {
+
+        private enum Tracking {
+            BEFORE, AFTER;
+        }
+
+        public static final Tracking BEFORE = Tracking.BEFORE;
+        public static final Tracking AFTER = Tracking.AFTER;
+
+        private String name;
+        private Object value;
+
+        public BenchmarkProperty (String name, org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal statCollector) {
+            this.name = name;
+            this.value = statCollector;
+        }
+
+        public BenchmarkProperty (String name, Object value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public String getName () {
+            return name;
+        }
+
+        public Object evaluate () {
+            if (value instanceof org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal) {
+                org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal statCollector = (org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal) value.clone();
+                return statCollector.next();
+            } else {
+                return value;
+            }
+        }
     }
 
-    public class BenchmarkResult {
+    public static class BenchmarkResult {
         private HashMap<String, Object> benchmarkProperties;
 
         public BenchmarkResult(AbstractBenchmark action) {
             this.benchmarkProperties = new HashMap<String, Object>();
-            injectBenchmarkProperty("action", action.getClass().getName());
+            BenchmarkProperty actionProperty = new BenchmarkProperty("action", action.getClass().getSimpleName());
+            injectBenchmarkProperty(actionProperty);
         }
 
-        public void injectBenchmarkProperty (String name, Object value) {
-            benchmarkProperties.put(name, value);
+        public void injectBenchmarkProperty (BenchmarkProperty property) {
+            benchmarkProperties.put(property.getName(), property.evaluate());
         }
 
         public Object getBenchmarkProperty (String name) {
