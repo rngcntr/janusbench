@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.benchmark;
+package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.Random;
 import java.util.Date;
@@ -10,9 +10,10 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import de.rngcntr.janusbench.benchmark.*;
+import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkResult;
 
-public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
+public class UpsertSupernodeVerticesBenchmark extends Benchmark {
     private Vertex supernode;
 
     private String[] names;
@@ -34,6 +35,7 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         this.supernode = supernode;
     }
 
+    @Override
     public void buildUp() {
         names = new String[stepSize];
         nameLength = 8;
@@ -50,6 +52,7 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
+    @Override
     public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has("name", names[index]).in("knows").where(__.is(supernode)).hasNext()) {
@@ -67,5 +70,6 @@ public class UpsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
+    @Override
     public void tearDown() {}
 }

@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.benchmark;
+package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.Random;
 import java.util.Date;
@@ -9,9 +9,10 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 
-import de.rngcntr.janusbench.benchmark.*;
+import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkResult;
 
-public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
+public class UpsertSupernodeEdgeBenchmark extends Benchmark {
     private Vertex supernode;
     private Vertex[] neighbours;
 
@@ -27,6 +28,7 @@ public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
         this.supernode = supernode;
     }
 
+    @Override
     public void buildUp() {
         neighbours = new Vertex[stepSize];
         
@@ -41,6 +43,7 @@ public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
+    @Override
     public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(neighbours[index]).in("knows").where(__.is(supernode)).hasNext()) {
@@ -54,6 +57,7 @@ public class UpsertSupernodeEdgeBenchmark extends AbstractBenchmark {
         }
     }
 
+    @Override
     public void tearDown() {
     }
 }

@@ -1,16 +1,16 @@
-package de.rngcntr.janusbench.benchmark;
+package de.rngcntr.janusbench.benchmark.simple;
 
-import java.util.Random;
 import java.util.Date;
+import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
-import de.rngcntr.janusbench.benchmark.*;
+import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkResult;
 
-public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
+public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private Vertex supernode;
 
     private String[] names;
@@ -32,6 +32,7 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         this.supernode = supernode;
     }
 
+    @Override
     public void buildUp() {
         names = new String[stepSize];
         nameLength = 8;
@@ -48,6 +49,7 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
         }
     }
 
+    @Override
     public void performAction(BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
@@ -59,11 +61,12 @@ public class InsertSupernodeVerticesBenchmark extends AbstractBenchmark {
                 from(supernode).
                 to(insertedVertex).
                 property("lastSeen", new Date()).
-                property("inVertexID", insertedVertex.id()).
-                property("outVertexID", supernode.id()).next();
+                property("timesSeen", rand.nextInt()).
+                next();
         }
     }
 
+    @Override
     public void tearDown() {}
 
     public String[] getNames() {
