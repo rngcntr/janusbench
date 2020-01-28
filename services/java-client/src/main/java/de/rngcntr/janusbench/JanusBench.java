@@ -2,9 +2,15 @@ package de.rngcntr.janusbench;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
+import org.apache.tinkerpop.gremlin.driver.Result;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.driver.exception.ResponseException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -15,6 +21,8 @@ import org.apache.log4j.Logger;
 public class JanusBench {
 
     private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
+    private static final String INIT_SCRIPT = "conf/initialize-graph.groovy";
+
     private static final Logger log = Logger.getLogger(JanusBench.class);
 
     private static GraphTraversalSource g;
@@ -27,13 +35,23 @@ public class JanusBench {
         this.propertiesFileName = propertiesFileName;
     }
 
-    private void runBenchmarks() {
+    public void runBenchmarks() {
+        client.submit(g.V().drop());
         client.submit(g.addV());
-        ResultSet result = client.submit(g.V().count());
+        client.submit(g.addV());
+        client.submit(g.addV());
+        final ResultSet result = client.submit(g.V().count());
         System.out.println(result.one().getInt());
     }
 
-    private void openGraph() throws ConfigurationException {
+    public void createSchema(final String initFileName) throws IOException {
+        log.info("Creating schema");
+        final String initRequest = new String(Files.readAllBytes(Paths.get(initFileName)));
+        client.submit(initRequest);
+        log.info("Done creating schema");
+    }
+
+    public void openGraph() throws ConfigurationException {
         log.info("Opening graph");
         conf = new PropertiesConfiguration(propertiesFileName);
 
@@ -47,9 +65,18 @@ public class JanusBench {
         }
     }
 
-    private void closeGraph () throws ResponseException {
-        log.info("Closing graph");
-        client.close();
+    public void closeGraph () throws Exception {
+        try {
+            log.info("Closing graph");
+            g.close();
+            client.close();
+            cluster.close();
+            log.info("Successfully closed graph");
+        } finally {
+            g = null;
+            client = null;
+            cluster = null;
+        }
     }
 
     public static void main(final String[] args) {
@@ -64,15 +91,19 @@ public class JanusBench {
             log.error(cex);
         }
 
+        try {
+            jb.createSchema(INIT_SCRIPT);
+        } catch (IOException ioex) {
+            log.error("Graph initialization script not found: " + INIT_SCRIPT);
+        }
+
         jb.runBenchmarks();
 
         try {
             jb.closeGraph();
-        } catch (final ResponseException rex) {
+        } catch (Exception ex) {
             log.error("Unable to close graph");
-            log.error(rex);
+            log.error(ex);
         }
-
-        System.exit(0);
     }
 }
