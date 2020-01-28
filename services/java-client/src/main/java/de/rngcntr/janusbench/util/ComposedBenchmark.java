@@ -2,19 +2,19 @@ package de.rngcntr.janusbench.util;
 
 import java.util.ArrayList;
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import de.rngcntr.janusbench.tinkerpop.Connection;
 
 public class ComposedBenchmark extends Benchmark {
 
     private final ArrayList<Benchmark> components;
 
-    public ComposedBenchmark(final GraphTraversalSource g) {
-        super(g);
+    public ComposedBenchmark(final Connection connection) {
+        super(connection);
         components = new ArrayList<Benchmark>();
     }
 
-    public ComposedBenchmark(final GraphTraversalSource g, final int stepSize) {
-        super(g, stepSize);
+    public ComposedBenchmark(final Connection connection, final int stepSize) {
+        super(connection, stepSize);
         components = new ArrayList<Benchmark>();
     }
 

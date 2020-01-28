@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
@@ -16,8 +17,8 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
     private T[] nodeProperties;
     private boolean useEdgeIndex;
 
-    public EdgeExistenceBenchmark(GraphTraversalSource g, Vertex supernode, String propertyName, T[] nodeProperties) {
-        super(g, nodeProperties.length);
+    public EdgeExistenceBenchmark(Connection connection, Vertex supernode, String propertyName, T[] nodeProperties) {
+        super(connection, nodeProperties.length);
         this.supernode = supernode;
         this.propertyName = propertyName;
         this.nodeProperties = nodeProperties;

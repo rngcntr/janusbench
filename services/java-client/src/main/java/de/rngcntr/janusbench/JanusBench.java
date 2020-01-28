@@ -4,10 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
+import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
+import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
 import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.util.BenchmarkProperty;
+import de.rngcntr.janusbench.util.BenchmarkResult;
+import de.rngcntr.janusbench.util.ComposedBenchmark;
+import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 
-import org.apache.tinkerpop.gremlin.driver.ResultSet;
-
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
@@ -18,32 +24,57 @@ public class JanusBench {
 
     private static final Logger log = Logger.getLogger(JanusBench.class);
 
-    private final Connection client;
+    private final Connection connection;
 
     public JanusBench(final String propertiesFileName) {
-        this.client = new Connection(propertiesFileName);
+        this.connection = new Connection(propertiesFileName);
     }
 
     public void runBenchmarks() {
-        client.commit(client.g().V().drop());
-        client.commit(client.g().addV());
-        client.commit(client.g().addV());
-        client.commit(client.g().addV());
-        final ResultSet result = client.commit(client.g().V().count());
-        System.out.println(result.one().getInt());
+        // prepare a vertex to later become a supernode
+        InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, 1);
+        ivb.run();
+        Vertex supernode = connection.g().V().next();
+
+        // create the inserter benchmark
+        InsertSupernodeVerticesBenchmark isvb = new InsertSupernodeVerticesBenchmark(connection, 1000, supernode);
+        BenchmarkProperty connectionsBefore = new BenchmarkProperty("connectionsBefore",
+                connection.g().V(supernode).outE().count());
+        isvb.collectBenchmarkProperty(connectionsBefore, Tracking.BEFORE);
+        BenchmarkProperty connectionsAfter = new BenchmarkProperty("connectionsAfter",
+                connection.g().V(supernode).outE().count());
+        isvb.collectBenchmarkProperty(connectionsAfter, Tracking.AFTER);
+
+        // create edge existence checker
+        String supernodeName = (String) connection.g().V(supernode).values("name").next();
+        EdgeExistenceBenchmark<String> eeb = new EdgeExistenceBenchmark<String>(connection, supernode, "name", new String[] {supernodeName});
+        eeb.setUseEdgeIndex(true);
+        BenchmarkProperty connections = new BenchmarkProperty("connections", connection.g().V(supernode).outE().count());
+        eeb.collectBenchmarkProperty(connections, Tracking.AFTER);
+
+        // compose benchmark
+        ComposedBenchmark cb = new ComposedBenchmark(connection, 50);
+        cb.addComponent(isvb, 10);
+        cb.addComponent(eeb);
+
+        // run it
+        cb.run();
+        for (BenchmarkResult result : cb.getResults(EdgeExistenceBenchmark.class)) {
+            System.out.println(result.toString());
+        }
     }
 
     public void createSchema(final String initFileName) throws IOException {
         log.info("Creating schema");
         final String initRequest = new String(Files.readAllBytes(Paths.get(initFileName)));
-        client.commit(initRequest);
+        connection.submit(initRequest);
         log.info("Done creating schema");
     }
 
     public void openGraph() {
         log.info("Opening graph");
         try {
-            client.open();
+            connection.open();
         } catch (final ConfigurationException cex) {
             log.error("Unable to connect to graph");
             log.error(cex);
@@ -54,7 +85,7 @@ public class JanusBench {
     public void closeGraph() {
         log.info("Closing graph");
         try {
-            client.close();
+            connection.close();
         } catch (final Exception ex) {
             log.error("Unable to close graph");
             log.error(ex);

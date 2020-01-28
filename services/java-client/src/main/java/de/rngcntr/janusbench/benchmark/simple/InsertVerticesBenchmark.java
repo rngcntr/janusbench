@@ -5,6 +5,7 @@ import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
@@ -19,12 +20,12 @@ public class InsertVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public InsertVerticesBenchmark(GraphTraversalSource g) {
-        super(g);
+    public InsertVerticesBenchmark(Connection connection) {
+        super(connection);
     }
 
-    public InsertVerticesBenchmark(GraphTraversalSource g, int stepSize) {
-        super(g, stepSize);
+    public InsertVerticesBenchmark(Connection connection, int stepSize) {
+        super(connection, stepSize);
     }
 
     @Override

@@ -2,6 +2,9 @@ package de.rngcntr.janusbench.tinkerpop;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.tinkerpop.gremlin.driver.Client;
@@ -18,9 +21,11 @@ public class Connection {
     private GraphTraversalSource g;
     private Cluster cluster;
     private Client client;
+    private UUID sessionUuid;
 
     public Connection (String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
+        sessionUuid = UUID.randomUUID();
     }
 
     public void open () throws ConfigurationException {
@@ -28,7 +33,7 @@ public class Connection {
 
         try {
             cluster = Cluster.open(conf.getString("gremlin.remote.driver.clusterFile"));
-            client = cluster.connect();
+            client = cluster.connect(sessionUuid.toString(), false);
             client = client.alias("g");
             g = traversal().withRemote(propertiesFileName);
         } catch (final Exception ex) {
@@ -52,11 +57,15 @@ public class Connection {
         return g;
     }
 
-    public ResultSet commit (String traversal) {
+    public ResultSet submit (String traversal) {
         return client.submit(traversal);
     }
 
-    public ResultSet commit (GraphTraversal<?, ?> traversal) {
+    public ResultSet submit (String traversal, Map<String, Object> parameters) {
+        return client.submit(traversal, parameters);
+    }
+
+    public ResultSet submit (GraphTraversal<?, ?> traversal) {
         return client.submit(traversal);
     }
 }

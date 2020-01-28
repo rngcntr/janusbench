@@ -10,6 +10,7 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
@@ -25,13 +26,13 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public UpsertSupernodeVerticesBenchmark(GraphTraversalSource g, int stepSize, Vertex supernode) {
-        super(g, stepSize);
+    public UpsertSupernodeVerticesBenchmark(Connection connection, int stepSize, Vertex supernode) {
+        super(connection, stepSize);
         this.supernode = supernode;
     }
 
-    public UpsertSupernodeVerticesBenchmark(GraphTraversalSource g, Vertex supernode) {
-        super(g);
+    public UpsertSupernodeVerticesBenchmark(Connection connection, Vertex supernode) {
+        super(connection);
         this.supernode = supernode;
     }
 

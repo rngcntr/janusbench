@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 
 public abstract class Benchmark implements Runnable {
     protected ArrayList<BenchmarkResult> results;
+    protected Connection connection;
     protected GraphTraversalSource g;
 
     protected int stepSize;
@@ -17,16 +19,17 @@ public abstract class Benchmark implements Runnable {
     private ArrayList<BenchmarkProperty> trackBeforeRun;
     private ArrayList<BenchmarkProperty> trackAfterRun;
 
-    public Benchmark(GraphTraversalSource g) {
-        this.g = g;
+    public Benchmark(Connection connection) {
+        this.connection = connection;
+        this.g = connection.g();
         this.stepSize = 1;
         this.results = new ArrayList<BenchmarkResult>();
         this.trackBeforeRun = new ArrayList<BenchmarkProperty>();
         this.trackAfterRun = new ArrayList<BenchmarkProperty>();
     }
 
-    public Benchmark(GraphTraversalSource g, int stepSize) {
-        this(g);
+    public Benchmark(Connection connection, int stepSize) {
+        this(connection);
         this.stepSize = stepSize;
     }
 
@@ -47,7 +50,8 @@ public abstract class Benchmark implements Runnable {
         boolean committed = false;
         while (!committed) {
             try {
-                g.tx().commit();
+                // commits are automatically managed
+                connection.submit("g.tx().commit()");
                 committed = true;
             } catch (Exception ex) {}
         }

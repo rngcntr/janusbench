@@ -9,6 +9,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
@@ -18,13 +19,13 @@ public class UpsertSupernodeEdgeBenchmark extends Benchmark {
 
     private Random rand;
 
-    public UpsertSupernodeEdgeBenchmark(GraphTraversalSource g, int stepSize, Vertex supernode) {
-        super(g, stepSize);
+    public UpsertSupernodeEdgeBenchmark(Connection connection, int stepSize, Vertex supernode) {
+        super(connection, stepSize);
         this.supernode = supernode;
     }
 
-    public UpsertSupernodeEdgeBenchmark(GraphTraversalSource g, Vertex supernode) {
-        super(g);
+    public UpsertSupernodeEdgeBenchmark(Connection connection, Vertex supernode) {
+        super(connection);
         this.supernode = supernode;
     }
 
