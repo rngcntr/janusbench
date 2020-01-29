@@ -6,7 +6,7 @@ services:
         build:
             context: ../services/janusgraph
             args:
-                VERSION: latest
+                VERSION: 0.4.0
         ports:
             - "8182:8182"
         depends_on:
@@ -25,7 +25,7 @@ services:
         build:
             context: ../services/gremlin-client
             args:
-                VERSION: latest
+                VERSION: 0.4.0
         stdin_open: true
         environment:
             - GREMLIN_REMOTE_HOSTS=janusgraph
