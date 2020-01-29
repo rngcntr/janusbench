@@ -10,11 +10,11 @@ services:
         ports:
             - "8182:8182"
         depends_on:
-            - scylla
+            - yb-tserver
             - elasticsearch
         environment:
             - janusgraph.storage.backend=cql
-            - janusgraph.storage.hostname=scylla
+            - janusgraph.storage.hostname=yb-tserver
 
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
@@ -36,23 +36,45 @@ services:
         volumes:
             - ../services/gremlin-client/src:/data
 
-    # from sunsided/janusgraph-docker
-    scylla:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/scylla:3.0.8-1
+    yb-master:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/yugabyte:2.0.11.0-b23
         build:
-            context: ../services/scylla
+            context: ../services/yugabyte
             args:
-                VERSION: 3.0.8
+                VERSION: 2.0.11.0-b23
+        container_name: yb-master-n1
+        command: [ "/home/yugabyte/bin/yb-master",
+            "--fs_data_dirs=/mnt/disk0,/mnt/disk1",
+            "--master_addresses=yb-master:7100",
+            "--replication_factor=1"]
         ports:
-            # http://docs.scylladb.com/kb/posix/
-            - "10000:10000" # REST API
-            - "9042:9042" # CQL ports (native_transport_port)
-            - "9160:9160" # Thrift (rpc_port)
-            - "7000:7000" # Internode
-            - "7001:7001"
-            - "7199:7199" # JMX
-            - "9180:9180" # Prometheus monitoring
-            - "9100:9100"
+            - "7000:7000"
+        environment:
+            SERVICE_7000_NAME: yb-master
+
+    yb-tserver:
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/yugabyte:2.0.11.0-b23
+        build:
+            context: ../services/yugabyte
+            args:
+                VERSION: 2.0.11.0-b23
+        container_name: yb-tserver-n1
+        command: [ "/home/yugabyte/bin/yb-tserver",
+            "--fs_data_dirs=/mnt/disk0,/mnt/disk1",
+            "--start_pgsql_proxy",
+            "--tserver_master_addrs=yb-master:7100"]
+        ports:
+            - "9042:9042"
+            - "6379:6379"
+            - "5433:5433"
+            - "9000:9000"
+        environment:
+            SERVICE_5433_NAME: ysql
+            SERVICE_9042_NAME: ycql
+            SERVICE_6379_NAME: yedis
+            SERVICE_9000_NAME: yb-tserver
+        depends_on:
+            - yb-master
 
     # from sunsided/janusgraph-docker
     elasticsearch:
