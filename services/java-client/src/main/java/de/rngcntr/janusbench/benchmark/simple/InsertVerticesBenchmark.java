@@ -3,7 +3,6 @@ package de.rngcntr.janusbench.benchmark.simple;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;

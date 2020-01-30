@@ -68,6 +68,7 @@ public abstract class Benchmark implements Runnable {
         tearDown();
 
         results.add(result);
+        System.out.println(result); // DEBUG
     }
 
     public void runUntil(IBreakCondition breakCondition) {

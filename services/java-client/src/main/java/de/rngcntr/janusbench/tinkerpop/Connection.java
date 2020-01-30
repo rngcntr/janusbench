@@ -15,6 +15,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 
 public class Connection {
 
+    private final int TIMEOUT_MS = 60000;
     private final String propertiesFileName;
     private PropertiesConfiguration conf;
 
@@ -23,25 +24,39 @@ public class Connection {
     private Client client;
     private UUID sessionUuid;
 
-    public Connection (String propertiesFileName) {
+    public Connection(String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
         sessionUuid = UUID.randomUUID();
     }
 
-    public void open () throws ConfigurationException {
+    public void open() throws ConfigurationException {
         conf = new PropertiesConfiguration(propertiesFileName);
 
         try {
             cluster = Cluster.open(conf.getString("gremlin.remote.driver.clusterFile"));
             client = cluster.connect(sessionUuid.toString(), false);
-            client = client.alias("g");
+            client.alias("g");
             g = traversal().withRemote(propertiesFileName);
         } catch (final Exception ex) {
             throw new ConfigurationException(ex);
         }
+
+        // wait for connection to become stable
+        boolean connected = false;
+        long maxTime = System.currentTimeMillis() + TIMEOUT_MS;
+        while (!connected && System.currentTimeMillis() < maxTime) {
+            try {
+                connected = client.submit("true").one().getBoolean();
+            } catch (RuntimeException rex) {
+            }
+        }
+
+        if (!connected) {
+            throw new ConfigurationException(String.format("Unable to reach cluster within %sms", TIMEOUT_MS));
+        }
     }
 
-    public void close () throws Exception {
+    public void close() throws Exception {
         try {
             g.close();
             client.close();
@@ -53,19 +68,30 @@ public class Connection {
         }
     }
 
-    public GraphTraversalSource g () {
+    public GraphTraversalSource g() {
         return g;
     }
 
-    public ResultSet submit (String traversal) {
-        return client.submit(traversal);
+    public ResultSet submit(String traversal) {
+        return awaitResults(client.submit(traversal));
     }
 
-    public ResultSet submit (String traversal, Map<String, Object> parameters) {
+    public ResultSet submitAsync(String traversal, Map<String, Object> parameters) {
         return client.submit(traversal, parameters);
     }
 
-    public ResultSet submit (GraphTraversal<?, ?> traversal) {
-        return client.submit(traversal);
+    public ResultSet submit(String traversal, Map<String, Object> parameters) {
+        return awaitResults(client.submit(traversal, parameters));
+    }
+
+    public ResultSet submit(GraphTraversal<?, ?> traversal) {
+        return awaitResults(client.submit(traversal));
+
+    }
+
+    private ResultSet awaitResults(ResultSet rs) {
+        while (!rs.allItemsAvailable()) {
+        }
+        return rs;
     }
 }

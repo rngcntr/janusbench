@@ -9,7 +9,7 @@ all:
 	docker-compose -f $(config) build
 
 up:
-	docker-compose -f $(config) up
+	docker-compose -f $(config) up -d
 
 run:
 	docker-compose -f $(config) run --rm gremlin-client ./bin/gremlin.sh

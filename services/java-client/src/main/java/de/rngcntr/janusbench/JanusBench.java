@@ -9,7 +9,6 @@ import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
-import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ComposedBenchmark;
 import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 
@@ -53,15 +52,12 @@ public class JanusBench {
         eeb.collectBenchmarkProperty(connections, Tracking.AFTER);
 
         // compose benchmark
-        ComposedBenchmark cb = new ComposedBenchmark(connection, 50);
+        ComposedBenchmark cb = new ComposedBenchmark(connection, 10);
         cb.addComponent(isvb, 10);
         cb.addComponent(eeb);
 
         // run it
         cb.run();
-        for (BenchmarkResult result : cb.getResults(EdgeExistenceBenchmark.class)) {
-            System.out.println(result.toString());
-        }
     }
 
     public void createSchema(final String initFileName) throws IOException {
@@ -71,26 +67,34 @@ public class JanusBench {
         log.info("Done creating schema");
     }
 
-    public void openGraph() {
+    public boolean openGraph() {
         log.info("Opening graph");
+        
         try {
             connection.open();
         } catch (final ConfigurationException cex) {
             log.error("Unable to connect to graph");
             log.error(cex);
+            return false;
         }
+
         log.info("Successfully opened graph");
+        return true;
     }
 
-    public void closeGraph() {
+    public boolean closeGraph() {
         log.info("Closing graph");
+
         try {
             connection.close();
         } catch (final Exception ex) {
             log.error("Unable to close graph");
             log.error(ex);
+            return false;
         }
+
         log.info("Successfully closed graph");
+        return true;
     }
 
     public static void main(final String[] args) {
@@ -98,15 +102,17 @@ public class JanusBench {
 
         final JanusBench jb = new JanusBench(REMOTE_PROPERTIES);
 
-        jb.openGraph();
+        boolean open = jb.openGraph();
 
-        try {
-            jb.createSchema(INIT_SCRIPT);
-        } catch (final IOException ioex) {
-            log.error("Graph initialization script not found: " + INIT_SCRIPT);
+        if (open) {
+            try {
+                jb.createSchema(INIT_SCRIPT);
+            } catch (final IOException ioex) {
+                log.error("Graph initialization script not found: " + INIT_SCRIPT);
+            }
+
+            jb.runBenchmarks();
         }
-
-        jb.runBenchmarks();
 
         jb.closeGraph();
     }

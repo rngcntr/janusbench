@@ -2,7 +2,6 @@ package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.List;
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import de.rngcntr.janusbench.tinkerpop.Connection;

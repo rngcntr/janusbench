@@ -25,11 +25,17 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
+    private Date[] dates;
+    
+    private int[] timesSeen;
+
     private String vertexInsertQuery;
     private String edgeInsertQuery;
 
     private Map<String, Object> vertexParameters;
     private Map<String, Object> edgeParameters;
+
+    private ResultSet[] insertedVertices;
 
     public InsertSupernodeVerticesBenchmark(Connection connection, int stepSize, Vertex supernode) {
         super(connection, stepSize);
@@ -50,11 +56,17 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
         minAge = 18;
         maxAge = 100;
 
+        dates = new Date[stepSize];
+
+        timesSeen = new int[stepSize];
+
         rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
             names[i] = RandomStringUtils.randomAlphanumeric(nameLength);
             ages[i] = rand.nextInt(maxAge - minAge) + minAge;
+            dates[i] = new Date();
+            timesSeen[i] = rand.nextInt();
         }
 
         vertexInsertQuery = "g.addV('person')."
@@ -69,6 +81,8 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
                 + "next()";
         vertexParameters = new HashMap<String, Object>();
         edgeParameters = new HashMap<String, Object>();
+
+        insertedVertices = new ResultSet[stepSize];
     }
 
     @Override
@@ -78,12 +92,12 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
             vertexParameters.put("nameValue", names[index]);
             vertexParameters.put("ageValue", ages[index]);
 
-            ResultSet rs = connection.submit(vertexInsertQuery, vertexParameters);
-
+            insertedVertices[index] = connection.submitAsync(vertexInsertQuery, vertexParameters);
+        
             edgeParameters.put("supernode", supernode);
-            edgeParameters.put("lastSeenValue", new Date());
-            edgeParameters.put("timesSeenValue", rand.nextInt());
-            edgeParameters.put("insertedVertex", rs.one().getVertex());
+            edgeParameters.put("lastSeenValue", dates[index]);
+            edgeParameters.put("timesSeenValue", timesSeen[index]);
+            edgeParameters.put("insertedVertex", insertedVertices[index].one().getVertex());
 
             connection.submit(edgeInsertQuery, edgeParameters);
         }
