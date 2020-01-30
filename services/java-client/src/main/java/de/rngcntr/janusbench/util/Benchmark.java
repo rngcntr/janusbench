@@ -19,6 +19,8 @@ public abstract class Benchmark implements Runnable {
     private ArrayList<BenchmarkProperty> trackBeforeRun;
     private ArrayList<BenchmarkProperty> trackAfterRun;
 
+    private boolean collectResults;
+
     public Benchmark(Connection connection) {
         this.connection = connection;
         this.g = connection.g();
@@ -26,6 +28,7 @@ public abstract class Benchmark implements Runnable {
         this.results = new ArrayList<BenchmarkResult>();
         this.trackBeforeRun = new ArrayList<BenchmarkProperty>();
         this.trackAfterRun = new ArrayList<BenchmarkProperty>();
+        this.collectResults = true;
     }
 
     public Benchmark(Connection connection, int stepSize) {
@@ -33,10 +36,14 @@ public abstract class Benchmark implements Runnable {
         this.stepSize = stepSize;
     }
 
+    public void setCollectResults(boolean collectResults) {
+        this.collectResults = collectResults;
+    }
+
     public void run() {
-        BenchmarkResult result = new BenchmarkResult(this);
         buildUp();
 
+        BenchmarkResult result = new BenchmarkResult(this);
         BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
         result.injectBenchmarkProperty(stepSizeProperty);
 
@@ -67,8 +74,9 @@ public abstract class Benchmark implements Runnable {
 
         tearDown();
 
-        results.add(result);
-        System.out.println(result); // DEBUG
+        if (collectResults) {
+            results.add(result);
+        }
     }
 
     public void runUntil(IBreakCondition breakCondition) {
