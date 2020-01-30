@@ -22,9 +22,9 @@ public class Connection {
     private GraphTraversalSource g;
     private Cluster cluster;
     private Client client;
-    private UUID sessionUuid;
+    private final UUID sessionUuid;
 
-    public Connection(String propertiesFileName) {
+    public Connection(final String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
         sessionUuid = UUID.randomUUID();
     }
@@ -43,11 +43,11 @@ public class Connection {
 
         // wait for connection to become stable
         boolean connected = false;
-        long maxTime = System.currentTimeMillis() + TIMEOUT_MS;
+        final long maxTime = System.currentTimeMillis() + TIMEOUT_MS;
         while (!connected && System.currentTimeMillis() < maxTime) {
             try {
                 connected = client.submit("true").one().getBoolean();
-            } catch (RuntimeException rex) {
+            } catch (final RuntimeException rex) {
             }
         }
 
@@ -72,24 +72,24 @@ public class Connection {
         return g;
     }
 
-    public ResultSet submit(String traversal) {
+    public ResultSet submit(final String traversal) {
         return awaitResults(client.submit(traversal));
     }
 
-    public ResultSet submitAsync(String traversal, Map<String, Object> parameters) {
+    public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters) {
         return client.submit(traversal, parameters);
     }
 
-    public ResultSet submit(String traversal, Map<String, Object> parameters) {
+    public ResultSet submit(final String traversal, final Map<String, Object> parameters) {
         return awaitResults(client.submit(traversal, parameters));
     }
 
-    public ResultSet submit(GraphTraversal<?, ?> traversal) {
+    public ResultSet submit(final GraphTraversal<?, ?> traversal) {
         return awaitResults(client.submit(traversal));
 
     }
 
-    public ResultSet awaitResults(ResultSet rs) {
+    public ResultSet awaitResults(final ResultSet rs) {
         while (!rs.allItemsAvailable()) {
         }
         return rs;

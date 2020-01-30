@@ -13,17 +13,17 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
 public class UpsertSupernodeEdgeBenchmark extends Benchmark {
-    private Vertex supernode;
+    private final Vertex supernode;
     private Vertex[] neighbours;
 
     private Random rand;
 
-    public UpsertSupernodeEdgeBenchmark(Connection connection, int stepSize, Vertex supernode) {
+    public UpsertSupernodeEdgeBenchmark(final Connection connection, final int stepSize, final Vertex supernode) {
         super(connection, stepSize);
         this.supernode = supernode;
     }
 
-    public UpsertSupernodeEdgeBenchmark(Connection connection, Vertex supernode) {
+    public UpsertSupernodeEdgeBenchmark(final Connection connection, final Vertex supernode) {
         super(connection);
         this.supernode = supernode;
     }
@@ -31,24 +31,25 @@ public class UpsertSupernodeEdgeBenchmark extends Benchmark {
     @Override
     public void buildUp() {
         neighbours = new Vertex[stepSize];
-        
+
         // get a list of all vertices to select from
-        ArrayList<Vertex> allVertices = new ArrayList<Vertex>(g.V().not(__.is(supernode)).toList());
+        final ArrayList<Vertex> allVertices = new ArrayList<Vertex>(g.V().not(__.is(supernode)).toList());
         rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
             // randomly choose an incoming vertex
-            int selectedIndex = rand.nextInt(allVertices.size());
+            final int selectedIndex = rand.nextInt(allVertices.size());
             neighbours[i] = allVertices.get(selectedIndex);
         }
     }
 
     @Override
-    public void performAction(BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(neighbours[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // edge already exists -> update
-                Edge e = (Edge) g.V(neighbours[index]).inE("knows").as("e").outV().where(__.is(supernode)).select("e").next();
+                final Edge e = (Edge) g.V(neighbours[index]).inE("knows").as("e").outV().where(__.is(supernode))
+                        .select("e").next();
                 e.property("lastSeen", new Date());
             } else {
                 // edge does not exist -> insert

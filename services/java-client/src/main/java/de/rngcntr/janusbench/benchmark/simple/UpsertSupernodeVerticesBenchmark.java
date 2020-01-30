@@ -14,7 +14,7 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
 public class UpsertSupernodeVerticesBenchmark extends Benchmark {
-    private Vertex supernode;
+    private final Vertex supernode;
 
     private String[] names;
     private int nameLength;
@@ -25,12 +25,12 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public UpsertSupernodeVerticesBenchmark(Connection connection, int stepSize, Vertex supernode) {
+    public UpsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize, final Vertex supernode) {
         super(connection, stepSize);
         this.supernode = supernode;
     }
 
-    public UpsertSupernodeVerticesBenchmark(Connection connection, Vertex supernode) {
+    public UpsertSupernodeVerticesBenchmark(final Connection connection, final Vertex supernode) {
         super(connection);
         this.supernode = supernode;
     }
@@ -53,23 +53,23 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has("name", names[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
-                Edge e = (Edge) g.V().has("name", names[index]).inE("knows").as("e").outV().where(__.is(supernode)).select("e").next();
+                final Edge e = (Edge) g.V().has("name", names[index]).inE("knows").as("e").outV()
+                        .where(__.is(supernode)).select("e").next();
                 e.property("lastSeen", new Date());
             } else {
                 // vertex does not exist -> insert
-                Vertex insertedVertex = g.addV("person").
-                    property("name", names[index]).
-                    property("age", ages[index]).
-                    next();
+                final Vertex insertedVertex = g.addV("person").property("name", names[index])
+                        .property("age", ages[index]).next();
                 g.addE("knows").from(supernode).to(insertedVertex).property("lastSeen", new Date()).next();
             }
         }
     }
 
     @Override
-    public void tearDown() {}
+    public void tearDown() {
+    }
 }

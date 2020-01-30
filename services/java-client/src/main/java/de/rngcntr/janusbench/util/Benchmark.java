@@ -16,12 +16,12 @@ public abstract class Benchmark implements Runnable {
 
     protected int stepSize;
 
-    private ArrayList<BenchmarkProperty> trackBeforeRun;
-    private ArrayList<BenchmarkProperty> trackAfterRun;
+    private final ArrayList<BenchmarkProperty> trackBeforeRun;
+    private final ArrayList<BenchmarkProperty> trackAfterRun;
 
     private boolean collectResults;
 
-    public Benchmark(Connection connection) {
+    public Benchmark(final Connection connection) {
         this.connection = connection;
         this.g = connection.g();
         this.stepSize = 1;
@@ -31,27 +31,27 @@ public abstract class Benchmark implements Runnable {
         this.collectResults = true;
     }
 
-    public Benchmark(Connection connection, int stepSize) {
+    public Benchmark(final Connection connection, final int stepSize) {
         this(connection);
         this.stepSize = stepSize;
     }
 
-    public void setCollectResults(boolean collectResults) {
+    public void setCollectResults(final boolean collectResults) {
         this.collectResults = collectResults;
     }
 
     public void run() {
         buildUp();
 
-        BenchmarkResult result = new BenchmarkResult(this);
-        BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
+        final BenchmarkResult result = new BenchmarkResult(this);
+        final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
         result.injectBenchmarkProperty(stepSizeProperty);
 
-        for (BenchmarkProperty beforeProperty : trackBeforeRun) {
+        for (final BenchmarkProperty beforeProperty : trackBeforeRun) {
             result.injectBenchmarkProperty(beforeProperty);
         }
 
-        long startTime = System.nanoTime();
+        final long startTime = System.nanoTime();
         performAction(result);
 
         boolean committed = false;
@@ -60,16 +60,18 @@ public abstract class Benchmark implements Runnable {
                 // commits are automatically managed
                 connection.submit("g.tx().commit()");
                 committed = true;
-            } catch (Exception ex) {}
+            } catch (final Exception ex) {
+            }
         }
 
-        long stopTime = System.nanoTime();
+        final long stopTime = System.nanoTime();
 
-        for (BenchmarkProperty afterProperty : trackAfterRun) {
+        for (final BenchmarkProperty afterProperty : trackAfterRun) {
             result.injectBenchmarkProperty(afterProperty);
         }
 
-        BenchmarkProperty timeProperty = new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0 / stepSize);
+        final BenchmarkProperty timeProperty = new BenchmarkProperty("time",
+                (stopTime - startTime) / 1000000.0 / stepSize);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
@@ -80,7 +82,7 @@ public abstract class Benchmark implements Runnable {
         }
     }
 
-    public void runUntil(IBreakCondition breakCondition) {
+    public void runUntil(final IBreakCondition breakCondition) {
         // check break condition on latest result
         do {
             run();
@@ -88,39 +90,40 @@ public abstract class Benchmark implements Runnable {
     }
 
     public abstract void buildUp();
+
     public abstract void performAction(BenchmarkResult result);
+
     public abstract void tearDown();
 
     public ArrayList<BenchmarkResult> getResults() {
         return results;
     }
 
-    public List<BenchmarkResult> getResults(Class<?> cls) {
-        return results.stream().filter(
-                r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName())
-            ).collect(Collectors.toList());
+    public List<BenchmarkResult> getResults(final Class<?> cls) {
+        return results.stream().filter(r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName()))
+                .collect(Collectors.toList());
     }
 
     public void resetResults() {
         results.clear();
     }
 
-    public void setStepSize(int stepSize) {
+    public void setStepSize(final int stepSize) {
         this.stepSize = stepSize;
     }
 
-    public void collectBenchmarkProperty (BenchmarkProperty property, BenchmarkProperty.Tracking tracking) {
+    public void collectBenchmarkProperty(final BenchmarkProperty property, final BenchmarkProperty.Tracking tracking) {
         switch (tracking) {
-            case BEFORE:
-                trackBeforeRun.add(property);
-                break;
-            case AFTER:
-                trackAfterRun.add(property);
-                break;
+        case BEFORE:
+            trackBeforeRun.add(property);
+            break;
+        case AFTER:
+            trackAfterRun.add(property);
+            break;
         }
     }
 
     public interface IBreakCondition {
-        boolean stop (BenchmarkResult result);
+        boolean stop(BenchmarkResult result);
     }
 }

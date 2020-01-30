@@ -22,18 +22,18 @@ public class ResultLogger {
         return instance;
     }
 
-    synchronized public void log(BenchmarkResult result) {
+    synchronized public void log(final BenchmarkResult result) {
         outputStream.println(result);
         outputStream.flush();
     }
 
-    synchronized public void setOutputMethod(PrintStream outputStream) {
+    synchronized public void setOutputMethod(final PrintStream outputStream) {
         this.outputStream = outputStream;
     }
 
-    synchronized public void setOutputMethod(String fileName) throws IOException {
-        File outputDirectory = new File(OUTPUT_DIR);
-        File outputFile = new File(OUTPUT_DIR + SEPARATOR + fileName);
+    synchronized public void setOutputMethod(final String fileName) throws IOException {
+        final File outputDirectory = new File(OUTPUT_DIR);
+        final File outputFile = new File(OUTPUT_DIR + SEPARATOR + fileName);
         outputDirectory.mkdir();
         outputFile.createNewFile();
         outputStream = new PrintStream(new FileOutputStream(OUTPUT_DIR + SEPARATOR + fileName));

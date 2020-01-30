@@ -19,11 +19,11 @@ public class InsertVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public InsertVerticesBenchmark(Connection connection) {
+    public InsertVerticesBenchmark(final Connection connection) {
         super(connection);
     }
 
-    public InsertVerticesBenchmark(Connection connection, int stepSize) {
+    public InsertVerticesBenchmark(final Connection connection, final int stepSize) {
         super(connection, stepSize);
     }
 
@@ -45,18 +45,16 @@ public class InsertVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
-            g.addV("person").
-                property("name", names[index]).
-                property("age", ages[index]).
-                next();
+            g.addV("person").property("name", names[index]).property("age", ages[index]).next();
         }
     }
 
     @Override
-    public void tearDown() {}
+    public void tearDown() {
+    }
 
     public String[] getNames() {
         return names;

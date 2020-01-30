@@ -5,18 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
-import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
-import de.rngcntr.janusbench.util.BenchmarkProperty;
 import de.rngcntr.janusbench.util.BenchmarkResult;
-import de.rngcntr.janusbench.util.ComposedBenchmark;
 import de.rngcntr.janusbench.util.ResultLogger;
-import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 
-import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
@@ -37,9 +30,9 @@ public class JanusBench {
         return connection;
     }
 
-    public void runBenchmark(Benchmark benchmark) {
+    public void runBenchmark(final Benchmark benchmark) {
         benchmark.run();
-        for (BenchmarkResult br : benchmark.getResults()) {
+        for (final BenchmarkResult br : benchmark.getResults()) {
             System.out.println(br);
         }
     }
@@ -53,7 +46,7 @@ public class JanusBench {
 
     public boolean openGraph() {
         log.info("Opening graph");
-        
+
         try {
             connection.open();
         } catch (final ConfigurationException cex) {
@@ -86,7 +79,7 @@ public class JanusBench {
 
         final JanusBench jb = new JanusBench(REMOTE_PROPERTIES);
 
-        boolean open = jb.openGraph();
+        final boolean open = jb.openGraph();
 
         if (open) {
             try {
@@ -97,7 +90,7 @@ public class JanusBench {
 
             try {
                 ResultLogger.getInstance().setOutputMethod("results.txt");
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 log.error("Unable to create results file");
                 e.printStackTrace();
             }

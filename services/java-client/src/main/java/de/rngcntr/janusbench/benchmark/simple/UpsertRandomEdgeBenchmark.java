@@ -18,11 +18,11 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
 
     private Random rand;
 
-    public UpsertRandomEdgeBenchmark(Connection connection) {
+    public UpsertRandomEdgeBenchmark(final Connection connection) {
         super(connection);
     }
 
-    public UpsertRandomEdgeBenchmark(Connection connection, int stepSize) {
+    public UpsertRandomEdgeBenchmark(final Connection connection, final int stepSize) {
         super(connection, stepSize);
     }
 
@@ -31,14 +31,14 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
         // prepare edges to insert
         a = new Vertex[stepSize];
         b = new Vertex[stepSize];
-        
+
         // get a list of all vertices to select from
-        ArrayList<Vertex> allVertices = new ArrayList<Vertex>(g.V().toList());
+        final ArrayList<Vertex> allVertices = new ArrayList<Vertex>(g.V().toList());
         rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
             // randomly choose an incoming vertex
-            int selectedIndexA = rand.nextInt(allVertices.size());
+            final int selectedIndexA = rand.nextInt(allVertices.size());
             a[i] = allVertices.get(selectedIndexA);
 
             // one vertex less to sample from
@@ -52,11 +52,12 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(a[index]).in("knows").where(__.is(b[index])).hasNext()) {
                 // edge already exists -> update
-                Edge e = (Edge) g.V(a[index]).inE("knows").as("e").outV().where(__.is(b[index])).select("e").next();
+                final Edge e = (Edge) g.V(a[index]).inE("knows").as("e").outV().where(__.is(b[index])).select("e")
+                        .next();
                 e.property("lastSeen", new Date());
             } else {
                 // edge does not exist -> insert
@@ -69,4 +70,3 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
     public void tearDown() {
     }
 }
-

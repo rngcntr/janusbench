@@ -14,7 +14,7 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 
 public class InsertSupernodeVerticesBenchmark extends Benchmark {
-    private Vertex supernode;
+    private final Vertex supernode;
 
     private String[] names;
     private int nameLength;
@@ -26,7 +26,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private Random rand;
 
     private Date[] dates;
-    
+
     private int[] timesSeen;
 
     private String vertexInsertQuery;
@@ -38,12 +38,12 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private ResultSet[] insertedVertices;
     private ResultSet[] insertedEdges;
 
-    public InsertSupernodeVerticesBenchmark(Connection connection, int stepSize, Vertex supernode) {
+    public InsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize, final Vertex supernode) {
         super(connection, stepSize);
         this.supernode = supernode;
     }
 
-    public InsertSupernodeVerticesBenchmark(Connection connection, Vertex supernode) {
+    public InsertSupernodeVerticesBenchmark(final Connection connection, final Vertex supernode) {
         super(connection);
         this.supernode = supernode;
     }
@@ -70,16 +70,10 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
             timesSeen[i] = rand.nextInt();
         }
 
-        vertexInsertQuery = "g.addV('person')."
-                + "property('name', nameValue)."
-                + "property('age', ageValue)."
+        vertexInsertQuery = "g.addV('person')." + "property('name', nameValue)." + "property('age', ageValue)."
                 + "next()";
-        edgeInsertQuery = "g.addE('knows')."
-                + "from(supernode)."
-                + "to(insertedVertex)."
-                + "property('lastSeen', lastSeenValue)."
-                + "property('timesSeen', timesSeenValue)."
-                + "next()";
+        edgeInsertQuery = "g.addE('knows')." + "from(supernode)." + "to(insertedVertex)."
+                + "property('lastSeen', lastSeenValue)." + "property('timesSeen', timesSeenValue)." + "next()";
         vertexParameters = new HashMap<String, Object>();
         edgeParameters = new HashMap<String, Object>();
 
@@ -88,7 +82,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             vertexParameters.put("nameValue", names[index]);
@@ -96,7 +90,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
 
             insertedVertices[index] = connection.submitAsync(vertexInsertQuery, vertexParameters);
         }
-        
+
         for (int index = 0; index < stepSize; ++index) {
             edgeParameters.put("supernode", supernode);
             edgeParameters.put("lastSeenValue", dates[index]);
@@ -112,7 +106,8 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void tearDown() {}
+    public void tearDown() {
+    }
 
     public String[] getNames() {
         return names;
