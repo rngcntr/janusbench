@@ -76,6 +76,7 @@ public abstract class Benchmark implements Runnable {
 
         if (collectResults) {
             results.add(result);
+            ResultLogger.getInstance().log(result);
         }
     }
 

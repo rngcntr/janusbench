@@ -13,6 +13,7 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ComposedBenchmark;
+import de.rngcntr.janusbench.util.ResultLogger;
 import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -94,9 +95,17 @@ public class JanusBench {
                 log.error("Graph initialization script not found: " + INIT_SCRIPT);
             }
 
+            try {
+                ResultLogger.getInstance().setOutputMethod("results.txt");
+            } catch (IOException e) {
+                log.error("Unable to create results file");
+                e.printStackTrace();
+            }
+
             jb.runBenchmark(new IndexedEdgeExistenceOnSupernode(jb.gConnection(), 5, 10, 1000));
         }
 
         jb.closeGraph();
+        ResultLogger.getInstance().terminate();
     }
 }
