@@ -89,7 +89,7 @@ public class Connection {
 
     }
 
-    private ResultSet awaitResults(ResultSet rs) {
+    public ResultSet awaitResults(ResultSet rs) {
         while (!rs.allItemsAvailable()) {
         }
         return rs;

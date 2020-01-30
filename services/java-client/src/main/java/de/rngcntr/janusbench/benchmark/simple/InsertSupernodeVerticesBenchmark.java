@@ -36,6 +36,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private Map<String, Object> edgeParameters;
 
     private ResultSet[] insertedVertices;
+    private ResultSet[] insertedEdges;
 
     public InsertSupernodeVerticesBenchmark(Connection connection, int stepSize, Vertex supernode) {
         super(connection, stepSize);
@@ -83,6 +84,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
         edgeParameters = new HashMap<String, Object>();
 
         insertedVertices = new ResultSet[stepSize];
+        insertedEdges = new ResultSet[stepSize];
     }
 
     @Override
@@ -93,13 +95,19 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
             vertexParameters.put("ageValue", ages[index]);
 
             insertedVertices[index] = connection.submitAsync(vertexInsertQuery, vertexParameters);
+        }
         
+        for (int index = 0; index < stepSize; ++index) {
             edgeParameters.put("supernode", supernode);
             edgeParameters.put("lastSeenValue", dates[index]);
             edgeParameters.put("timesSeenValue", timesSeen[index]);
             edgeParameters.put("insertedVertex", insertedVertices[index].one().getVertex());
 
-            connection.submit(edgeInsertQuery, edgeParameters);
+            insertedEdges[index] = connection.submitAsync(edgeInsertQuery, edgeParameters);
+        }
+
+        for (int index = 0; index < stepSize; ++index) {
+            connection.awaitResults(insertedEdges[index]);
         }
     }
 
