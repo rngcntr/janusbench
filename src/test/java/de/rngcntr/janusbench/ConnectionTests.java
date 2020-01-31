@@ -30,10 +30,18 @@ public class ConnectionTests {
 
     @Test
     public void testEstablishValidConnection() throws Exception {
-        Connection conn = new Connection(REMOTE_PROPERTIES);
-        conn.open();
-        assertNotNull("Graph traversal source should be available", conn.g());
-        conn.close();
+        final Connection connStarted = new Connection(REMOTE_PROPERTIES);
+        connStarted.open();
+        assertNotNull("Graph traversal source should be available", connStarted.g());
+        connStarted.close();
+        environment.stop();
+        final Connection connStopped = new Connection(REMOTE_PROPERTIES);
+        connStopped.setTimeout(3000);
+        Exception exception = assertThrows(ConfigurationException.class, () -> connStopped.open());
+
+        assertTrue("ConfigurationException should be thrown", exception instanceof ConfigurationException);
+        assertTrue("ConfigurationException should contain unreachable statement",
+                exception.getMessage().contains("Unable to reach cluster"));
     }
 
     @Test
@@ -42,17 +50,5 @@ public class ConnectionTests {
         Exception exception = assertThrows(ConfigurationException.class, () -> conn.open());
  
         assertTrue("ConfigurationException should be thrown", exception instanceof ConfigurationException);
-    }
-
-    @Test
-    public void testEstablishValidConnectionWhenStopped() {
-        environment.stop();
-        Connection conn = new Connection(REMOTE_PROPERTIES);
-        conn.setTimeout(3000);
-        Exception exception = assertThrows(ConfigurationException.class, () -> conn.open());
-
-        assertTrue("ConfigurationException should be thrown", exception instanceof ConfigurationException);
-        assertTrue("ConfigurationException should contain unreachable statement",
-                exception.getMessage().contains("Unable to reach cluster"));
     }
 }
