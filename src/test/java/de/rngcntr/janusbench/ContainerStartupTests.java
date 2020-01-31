@@ -23,7 +23,7 @@ public class ContainerStartupTests {
     private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
 
     @Container
-    public static DockerComposeContainer environment = new DockerComposeContainer(composeFile)
+    public static DockerComposeContainer<?> environment = new DockerComposeContainer<>(composeFile)
             .withExposedService("janusgraph", JG_PORT)
             .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
             .withLocalCompose(true);
