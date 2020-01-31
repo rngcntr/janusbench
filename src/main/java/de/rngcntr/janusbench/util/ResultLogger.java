@@ -40,6 +40,8 @@ public class ResultLogger {
     }
 
     synchronized public void terminate() {
-        outputStream.close();
+        if (outputStream != null) {
+            outputStream.close();
+        }
     }
 }
