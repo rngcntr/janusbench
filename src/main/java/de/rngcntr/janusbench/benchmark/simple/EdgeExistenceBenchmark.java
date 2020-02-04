@@ -59,25 +59,16 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
         vertexExistenceParameters.put("searchKey", propertyName);
         edgeExistenceParameters.put("supernode", supernode);
 
-        if (useEdgeIndex) {
-            edgeExistenceParameters.put("searchKey", ImplicitKey.ADJACENT_ID.name());
-
-            for (int index = 0; index < stepSize; ++index) {
-                vertexExistenceParameters.put("searchValue", nodeProperties[index]);
-                final ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
-                final Vertex testNode = candidates.one().getVertex();
-                if (testNode != null) {
-                    edgeExistenceParameters.put("adjacentId", testNode.id());
+        for (int index = 0; index < stepSize; ++index) {
+            vertexExistenceParameters.put("searchValue", nodeProperties[index]);
+            final ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
+            final Vertex testNode = candidates.one().getVertex();
+            if (testNode != null) {
+                edgeExistenceParameters.put("adjacentId", testNode.id());
+                if (useEdgeIndex) {
+                    edgeExistenceParameters.put("searchKey", ImplicitKey.ADJACENT_ID.name());
                     connection.submit(indexedEdgeExistenceQuery, edgeExistenceParameters);
-                }
-            }
-        } else {
-            for (int index = 0; index < stepSize; ++index) {
-                vertexExistenceParameters.put("searchValue", nodeProperties[index]);
-                final ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
-                final Vertex testNode = candidates.one().getVertex();
-                if (testNode != null) {
-                    edgeExistenceParameters.put("adjacentId", testNode.id());
+                } else {
                     connection.submit(defaultEdgeExistenceQuery, edgeExistenceParameters);
                 }
             }
