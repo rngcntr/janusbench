@@ -15,7 +15,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 
 public class Connection {
 
-    private final int TIMEOUT_MS = 60000;
+    private int TIMEOUT_MS = 60000;
     private final String propertiesFileName;
     private PropertiesConfiguration conf;
 
@@ -27,6 +27,10 @@ public class Connection {
     public Connection(final String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
         sessionUuid = UUID.randomUUID();
+    }
+
+    public void setTimeout (int timeoutMs) {
+        this.TIMEOUT_MS = timeoutMs;
     }
 
     public void open() throws ConfigurationException {
