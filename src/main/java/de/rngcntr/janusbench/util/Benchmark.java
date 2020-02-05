@@ -2,6 +2,7 @@ package de.rngcntr.janusbench.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
@@ -52,15 +53,16 @@ public abstract class Benchmark implements Runnable {
         }
 
         final long startTime = System.nanoTime();
-        performAction(result);
 
-        boolean committed = false;
-        while (!committed) {
+        boolean successful = false;
+
+        while (!successful) {
             try {
-                // commits are automatically managed
+                performAction(result);
                 connection.submit("g.tx().commit()");
-                committed = true;
-            } catch (final Exception ex) {
+                successful = true;
+            } catch (TimeoutException tex) {
+                connection.submit("g.tx().rollback()");
             }
         }
 
@@ -71,7 +73,7 @@ public abstract class Benchmark implements Runnable {
         }
 
         final BenchmarkProperty timeProperty = new BenchmarkProperty("time",
-                (stopTime - startTime) / 1000000.0 / stepSize);
+                (stopTime - startTime) / 1000000.0);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
@@ -91,7 +93,7 @@ public abstract class Benchmark implements Runnable {
 
     public abstract void buildUp();
 
-    public abstract void performAction(BenchmarkResult result);
+    public abstract void performAction(BenchmarkResult result) throws TimeoutException;
 
     public abstract void tearDown();
 

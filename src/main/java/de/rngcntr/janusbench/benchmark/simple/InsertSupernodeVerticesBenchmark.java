@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
@@ -82,7 +83,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             vertexParameters.put("nameValue", names[index]);

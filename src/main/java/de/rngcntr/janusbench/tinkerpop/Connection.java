@@ -4,6 +4,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalS
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -12,6 +13,8 @@ import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+
+import org.apache.log4j.Logger;
 
 public class Connection {
 
@@ -23,6 +26,8 @@ public class Connection {
     private Cluster cluster;
     private Client client;
     private final UUID sessionUuid;
+
+    private static final Logger log = Logger.getLogger(Connection.class);
 
     public Connection(final String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
@@ -80,8 +85,17 @@ public class Connection {
         return awaitResults(client.submit(traversal));
     }
 
-    public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters) {
-        return client.submit(traversal, parameters);
+    public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters) throws TimeoutException {
+        ResultSet results = null;
+
+        try {
+            results = client.submit(traversal, parameters);
+        } catch (RuntimeException rex) {
+            log.warn("submitAsync failed");
+            throw new TimeoutException("submitAsync failed");
+        }
+
+        return results;
     }
 
     public ResultSet submit(final String traversal, final Map<String, Object> parameters) {

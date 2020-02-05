@@ -2,6 +2,7 @@ package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -52,7 +53,7 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) throws TimeoutException {
         final BenchmarkProperty useEdgeIndexProperty = new BenchmarkProperty("useEdgeIndex", useEdgeIndex);
         result.injectBenchmarkProperty(useEdgeIndexProperty);
 
@@ -61,7 +62,7 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
 
         for (int index = 0; index < stepSize; ++index) {
             vertexExistenceParameters.put("searchValue", nodeProperties[index]);
-            final ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
+            ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
             final Vertex testNode = candidates.one().getVertex();
             if (testNode != null) {
                 edgeExistenceParameters.put("adjacentId", testNode.id());
