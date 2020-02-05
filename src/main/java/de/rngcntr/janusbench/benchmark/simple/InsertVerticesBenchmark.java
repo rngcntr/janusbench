@@ -1,6 +1,7 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -45,7 +46,7 @@ public class InsertVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             g.addV("person").property("name", names[index]).property("age", ages[index]).next();

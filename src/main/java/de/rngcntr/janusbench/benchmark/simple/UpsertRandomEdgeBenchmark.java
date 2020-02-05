@@ -1,6 +1,7 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) {
+    public void performAction(final BenchmarkResult result) throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(a[index]).in("knows").where(__.is(b[index])).hasNext()) {
                 // edge already exists -> update
