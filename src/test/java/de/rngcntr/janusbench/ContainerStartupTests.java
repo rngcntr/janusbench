@@ -11,6 +11,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import de.rngcntr.janusbench.subcommands.RunSubcommand;
 import de.rngcntr.janusbench.util.ResultLogger;
 
 @Testcontainers
@@ -20,7 +21,7 @@ public class ContainerStartupTests {
 
     private static File composeFile = new File("docker/configurations/janusgraph-inmemory.yml");
 
-    private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
+    //private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
 
     @Container
     public static DockerComposeContainer<?> environment = new DockerComposeContainer<>(composeFile)
@@ -35,13 +36,13 @@ public class ContainerStartupTests {
 
     @Test
     public void testContainerStartupWithJanusBench() {
-        final JanusBench jb = new JanusBench(REMOTE_PROPERTIES);
+        final RunSubcommand runner = new RunSubcommand();
 
-        final boolean open = jb.openGraph();
+        final boolean open = runner.openGraph();
 
         assertTrue("Graph connection should be open", open);
 
-        jb.closeGraph();
+        runner.closeGraph();
         ResultLogger.getInstance().terminate();
     }
 }
