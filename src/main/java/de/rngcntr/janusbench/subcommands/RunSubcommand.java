@@ -1,6 +1,9 @@
 package de.rngcntr.janusbench.subcommands;
 
+import de.rngcntr.janusbench.backend.Configuration;
 import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.backend.Index;
+import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
@@ -19,38 +22,41 @@ public class RunSubcommand implements Callable<Integer> {
 
     @Option(names = {"--remote-properties"}, paramLabel = "FILE",
             defaultValue = "conf/remote-graph.properties",
-            description = "The remote graph properties file\ndefault: ${DEFAULT-VALUE}")
+            description = "The remote graph properties file"
+                          + "\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
 
-    @Option(
-        names = {"--schema-script"}, paramLabel = "FILE",
-        defaultValue = "conf/initialize-graph.groovy",
-        description =
-            "The groovy script used for initialization of the graph schema\ndefault: ${DEFAULT-VALUE}")
+    @Option(names = {"--schema-script"}, paramLabel = "FILE",
+            defaultValue = "conf/initialize-graph.groovy",
+            description = "The groovy script used for initialization of the graph schema"
+                          + "\ndefault: ${DEFAULT-VALUE}")
     private static String INIT_SCRIPT;
 
-    @Option(
-        names = {"-s", "--storage"}, paramLabel = "STORAGE BACKEND", required = true,
-        description =
-            "One of the supported storage backends. For a list of supported storage backends use\njanusbench list storage")
-    private static String STORAGE_BACKEND;
+    @Option(names = {"-s", "--storage"}, paramLabel = "STORAGE BACKEND", required = true,
+            description = "One of the supported storage backends."
+                          + " For a list of supported storage backends use"
+                          + "\njanusbench list storage")
+    private static Storage STORAGE_BACKEND;
 
-    @Option(
-        names = {"-i", "--index"}, paramLabel = "INDEX BACKEND", required = true,
-        description =
-            "One of the supported storage index. For a list of supported index backends use\njanusbench list index")
-    private static String INDEX_BACKEND;
+    @Option(names = {"-i", "--index"}, paramLabel = "INDEX BACKEND",
+            description = "One of the supported storage index."
+                          + " For a list of supported index backends use"
+                          + "\njanusbench list index")
+    private static Index INDEX_BACKEND;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
 
+    private Configuration configuration;
     private Connection connection;
 
     public Integer call() throws Exception {
+        configuration = new Configuration(STORAGE_BACKEND, INDEX_BACKEND);
         this.connection = new Connection(REMOTE_PROPERTIES);
 
+        final boolean started = configuration.start();
         final boolean open = openGraph();
 
-        if (open) {
+        if (started && open) {
             try {
                 createSchema();
             } catch (final IOException ioex) {
@@ -64,10 +70,11 @@ public class RunSubcommand implements Callable<Integer> {
                 e.printStackTrace();
             }
 
-            runBenchmark(new IndexedEdgeExistenceOnSupernode(connection, 5, 10, 1000));
+            runBenchmark(new IndexedEdgeExistenceOnSupernode(connection, 1, 10, 1000));
         }
 
         closeGraph();
+        configuration.stop();
         return 0;
     }
 
