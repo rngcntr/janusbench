@@ -2,7 +2,7 @@ package de.rngcntr.janusbench;
 
 import static org.junit.Assert.*;
 
-import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.backend.Connection;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;

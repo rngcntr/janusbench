@@ -1,5 +1,6 @@
 package de.rngcntr.janusbench.subcommands.list;
 
+import de.rngcntr.janusbench.backend.Index;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
@@ -7,9 +8,9 @@ import picocli.CommandLine.Command;
 public class ListIndexSubcommand implements Callable<Integer> {
 
     public Integer call() throws Exception {
-        System.out.println("elasticsearch");
-        System.out.println("solr");
-        System.out.println("lucene");
+        for (Index backend : Index.values()) {
+            System.out.println(backend.toString());
+        }
 
         return 0;
     }

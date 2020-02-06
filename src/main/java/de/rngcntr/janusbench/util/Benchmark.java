@@ -1,6 +1,6 @@
 package de.rngcntr.janusbench.util;
 
-import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 import java.util.ArrayList;
 import java.util.List;

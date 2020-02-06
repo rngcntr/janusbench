@@ -1,9 +1,9 @@
 package de.rngcntr.janusbench.benchmark.complex;
 
+import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
-import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 import de.rngcntr.janusbench.util.ComposedBenchmark;

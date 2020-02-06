@@ -2,7 +2,7 @@ package de.rngcntr.janusbench;
 
 import static org.junit.Assert.assertEquals;
 
-import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ComposedBenchmark;

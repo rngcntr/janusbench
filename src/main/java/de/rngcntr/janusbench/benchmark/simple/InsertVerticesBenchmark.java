@@ -1,6 +1,6 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
-import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import java.util.Random;

@@ -1,5 +1,6 @@
 package de.rngcntr.janusbench.subcommands.list;
 
+import de.rngcntr.janusbench.backend.Storage;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
@@ -7,13 +8,9 @@ import picocli.CommandLine.Command;
 public class ListStorageSubcommand implements Callable<Integer> {
 
     public Integer call() throws Exception {
-        System.out.println("cassandra");
-        System.out.println("scylla");
-        System.out.println("berkeleyje");
-        System.out.println("hbase");
-        System.out.println("yugabyte");
-        System.out.println("foundationdb");
-        System.out.println("inmemory");
+        for (Storage backend : Storage.values()) {
+            System.out.println(backend.toString());
+        }
 
         return 0;
     }

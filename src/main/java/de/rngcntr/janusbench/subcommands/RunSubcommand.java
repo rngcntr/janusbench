@@ -1,7 +1,7 @@
 package de.rngcntr.janusbench.subcommands;
 
+import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
-import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ResultLogger;

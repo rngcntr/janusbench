@@ -1,6 +1,6 @@
 package de.rngcntr.janusbench.util;
 
-import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.backend.Connection;
 import java.util.ArrayList;
 
 public class ComposedBenchmark extends Benchmark {

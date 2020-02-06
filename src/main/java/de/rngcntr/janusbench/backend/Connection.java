@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.tinkerpop;
+package de.rngcntr.janusbench.backend;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 
