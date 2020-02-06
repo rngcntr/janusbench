@@ -1,18 +1,16 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-
-import de.rngcntr.janusbench.tinkerpop.Connection;
-import de.rngcntr.janusbench.util.Benchmark;
-import de.rngcntr.janusbench.util.BenchmarkResult;
 
 public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private final Vertex supernode;
@@ -39,7 +37,8 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private ResultSet[] insertedVertices;
     private ResultSet[] insertedEdges;
 
-    public InsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize, final Vertex supernode) {
+    public InsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize,
+                                            final Vertex supernode) {
         super(connection, stepSize);
         this.supernode = supernode;
     }
@@ -71,10 +70,16 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
             timesSeen[i] = rand.nextInt();
         }
 
-        vertexInsertQuery = "g.addV('person')." + "property('name', nameValue)." + "property('age', ageValue)."
-                + "next()";
-        edgeInsertQuery = "g.addE('knows')." + "from(supernode)." + "to(insertedVertex)."
-                + "property('lastSeen', lastSeenValue)." + "property('timesSeen', timesSeenValue)." + "next()";
+        vertexInsertQuery = "g.addV('person')."
+                            + "property('name', nameValue)."
+                            + "property('age', ageValue)."
+                            + "next()";
+        edgeInsertQuery = "g.addE('knows')."
+                          + "from(supernode)."
+                          + "to(insertedVertex)."
+                          + "property('lastSeen', lastSeenValue)."
+                          + "property('timesSeen', timesSeenValue)."
+                          + "next()";
         vertexParameters = new HashMap<String, Object>();
         edgeParameters = new HashMap<String, Object>();
 
@@ -107,10 +112,7 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
-    public String[] getNames() {
-        return names;
-    }
+    public String[] getNames() { return names; }
 }

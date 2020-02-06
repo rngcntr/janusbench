@@ -1,14 +1,12 @@
 package de.rngcntr.janusbench.util;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.util.BenchmarkProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-
-import de.rngcntr.janusbench.tinkerpop.Connection;
-import de.rngcntr.janusbench.util.BenchmarkProperty;
 
 public abstract class Benchmark implements Runnable {
     protected ArrayList<BenchmarkResult> results;
@@ -72,8 +70,8 @@ public abstract class Benchmark implements Runnable {
             result.injectBenchmarkProperty(afterProperty);
         }
 
-        final BenchmarkProperty timeProperty = new BenchmarkProperty("time",
-                (stopTime - startTime) / 1000000.0);
+        final BenchmarkProperty timeProperty =
+            new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
@@ -97,24 +95,20 @@ public abstract class Benchmark implements Runnable {
 
     public abstract void tearDown();
 
-    public ArrayList<BenchmarkResult> getResults() {
-        return results;
-    }
+    public ArrayList<BenchmarkResult> getResults() { return results; }
 
     public List<BenchmarkResult> getResults(final Class<?> cls) {
-        return results.stream().filter(r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName()))
-                .collect(Collectors.toList());
+        return results.stream()
+            .filter(r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName()))
+            .collect(Collectors.toList());
     }
 
-    public void resetResults() {
-        results.clear();
-    }
+    public void resetResults() { results.clear(); }
 
-    public void setStepSize(final int stepSize) {
-        this.stepSize = stepSize;
-    }
+    public void setStepSize(final int stepSize) { this.stepSize = stepSize; }
 
-    public void collectBenchmarkProperty(final BenchmarkProperty property, final BenchmarkProperty.Tracking tracking) {
+    public void collectBenchmarkProperty(final BenchmarkProperty property,
+                                         final BenchmarkProperty.Tracking tracking) {
         switch (tracking) {
         case BEFORE:
             trackBeforeRun.add(property);
@@ -125,7 +119,5 @@ public abstract class Benchmark implements Runnable {
         }
     }
 
-    public interface IBreakCondition {
-        boolean stop(BenchmarkResult result);
-    }
+    public interface IBreakCondition { boolean stop(BenchmarkResult result); }
 }

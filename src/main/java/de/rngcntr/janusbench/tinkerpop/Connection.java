@@ -5,16 +5,14 @@ import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalS
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.Logger;
 import org.apache.tinkerpop.gremlin.driver.Client;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-
-import org.apache.log4j.Logger;
 
 public class Connection {
 
@@ -34,9 +32,7 @@ public class Connection {
         sessionUuid = UUID.randomUUID();
     }
 
-    public void setTimeout (int timeoutMs) {
-        this.TIMEOUT_MS = timeoutMs;
-    }
+    public void setTimeout(int timeoutMs) { this.TIMEOUT_MS = timeoutMs; }
 
     public void open() throws ConfigurationException {
         conf = new PropertiesConfiguration(propertiesFileName);
@@ -61,7 +57,8 @@ public class Connection {
         }
 
         if (!connected) {
-            throw new ConfigurationException(String.format("Unable to reach cluster within %sms", TIMEOUT_MS));
+            throw new ConfigurationException(
+                String.format("Unable to reach cluster within %sms", TIMEOUT_MS));
         }
     }
 
@@ -77,15 +74,14 @@ public class Connection {
         }
     }
 
-    public GraphTraversalSource g() {
-        return g;
-    }
+    public GraphTraversalSource g() { return g; }
 
     public ResultSet submit(final String traversal) {
         return awaitResults(client.submit(traversal));
     }
 
-    public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters) throws TimeoutException {
+    public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters)
+        throws TimeoutException {
         ResultSet results = null;
 
         try {
@@ -104,7 +100,6 @@ public class Connection {
 
     public ResultSet submit(final GraphTraversal<?, ?> traversal) {
         return awaitResults(client.submit(traversal));
-
     }
 
     public ResultSet awaitResults(final ResultSet rs) {

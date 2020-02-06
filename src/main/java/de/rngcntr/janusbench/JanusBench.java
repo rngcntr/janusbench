@@ -1,15 +1,15 @@
 package de.rngcntr.janusbench;
 
-import java.util.concurrent.Callable;
-
 import de.rngcntr.janusbench.subcommands.ListSubcommand;
 import de.rngcntr.janusbench.subcommands.RunSubcommand;
 import de.rngcntr.janusbench.util.ResultLogger;
-
+import java.util.concurrent.Callable;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
-@Command(name = "janusbench", subcommands = {RunSubcommand.class, ListSubcommand.class}, mixinStandardHelpOptions = true, versionProvider = de.rngcntr.janusbench.util.VersionProvider.class)
+@Command(name = "janusbench", subcommands = {RunSubcommand.class, ListSubcommand.class},
+         mixinStandardHelpOptions = true,
+         versionProvider = de.rngcntr.janusbench.util.VersionProvider.class)
 public class JanusBench implements Callable<Integer> {
 
     public Integer call() throws Exception {

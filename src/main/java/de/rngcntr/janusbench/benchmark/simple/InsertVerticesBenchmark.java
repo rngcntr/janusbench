@@ -1,13 +1,11 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
-import java.util.Random;
-import java.util.concurrent.TimeoutException;
-
-import org.apache.commons.lang3.RandomStringUtils;
-
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
+import java.util.Random;
+import java.util.concurrent.TimeoutException;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class InsertVerticesBenchmark extends Benchmark {
 
@@ -20,9 +18,7 @@ public class InsertVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public InsertVerticesBenchmark(final Connection connection) {
-        super(connection);
-    }
+    public InsertVerticesBenchmark(final Connection connection) { super(connection); }
 
     public InsertVerticesBenchmark(final Connection connection, final int stepSize) {
         super(connection, stepSize);
@@ -54,10 +50,7 @@ public class InsertVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
-    public String[] getNames() {
-        return names;
-    }
+    public String[] getNames() { return names; }
 }

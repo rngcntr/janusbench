@@ -1,28 +1,32 @@
 package de.rngcntr.janusbench.subcommands;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.concurrent.Callable;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
-
 import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ResultLogger;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.concurrent.Callable;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.log4j.Logger;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "run", description = "Runs a specified benchmark")
-public class RunSubcommand implements Callable<Integer>{
+public class RunSubcommand implements Callable<Integer> {
 
-    @Option(names = {"-r", "--remote-properties"}, paramLabel = "FILE", defaultValue = "conf/remote-graph.properties", description = "the remote graph properties file\ndefault: ${DEFAULT-VALUE}")
+    @Option(names = {"-r", "--remote-properties"}, paramLabel = "FILE",
+            defaultValue = "conf/remote-graph.properties",
+            description = "the remote graph properties file\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
 
-    @Option(names = {"-s", "--schema-script"}, paramLabel = "FILE", defaultValue = "conf/initialize-graph.groovy", description = "the groovy script used for initialization of the graph schema\ndefault: ${DEFAULT-VALUE}")
+    @Option(
+        names = {"-s", "--schema-script"}, paramLabel = "FILE",
+        defaultValue = "conf/initialize-graph.groovy",
+        description =
+            "the groovy script used for initialization of the graph schema\ndefault: ${DEFAULT-VALUE}")
     private static String INIT_SCRIPT;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);

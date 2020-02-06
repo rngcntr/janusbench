@@ -1,17 +1,15 @@
 package de.rngcntr.janusbench.subcommands;
 
-import java.util.concurrent.Callable;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.ComposedBenchmark;
+import java.util.concurrent.Callable;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Command(name = "list", description = "Prints a list of implemented benchmarks to STDOUT.")
-public class ListSubcommand implements Callable<Integer>{
+public class ListSubcommand implements Callable<Integer> {
 
     @Option(names = {"-s", "--simple-only"}, description = "show simple benchmarks only")
     boolean simpleOnly = false;
@@ -21,15 +19,20 @@ public class ListSubcommand implements Callable<Integer>{
 
     public Integer call() throws Exception {
         if (!complexOnly) {
-            Reflections reflections = new Reflections("de.rngcntr.janusbench.benchmark.simple", this.getClass().getClassLoader(), new SubTypesScanner());
+            Reflections reflections =
+                new Reflections("de.rngcntr.janusbench.benchmark.simple",
+                                this.getClass().getClassLoader(), new SubTypesScanner());
             for (Class<? extends Benchmark> bClass : reflections.getSubTypesOf(Benchmark.class)) {
                 System.out.println(bClass.getSimpleName());
             }
         }
 
         if (!simpleOnly) {
-            Reflections reflections = new Reflections("de.rngcntr.janusbench.benchmark.complex", this.getClass().getClassLoader(), new SubTypesScanner());
-            for (Class<? extends Benchmark> bClass : reflections.getSubTypesOf(ComposedBenchmark.class)) {
+            Reflections reflections =
+                new Reflections("de.rngcntr.janusbench.benchmark.complex",
+                                this.getClass().getClassLoader(), new SubTypesScanner());
+            for (Class<? extends Benchmark> bClass :
+                 reflections.getSubTypesOf(ComposedBenchmark.class)) {
                 System.out.println(bClass.getSimpleName());
             }
         }

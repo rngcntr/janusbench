@@ -6,7 +6,5 @@ public class VersionProvider implements IVersionProvider {
 
     private static final String[] VERSION = {"JanusBench v0.0.2"};
 
-    public String[] getVersion() throws Exception {
-        return VERSION;
-    }
+    public String[] getVersion() throws Exception { return VERSION; }
 }

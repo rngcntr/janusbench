@@ -1,8 +1,7 @@
 package de.rngcntr.janusbench.util;
 
-import java.util.ArrayList;
-
 import de.rngcntr.janusbench.tinkerpop.Connection;
+import java.util.ArrayList;
 
 public class ComposedBenchmark extends Benchmark {
 
@@ -33,8 +32,7 @@ public class ComposedBenchmark extends Benchmark {
     }
 
     @Override
-    public void buildUp() {
-    }
+    public void buildUp() {}
 
     @Override
     public void performAction(final BenchmarkResult result) {
@@ -48,6 +46,5 @@ public class ComposedBenchmark extends Benchmark {
     }
 
     @Override
-    public void tearDown() {
-    }
+    public void tearDown() {}
 }

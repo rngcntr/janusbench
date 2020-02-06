@@ -8,7 +8,8 @@ public class BenchmarkResult {
 
     public BenchmarkResult(final Benchmark action) {
         this.benchmarkProperties = new HashMap<String, Object>();
-        final BenchmarkProperty actionProperty = new BenchmarkProperty("action", action.getClass().getSimpleName());
+        final BenchmarkProperty actionProperty =
+            new BenchmarkProperty("action", action.getClass().getSimpleName());
         injectBenchmarkProperty(actionProperty);
     }
 
@@ -16,9 +17,7 @@ public class BenchmarkResult {
         benchmarkProperties.put(property.getName(), property.evaluate());
     }
 
-    public Object getBenchmarkProperty(final String name) {
-        return benchmarkProperties.get(name);
-    }
+    public Object getBenchmarkProperty(final String name) { return benchmarkProperties.get(name); }
 
     public String toString() {
         final StringBuilder sb = new StringBuilder("RESULT");

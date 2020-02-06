@@ -1,18 +1,15 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
-import java.util.Random;
-import java.util.concurrent.TimeoutException;
-import java.util.Date;
-
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.Edge;
-
-import org.apache.commons.lang3.RandomStringUtils;
-
 import de.rngcntr.janusbench.tinkerpop.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkResult;
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.TimeoutException;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 public class UpsertSupernodeVerticesBenchmark extends Benchmark {
     private final Vertex supernode;
@@ -26,7 +23,8 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
-    public UpsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize, final Vertex supernode) {
+    public UpsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize,
+                                            final Vertex supernode) {
         super(connection, stepSize);
         this.supernode = supernode;
     }
@@ -58,19 +56,30 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has("name", names[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
-                final Edge e = (Edge) g.V().has("name", names[index]).inE("knows").as("e").outV()
-                        .where(__.is(supernode)).select("e").next();
+                final Edge e = (Edge)g.V()
+                                   .has("name", names[index])
+                                   .inE("knows")
+                                   .as("e")
+                                   .outV()
+                                   .where(__.is(supernode))
+                                   .select("e")
+                                   .next();
                 e.property("lastSeen", new Date());
             } else {
                 // vertex does not exist -> insert
-                final Vertex insertedVertex = g.addV("person").property("name", names[index])
-                        .property("age", ages[index]).next();
-                g.addE("knows").from(supernode).to(insertedVertex).property("lastSeen", new Date()).next();
+                final Vertex insertedVertex = g.addV("person")
+                                                  .property("name", names[index])
+                                                  .property("age", ages[index])
+                                                  .next();
+                g.addE("knows")
+                    .from(supernode)
+                    .to(insertedVertex)
+                    .property("lastSeen", new Date())
+                    .next();
             }
         }
     }
 
     @Override
-    public void tearDown() {
-    }
+    public void tearDown() {}
 }

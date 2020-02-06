@@ -5,7 +5,8 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTrav
 public class BenchmarkProperty {
 
     public enum Tracking {
-        BEFORE, AFTER;
+        BEFORE,
+        AFTER;
     }
 
     public static final Tracking BEFORE = Tracking.BEFORE;
@@ -24,13 +25,11 @@ public class BenchmarkProperty {
         this.value = value;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     public Object evaluate() {
         if (value instanceof DefaultGraphTraversal<?, ?>) {
-            final DefaultGraphTraversal<?, ?> statCollector = (DefaultGraphTraversal<?, ?>) value;
+            final DefaultGraphTraversal<?, ?> statCollector = (DefaultGraphTraversal<?, ?>)value;
             return statCollector.clone().next();
         } else {
             return value;

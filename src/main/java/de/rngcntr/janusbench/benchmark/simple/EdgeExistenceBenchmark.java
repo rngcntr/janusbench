@@ -1,17 +1,15 @@
 package de.rngcntr.janusbench.benchmark.simple;
 
+import de.rngcntr.janusbench.tinkerpop.Connection;
+import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkProperty;
+import de.rngcntr.janusbench.util.BenchmarkResult;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.graphdb.types.system.ImplicitKey;
-
-import de.rngcntr.janusbench.tinkerpop.Connection;
-import de.rngcntr.janusbench.util.Benchmark;
-import de.rngcntr.janusbench.util.BenchmarkResult;
-import de.rngcntr.janusbench.util.BenchmarkProperty;
 
 public class EdgeExistenceBenchmark<T> extends Benchmark {
 
@@ -27,8 +25,8 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
     private Map<String, Object> vertexExistenceParameters;
     private Map<String, Object> edgeExistenceParameters;
 
-    public EdgeExistenceBenchmark(final Connection connection, final Vertex supernode, final String propertyName,
-            final T[] nodeProperties) {
+    public EdgeExistenceBenchmark(final Connection connection, final Vertex supernode,
+                                  final String propertyName, final T[] nodeProperties) {
         super(connection, nodeProperties.length);
         this.supernode = supernode;
         this.propertyName = propertyName;
@@ -36,17 +34,24 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
         this.useEdgeIndex = true;
     }
 
-    public void setUseEdgeIndex(final boolean useEdgeIndex) {
-        this.useEdgeIndex = useEdgeIndex;
-    }
+    public void setUseEdgeIndex(final boolean useEdgeIndex) { this.useEdgeIndex = useEdgeIndex; }
 
     @Override
     public void buildUp() {
-        vertexExistenceQuery = "g.V()." + "has(searchKey, searchValue)." + "limit(1)." + "toList()";
-        defaultEdgeExistenceQuery = "g.V(supernode)." + "out('knows')." + "hasId(adjacentId)." + "limit(1)."
-                + "hasNext()";
-        indexedEdgeExistenceQuery = "g.V(supernode)." + "outE('knows')." + "has(searchKey, adjacentId)." + "limit(1)."
-                + "hasNext()";
+        vertexExistenceQuery = "g.V()."
+                               + "has(searchKey, searchValue)."
+                               + "limit(1)."
+                               + "toList()";
+        defaultEdgeExistenceQuery = "g.V(supernode)."
+                                    + "out('knows')."
+                                    + "hasId(adjacentId)."
+                                    + "limit(1)."
+                                    + "hasNext()";
+        indexedEdgeExistenceQuery = "g.V(supernode)."
+                                    + "outE('knows')."
+                                    + "has(searchKey, adjacentId)."
+                                    + "limit(1)."
+                                    + "hasNext()";
 
         vertexExistenceParameters = new HashMap<String, Object>();
         edgeExistenceParameters = new HashMap<String, Object>();
@@ -54,7 +59,8 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
 
     @Override
     public void performAction(final BenchmarkResult result) throws TimeoutException {
-        final BenchmarkProperty useEdgeIndexProperty = new BenchmarkProperty("useEdgeIndex", useEdgeIndex);
+        final BenchmarkProperty useEdgeIndexProperty =
+            new BenchmarkProperty("useEdgeIndex", useEdgeIndex);
         result.injectBenchmarkProperty(useEdgeIndexProperty);
 
         vertexExistenceParameters.put("searchKey", propertyName);
@@ -62,7 +68,8 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
 
         for (int index = 0; index < stepSize; ++index) {
             vertexExistenceParameters.put("searchValue", nodeProperties[index]);
-            ResultSet candidates = connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
+            ResultSet candidates =
+                connection.submitAsync(vertexExistenceQuery, vertexExistenceParameters);
             final Vertex testNode = candidates.one().getVertex();
             if (testNode != null) {
                 edgeExistenceParameters.put("adjacentId", testNode.id());
@@ -77,6 +84,5 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
     }
 
     @Override
-    public void tearDown() {
-    }
+    public void tearDown() {}
 }

@@ -12,8 +12,7 @@ public class ResultLogger {
     private final String OUTPUT_DIR = "results";
     private final String SEPARATOR = "/";
 
-    private ResultLogger() {
-    }
+    private ResultLogger() {}
 
     synchronized public static ResultLogger getInstance() {
         if (instance == null) {
