@@ -17,17 +17,29 @@ import picocli.CommandLine.Option;
 @Command(name = "run", description = "Runs a specified benchmark")
 public class RunSubcommand implements Callable<Integer> {
 
-    @Option(names = {"-r", "--remote-properties"}, paramLabel = "FILE",
+    @Option(names = {"--remote-properties"}, paramLabel = "FILE",
             defaultValue = "conf/remote-graph.properties",
-            description = "the remote graph properties file\ndefault: ${DEFAULT-VALUE}")
+            description = "The remote graph properties file\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
 
     @Option(
-        names = {"-s", "--schema-script"}, paramLabel = "FILE",
+        names = {"--schema-script"}, paramLabel = "FILE",
         defaultValue = "conf/initialize-graph.groovy",
         description =
-            "the groovy script used for initialization of the graph schema\ndefault: ${DEFAULT-VALUE}")
+            "The groovy script used for initialization of the graph schema\ndefault: ${DEFAULT-VALUE}")
     private static String INIT_SCRIPT;
+
+    @Option(
+        names = {"-s", "--storage"}, paramLabel = "STORAGE BACKEND", required = true,
+        description =
+            "One of the supported storage backends. For a list of supported storage backends use\njanusbench list storage")
+    private static String STORAGE_BACKEND;
+
+    @Option(
+        names = {"-i", "--index"}, paramLabel = "INDEX BACKEND", required = true,
+        description =
+            "One of the supported storage index. For a list of supported index backends use\njanusbench list index")
+    private static String INDEX_BACKEND;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
 

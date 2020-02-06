@@ -2,7 +2,10 @@ all:
 	mvn clean install -DskipTests
 
 run:
-	java -jar target/janusbench-0.0.1-jar-with-dependencies.jar -s $(storage) $(if $(index), -i $(index), )
+	java -jar target/janusbench-0.0.2-jar-with-dependencies.jar run -s $(storage) $(if $(index), -i $(index), )
+
+list:
+	java -jar target/janusbench-0.0.2-jar-with-dependencies.jar list
 
 test:
 	mvn clean test
