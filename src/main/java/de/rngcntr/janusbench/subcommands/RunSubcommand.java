@@ -6,8 +6,10 @@ import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
 import de.rngcntr.janusbench.util.Benchmark;
+import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ResultLogger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,6 +18,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @Command(name = "run", description = "Runs a specified benchmark")
 public class RunSubcommand implements Callable<Integer> {
@@ -44,12 +47,19 @@ public class RunSubcommand implements Callable<Integer> {
                           + "\njanusbench list index")
     private static Index INDEX_BACKEND;
 
+    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS",
+                converter = {BenchmarkFactory.class},
+                description = "The benchmark to run")
+    private static Class<? extends Benchmark> benchmarkClass;
+
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
 
     private Configuration configuration;
     private Connection connection;
 
     public Integer call() throws Exception {
+        log.info("Using " + benchmarkClass.getName());
+
         configuration = new Configuration(STORAGE_BACKEND, INDEX_BACKEND);
         this.connection = new Connection(REMOTE_PROPERTIES);
 
@@ -70,7 +80,7 @@ public class RunSubcommand implements Callable<Integer> {
                 e.printStackTrace();
             }
 
-            runBenchmark(new IndexedEdgeExistenceOnSupernode(connection, 1, 10, 1000));
+            runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection));
         }
 
         closeGraph();
