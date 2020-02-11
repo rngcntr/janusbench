@@ -4,12 +4,10 @@ import de.rngcntr.janusbench.backend.Configuration;
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
-import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ResultLogger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,14 +21,12 @@ import picocli.CommandLine.Parameters;
 @Command(name = "run", description = "Runs a specified benchmark")
 public class RunSubcommand implements Callable<Integer> {
 
-    @Option(names = {"--remote-properties"}, paramLabel = "FILE",
-            defaultValue = "conf/remote-graph.properties",
+    @Option(names = {"--remote-properties"}, paramLabel = "FILE", defaultValue = "conf/remote-graph.properties",
             description = "The remote graph properties file"
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
 
-    @Option(names = {"--schema-script"}, paramLabel = "FILE",
-            defaultValue = "conf/initialize-graph.groovy",
+    @Option(names = {"--schema-script"}, paramLabel = "FILE", defaultValue = "conf/initialize-graph.groovy",
             description = "The groovy script used for initialization of the graph schema"
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static String INIT_SCRIPT;
@@ -47,9 +43,7 @@ public class RunSubcommand implements Callable<Integer> {
                           + "\njanusbench list index")
     private static Index INDEX_BACKEND;
 
-    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS",
-                converter = {BenchmarkFactory.class},
-                description = "The benchmark to run")
+    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class}, description = "The benchmark to run")
     private static Class<? extends Benchmark> benchmarkClass;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
