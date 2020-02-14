@@ -35,7 +35,6 @@ public class IndexedEdgeExistenceOnSupernode extends ComposableBenchmark {
         final String supernodeName = (String)connection.g().V(supernode).values("name").next();
         final EdgeExistenceBenchmark<String> eeb = new EdgeExistenceBenchmark<String>(
             connection, supernode, "name", new String[] {supernodeName});
-        eeb.setUseEdgeIndex(true);
         final BenchmarkProperty connections =
             new BenchmarkProperty("connections", connection.g().V(supernode).outE().count());
         eeb.collectBenchmarkProperty(connections, Tracking.AFTER);
