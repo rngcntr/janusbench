@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.benchmark.complex;
+package de.rngcntr.janusbench.benchmark.composed;
 
 import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;

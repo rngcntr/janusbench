@@ -22,6 +22,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
 
     private static final String configPath = "conf/defaults/";
     private static final String configExtension = ".yml";
+    private static final String benchmarkPackage = "de.rngcntr.janusbench.benchmark.composed.";
 
     private static final Map<String, Class<? extends Benchmark>> registeredBenchmarks;
     private static final Map<Class<? extends Benchmark>, Supplier<? extends Benchmark>>
@@ -60,7 +61,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
     }
 
     private static void registerSupplier(String className) {
-        String fullyQualifiedClassName = "de.rngcntr.janusbench.benchmark.complex." + className;
+        String fullyQualifiedClassName = benchmarkPackage + className;
         Class<?> retreivedClass;
         
         try {
