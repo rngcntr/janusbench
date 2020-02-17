@@ -9,8 +9,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Spec;
 
-@Command(name = "list", subcommands = {ListBenchmarkSubcommand.class, ListStorageSubcommand.class,
-                                       ListIndexSubcommand.class})
+@Command(name = "list", description = "Show all available instances of a given feature",
+         subcommands = {ListBenchmarkSubcommand.class, ListStorageSubcommand.class,
+                        ListIndexSubcommand.class})
 public class ListSubcommand implements Callable<Integer> {
     @Spec CommandSpec spec;
 
