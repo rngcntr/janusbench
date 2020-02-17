@@ -1,6 +1,5 @@
 package de.rngcntr.janusbench.benchmark.complex;
 
-import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
@@ -12,10 +11,15 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 public class IndexedEdgeExistenceOnSupernode extends ComposableBenchmark {
 
-    public IndexedEdgeExistenceOnSupernode(final Connection connection, final int runs,
-                                           final int stepsPerRun, final int edgesPerStep) {
-        super(connection);
+    public int runs;
+    public int stepsPerRun;
+    public int edgesPerStep;
 
+    public IndexedEdgeExistenceOnSupernode() {
+        super();
+    }
+
+    public void buildUp() {
         // prepare a vertex to later become a supernode
         final InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, 1);
         ivb.run();

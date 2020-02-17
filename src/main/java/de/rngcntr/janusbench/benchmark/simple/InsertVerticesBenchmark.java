@@ -18,6 +18,8 @@ public class InsertVerticesBenchmark extends Benchmark {
 
     private Random rand;
 
+    public InsertVerticesBenchmark() {super();}
+
     public InsertVerticesBenchmark(final Connection connection) { super(connection); }
 
     public InsertVerticesBenchmark(final Connection connection, final int stepSize) {

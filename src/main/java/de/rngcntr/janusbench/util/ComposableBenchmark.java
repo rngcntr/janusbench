@@ -7,6 +7,11 @@ public abstract class ComposableBenchmark extends Benchmark {
 
     private final ArrayList<Benchmark> components;
 
+    public ComposableBenchmark() {
+        super();
+        components = new ArrayList<Benchmark>();
+	}
+
     public ComposableBenchmark(final Connection connection) {
         super(connection);
         components = new ArrayList<Benchmark>();
@@ -17,7 +22,7 @@ public abstract class ComposableBenchmark extends Benchmark {
         components = new ArrayList<Benchmark>();
     }
 
-    public void addComponent(final Benchmark component) {
+	public void addComponent(final Benchmark component) {
         if (component != null && component != this) {
             components.add(component);
         }

@@ -1,45 +1,107 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
-import de.rngcntr.janusbench.benchmark.complex.IndexedEdgeExistenceOnSupernode;
-import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.UpsertRandomEdgeBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.UpsertSupernodeEdgeBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.UpsertSupernodeVerticesBenchmark;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+import org.testcontainers.shaded.org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.Yaml;
 import picocli.CommandLine.ITypeConverter;
 
 public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmark>> {
 
+    private static final String configPath = "conf/defaults/";
+    private static final String configExtension = ".yml";
+
     private static final Map<String, Class<? extends Benchmark>> registeredBenchmarks;
-    private static final Map<Class<? extends Benchmark>, Supplier<? extends Benchmark>> registeredSuppliers;
+    private static final Map<Class<? extends Benchmark>, Supplier<? extends Benchmark>>
+        registeredSuppliers;
+
+    private static final Logger log = Logger.getLogger(BenchmarkFactory.class);
+
+    private static Yaml yaml;
 
     static {
         registeredBenchmarks = new HashMap<String, Class<? extends Benchmark>>();
-        registeredSuppliers = new HashMap<Class<? extends Benchmark>, Supplier<? extends Benchmark>>();
+        registeredSuppliers =
+            new HashMap<Class<? extends Benchmark>, Supplier<? extends Benchmark>>();
+
+        yaml = new Yaml();
     }
 
     static {
-        registerSupplier(EdgeExistenceBenchmark.class, (conn) -> new EdgeExistenceBenchmark<String>(conn, null, null, null));
-        registerSupplier(InsertSupernodeVerticesBenchmark.class, (conn) -> new InsertSupernodeVerticesBenchmark(conn, null));
-        registerSupplier(InsertVerticesBenchmark.class, (conn) -> new InsertVerticesBenchmark(conn));
-        registerSupplier(UpsertRandomEdgeBenchmark.class, (conn) -> new UpsertRandomEdgeBenchmark(conn));
-        registerSupplier(UpsertSupernodeEdgeBenchmark.class, (conn) -> new UpsertSupernodeEdgeBenchmark(conn, null));
-        registerSupplier(UpsertSupernodeVerticesBenchmark.class, (conn) -> new UpsertSupernodeVerticesBenchmark(conn, null));
-
-        registerSupplier(IndexedEdgeExistenceOnSupernode.class, (conn) -> new IndexedEdgeExistenceOnSupernode(conn, 10, 10, 10));
+        registerAllSuppliers();
     }
 
-    public static Set<String> getRegisteredSuppliers() { return registeredBenchmarks.keySet(); }
+    private static void registerAllSuppliers() {
+        try (Stream<Path> walk = Files.walk(Paths.get(configPath))) {
 
-    public static void registerSupplier(Class<? extends Benchmark> benchmarkClass, Supplier<? extends Benchmark> supplier) {
+            List<String> result = walk.filter(f -> f.toString().endsWith(configExtension))
+                                      .map(f -> f.getFileName().toString())
+                                      .map(f -> FilenameUtils.getBaseName(f))
+                                      .collect(Collectors.toList());
+
+            result.forEach(BenchmarkFactory::registerSupplier);
+    
+        } catch (IOException e) {
+            log.warn("Cannot find default benchmark config path " + configPath +
+                     ". No benchmarks will be available.");
+        }
+    }
+
+    private static void registerSupplier(String className) {
+        String fullyQualifiedClassName = "de.rngcntr.janusbench.benchmark.complex." + className;
+        Class<?> retreivedClass;
+        
+        try {
+            retreivedClass = Class.forName(fullyQualifiedClassName);
+        } catch (ClassNotFoundException cnfex) {
+            log.warn("Unknown class " + fullyQualifiedClassName, cnfex);
+            return;
+        }
+
+        if (!Benchmark.class.isAssignableFrom(retreivedClass)) {
+            log.warn("Known class " + fullyQualifiedClassName + " is not a benchmark");
+            return;
+        }
+
+        @SuppressWarnings("unchecked")
+        Class<? extends Benchmark> benchmarkClass = (Class<? extends Benchmark>) retreivedClass;
+
+        try {
+            InputStream in = Files.newInputStream(Paths.get(configPath + className + configExtension));
+            registerSupplier(benchmarkClass, (conn) -> {
+                try{
+                    Benchmark benchmark = (Benchmark) yaml.loadAs(in, benchmarkClass);
+                    benchmark.setConnection(conn);
+                    return benchmark;
+                } catch (YAMLException yamlex) {
+                    log.error("Invalid configuration for class " + benchmarkClass.getSimpleName(), yamlex); 
+                    return null;
+                }
+            });
+        } catch (IOException ioex) {
+            log.warn("Unable to find default configuration for class " + fullyQualifiedClassName,
+                     ioex);
+        }
+    }
+
+    private static void registerSupplier(Class<? extends Benchmark> benchmarkClass, Supplier<? extends Benchmark> supplier) {
         registeredBenchmarks.put(benchmarkClass.getSimpleName(), benchmarkClass);
         registeredSuppliers.put(benchmarkClass, supplier);
     }
+
+    public static Set<String> getRegisteredSuppliers() { return registeredBenchmarks.keySet(); }
 
     public static Benchmark getDefaultBenchmark(Class<? extends Benchmark> benchmarkClass, Connection conn) {
         Supplier<? extends Benchmark> supplier = registeredSuppliers.get(benchmarkClass);
