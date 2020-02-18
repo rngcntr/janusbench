@@ -21,12 +21,14 @@ import picocli.CommandLine.Parameters;
 @Command(name = "run", description = "Runs a specified benchmark")
 public class RunSubcommand implements Callable<Integer> {
 
-    @Option(names = {"--remote-properties"}, paramLabel = "FILE", defaultValue = "conf/remote-graph.properties",
+    @Option(names = {"--remote-properties"}, paramLabel = "FILE",
+            defaultValue = "conf/remote-graph.properties",
             description = "The remote graph properties file"
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
 
-    @Option(names = {"--schema-script"}, paramLabel = "FILE", defaultValue = "conf/initialize-graph.groovy",
+    @Option(names = {"--schema-script"}, paramLabel = "FILE",
+            defaultValue = "conf/initialize-graph.groovy",
             description = "The groovy script used for initialization of the graph schema"
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static String INIT_SCRIPT;
@@ -43,7 +45,8 @@ public class RunSubcommand implements Callable<Integer> {
                           + "\njanusbench list index")
     private static Index INDEX_BACKEND;
 
-    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class}, description = "The benchmark to run")
+    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
+                description = "The benchmark to run")
     private static Class<? extends Benchmark> benchmarkClass;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);

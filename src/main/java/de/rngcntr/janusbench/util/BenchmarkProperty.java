@@ -29,7 +29,7 @@ public class BenchmarkProperty {
 
     public Object evaluate() {
         if (value instanceof DefaultGraphTraversal<?, ?>) {
-            final DefaultGraphTraversal<?, ?> statCollector = (DefaultGraphTraversal<?, ?>)value;
+            final DefaultGraphTraversal<?, ?> statCollector = (DefaultGraphTraversal<?, ?>) value;
             return statCollector.clone().next();
         } else {
             return value;

@@ -49,7 +49,7 @@ public class UpsertSupernodeEdgeBenchmark extends Benchmark {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(neighbours[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // edge already exists -> update
-                final Edge e = (Edge)g.V(neighbours[index])
+                final Edge e = (Edge) g.V(neighbours[index])
                                    .inE("knows")
                                    .as("e")
                                    .outV()

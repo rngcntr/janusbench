@@ -40,9 +40,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         yaml = new Yaml();
     }
 
-    static {
-        registerAllSuppliers();
-    }
+    static { registerAllSuppliers(); }
 
     private static void registerAllSuppliers() {
         try (Stream<Path> walk = Files.walk(Paths.get(configPath))) {
@@ -53,7 +51,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
                                       .collect(Collectors.toList());
 
             result.forEach(BenchmarkFactory::registerSupplier);
-    
+
         } catch (IOException e) {
             log.warn("Cannot find default benchmark config path " + configPath +
                      ". No benchmarks will be available.");
@@ -63,7 +61,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
     private static void registerSupplier(String className) {
         String fullyQualifiedClassName = benchmarkPackage + className;
         Class<?> retreivedClass;
-        
+
         try {
             retreivedClass = Class.forName(fullyQualifiedClassName);
         } catch (ClassNotFoundException cnfex) {
@@ -80,14 +78,16 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         Class<? extends Benchmark> benchmarkClass = (Class<? extends Benchmark>) retreivedClass;
 
         try {
-            InputStream in = Files.newInputStream(Paths.get(configPath + className + configExtension));
+            InputStream in =
+                Files.newInputStream(Paths.get(configPath + className + configExtension));
             registerSupplier(benchmarkClass, (conn) -> {
-                try{
+                try {
                     Benchmark benchmark = (Benchmark) yaml.loadAs(in, benchmarkClass);
                     benchmark.setConnection(conn);
                     return benchmark;
                 } catch (YAMLException yamlex) {
-                    log.error("Invalid configuration for class " + benchmarkClass.getSimpleName(), yamlex); 
+                    log.error("Invalid configuration for class " + benchmarkClass.getSimpleName(),
+                              yamlex);
                     return null;
                 }
             });
@@ -97,14 +97,16 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         }
     }
 
-    private static void registerSupplier(Class<? extends Benchmark> benchmarkClass, Supplier<? extends Benchmark> supplier) {
+    private static void registerSupplier(Class<? extends Benchmark> benchmarkClass,
+                                         Supplier<? extends Benchmark> supplier) {
         registeredBenchmarks.put(benchmarkClass.getSimpleName(), benchmarkClass);
         registeredSuppliers.put(benchmarkClass, supplier);
     }
 
     public static Set<String> getRegisteredSuppliers() { return registeredBenchmarks.keySet(); }
 
-    public static Benchmark getDefaultBenchmark(Class<? extends Benchmark> benchmarkClass, Connection conn) {
+    public static Benchmark getDefaultBenchmark(Class<? extends Benchmark> benchmarkClass,
+                                                Connection conn) {
         Supplier<? extends Benchmark> supplier = registeredSuppliers.get(benchmarkClass);
         return supplier != null ? supplier.get(conn) : null;
     }

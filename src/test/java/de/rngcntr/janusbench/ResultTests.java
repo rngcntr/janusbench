@@ -19,12 +19,12 @@ public class ResultTests {
         BenchmarkResult result = new BenchmarkResult(cb);
 
         assertEquals("action type should be set correctly", cb.getClass().getSimpleName(),
-                     (String)result.getBenchmarkProperty("action"));
+                     (String) result.getBenchmarkProperty("action"));
 
         BenchmarkProperty prop = new BenchmarkProperty("key", "value");
         result.injectBenchmarkProperty(prop);
 
         assertEquals("action type should be set correctly", "value",
-                     (String)result.getBenchmarkProperty("key"));
+                     (String) result.getBenchmarkProperty("key"));
     }
 }

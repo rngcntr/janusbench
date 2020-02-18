@@ -56,7 +56,7 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has("name", names[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
-                final Edge e = (Edge)g.V()
+                final Edge e = (Edge) g.V()
                                    .has("name", names[index])
                                    .inE("knows")
                                    .as("e")

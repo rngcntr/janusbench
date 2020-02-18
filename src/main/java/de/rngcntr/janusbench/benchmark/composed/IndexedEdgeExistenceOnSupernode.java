@@ -4,8 +4,8 @@ import de.rngcntr.janusbench.benchmark.simple.EdgeExistenceBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertSupernodeVerticesBenchmark;
 import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
-import de.rngcntr.janusbench.util.ComposableBenchmark;
 import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
+import de.rngcntr.janusbench.util.ComposableBenchmark;
 import de.rngcntr.janusbench.util.ComposedBenchmark;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
@@ -15,9 +15,7 @@ public class IndexedEdgeExistenceOnSupernode extends ComposableBenchmark {
     public int stepsPerRun;
     public int edgesPerStep;
 
-    public IndexedEdgeExistenceOnSupernode() {
-        super();
-    }
+    public IndexedEdgeExistenceOnSupernode() { super(); }
 
     public void buildUp() {
         // prepare a vertex to later become a supernode
@@ -36,7 +34,7 @@ public class IndexedEdgeExistenceOnSupernode extends ComposableBenchmark {
         isvb.collectBenchmarkProperty(connectionsAfter, Tracking.AFTER);
 
         // create edge existence checker
-        final String supernodeName = (String)connection.g().V(supernode).values("name").next();
+        final String supernodeName = (String) connection.g().V(supernode).values("name").next();
         final EdgeExistenceBenchmark<String> eeb = new EdgeExistenceBenchmark<String>(
             connection, supernode, "name", new String[] {supernodeName});
         final BenchmarkProperty connections =

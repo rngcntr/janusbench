@@ -1,7 +1,6 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
-import de.rngcntr.janusbench.util.BenchmarkProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -43,7 +42,9 @@ public abstract class Benchmark implements Runnable {
         this.g = connection.g();
     }
 
-    public void setCollectResults(final boolean collectResults) { this.collectResults = collectResults; }
+    public void setCollectResults(final boolean collectResults) {
+        this.collectResults = collectResults;
+    }
 
     public void run() {
         buildUp();
@@ -76,7 +77,8 @@ public abstract class Benchmark implements Runnable {
             result.injectBenchmarkProperty(afterProperty);
         }
 
-        final BenchmarkProperty timeProperty = new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0);
+        final BenchmarkProperty timeProperty =
+            new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
@@ -103,14 +105,17 @@ public abstract class Benchmark implements Runnable {
     public ArrayList<BenchmarkResult> getResults() { return results; }
 
     public List<BenchmarkResult> getResults(final Class<?> cls) {
-        return results.stream().filter(r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName())).collect(Collectors.toList());
+        return results.stream()
+            .filter(r -> r.getBenchmarkProperty("action").equals(cls.getSimpleName()))
+            .collect(Collectors.toList());
     }
 
     public void resetResults() { results.clear(); }
 
     public void setStepSize(final int stepSize) { this.stepSize = stepSize; }
 
-    public void collectBenchmarkProperty(final BenchmarkProperty property, final BenchmarkProperty.Tracking tracking) {
+    public void collectBenchmarkProperty(final BenchmarkProperty property,
+                                         final BenchmarkProperty.Tracking tracking) {
         switch (tracking) {
         case BEFORE:
             trackBeforeRun.add(property);

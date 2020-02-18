@@ -53,7 +53,7 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(a[index]).in("knows").where(__.is(b[index])).hasNext()) {
                 // edge already exists -> update
-                final Edge e = (Edge)g.V(a[index])
+                final Edge e = (Edge) g.V(a[index])
                                    .inE("knows")
                                    .as("e")
                                    .outV()
