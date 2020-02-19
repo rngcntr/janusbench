@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class ResultLogger {
+public class ResultLogger implements AutoCloseable {
     // singleton instance
     private static ResultLogger instance;
     private PrintStream outputStream;
@@ -22,8 +22,10 @@ public class ResultLogger {
     }
 
     synchronized public void log(final BenchmarkResult result) {
-        outputStream.println(result);
-        outputStream.flush();
+        if (outputStream != null) {
+            outputStream.println(result);
+            outputStream.flush();
+        }
     }
 
     synchronized public void setOutputMethod(final PrintStream outputStream) {
@@ -38,7 +40,7 @@ public class ResultLogger {
         outputStream = new PrintStream(new FileOutputStream(OUTPUT_DIR + SEPARATOR + fileName));
     }
 
-    synchronized public void terminate() {
+    synchronized public void close() {
         if (outputStream != null) {
             outputStream.close();
         }

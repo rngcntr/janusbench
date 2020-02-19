@@ -17,6 +17,7 @@ RUN mvn package -DskipTests
 FROM janusgraph/janusgraph:${VERSION}
 
 ENV JANUS_STORAGE_TIMEOUT=30
+ENV janusgraph.graph.replace-instance-if-exists=true
 
 COPY --from=1 /foundationdb/target/janusgraph-foundationdb-0.1.0-distribution.zip /foundationdb/janusgraph-fdb.zip
 RUN unzip /foundationdb/janusgraph-fdb.zip -d /foundationdb

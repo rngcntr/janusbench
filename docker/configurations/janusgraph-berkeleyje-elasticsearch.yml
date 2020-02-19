@@ -2,7 +2,7 @@ version: "3"
 
 services:
     janusgraph:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0-1
         build:
             context: ../services/janusgraph
             args:
@@ -13,7 +13,7 @@ services:
             - elasticsearch
         environment:
             - janusgraph.storage.backend=berkeleyje
-            - janusgraph.storage.directory=/tmp/berke0.4.0
+            - janusgraph.storage.directory=/tmp/berkeleyje
             - janusgraph.index.search.backend=elasticsearch
             - janusgraph.index.search.hostname=elasticsearch
             - janusgraph.index.search.elasticsearch.client-only=true

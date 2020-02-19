@@ -4,9 +4,12 @@ import de.rngcntr.janusbench.backend.Configuration;
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
+import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
+import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.BenchmarkResult;
+import de.rngcntr.janusbench.util.ExitCode;
 import de.rngcntr.janusbench.util.ResultLogger;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +21,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "run", description = "Runs a specified benchmark")
+@Command(name = "run", description = "Runs a specified benchmark", exitCodeOnInvalidInput = ExitCode.INVALID_INPUT)
 public class RunSubcommand implements Callable<Integer> {
 
     @Option(names = {"--remote-properties"}, paramLabel = "FILE",
@@ -57,32 +60,37 @@ public class RunSubcommand implements Callable<Integer> {
     public Integer call() throws Exception {
         log.info("Using " + benchmarkClass.getName());
 
-        configuration = new Configuration(STORAGE_BACKEND, INDEX_BACKEND);
+        try {
+            configuration = new Configuration(STORAGE_BACKEND, INDEX_BACKEND);
+        } catch (final InvalidConfigurationException icex) {
+            log.error("Invalid configuration: " + STORAGE_BACKEND.toString() + " and " +
+                      INDEX_BACKEND.toString() + " are incompatible.");
+            return ExitCode.INCOMPATIBLE_BACKENDS;
+        }
+
         this.connection = new Connection(REMOTE_PROPERTIES);
 
         final boolean started = configuration.start();
         final boolean open = openGraph();
 
-        if (started && open) {
-            try {
+        try {
+            if (started && open) {
                 createSchema();
-            } catch (final IOException ioex) {
-                log.error("Graph initialization script not found: " + INIT_SCRIPT);
-            }
-
-            try {
                 ResultLogger.getInstance().setOutputMethod("results.txt");
-            } catch (final IOException e) {
-                log.error("Unable to create results file");
-                e.printStackTrace();
+                runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection));
             }
-
-            runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection));
+            return ExitCode.OK;
+        } catch (final NoSchemaFoundException nsfex) {
+            log.error("Graph initialization script not found: " + INIT_SCRIPT);
+            return ExitCode.MISSING_SCHEMA_FILE;
+        } catch (final IOException ioex) {
+            log.error("Unable to create results file");
+            return ExitCode.INACCESSIBLE_RESULT_FILE;
+        } finally {
+            closeGraph();
+            configuration.stop();
+            ResultLogger.getInstance().close();
         }
-
-        closeGraph();
-        configuration.stop();
-        return 0;
     }
 
     public void runBenchmark(final Benchmark benchmark) {
@@ -92,11 +100,15 @@ public class RunSubcommand implements Callable<Integer> {
         }
     }
 
-    public void createSchema() throws IOException {
+    public void createSchema() throws NoSchemaFoundException {
         log.info("Creating schema");
-        final String initRequest = new String(Files.readAllBytes(Paths.get(INIT_SCRIPT)));
-        connection.submit(initRequest);
-        log.info("Done creating schema");
+        try {
+            String initRequest = new String(Files.readAllBytes(Paths.get(INIT_SCRIPT)));
+            connection.submit(initRequest);
+            log.info("Done creating schema");
+        } catch (IOException ioex) {
+            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT);
+        }
     }
 
     public boolean openGraph() {

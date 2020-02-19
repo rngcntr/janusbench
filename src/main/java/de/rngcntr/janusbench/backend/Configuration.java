@@ -1,5 +1,6 @@
 package de.rngcntr.janusbench.backend;
 
+import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import java.io.File;
 import org.apache.log4j.Logger;
 import org.testcontainers.containers.ContainerLaunchException;

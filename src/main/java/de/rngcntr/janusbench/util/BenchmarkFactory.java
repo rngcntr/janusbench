@@ -77,24 +77,29 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         @SuppressWarnings("unchecked")
         Class<? extends Benchmark> benchmarkClass = (Class<? extends Benchmark>) retreivedClass;
 
-        try {
-            InputStream in =
-                Files.newInputStream(Paths.get(configPath + className + configExtension));
-            registerSupplier(benchmarkClass, (conn) -> {
-                try {
-                    Benchmark benchmark = (Benchmark) yaml.loadAs(in, benchmarkClass);
-                    benchmark.setConnection(conn);
-                    return benchmark;
-                } catch (YAMLException yamlex) {
-                    log.error("Invalid configuration for class " + benchmarkClass.getSimpleName(),
-                              yamlex);
-                    return null;
-                }
-            });
-        } catch (IOException ioex) {
-            log.warn("Unable to find default configuration for class " + fullyQualifiedClassName,
-                     ioex);
-        }
+        registerSupplier(benchmarkClass, (conn) -> {
+            try {
+                InputStream in =
+                    Files.newInputStream(Paths.get(configPath + className + configExtension));
+                Benchmark benchmark = (Benchmark) yaml.loadAs(in, benchmarkClass);
+                benchmark.setConnection(conn);
+                return benchmark;
+            } catch (YAMLException yamlex) {
+                log.error("Invalid configuration for class " + benchmarkClass.getSimpleName(),
+                          yamlex);
+                return null;
+            } catch (NullPointerException npex) {
+                log.error("Unable to parse yaml " + configPath + className + configExtension +
+                              " for class " + benchmarkClass.getSimpleName(),
+                          npex);
+                return null;
+            } catch (IOException ioex) {
+                log.error("Unable to find default configuration for class " +
+                              fullyQualifiedClassName,
+                          ioex);
+                return null;
+            }
+        });
     }
 
     private static void registerSupplier(Class<? extends Benchmark> benchmarkClass,

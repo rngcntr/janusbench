@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.backend;
+package de.rngcntr.janusbench.exceptions;
 
 public class InvalidConfigurationException extends IllegalArgumentException {
 

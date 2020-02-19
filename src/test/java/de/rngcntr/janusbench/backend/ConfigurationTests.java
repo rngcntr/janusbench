@@ -1,12 +1,9 @@
-package de.rngcntr.janusbench;
+package de.rngcntr.janusbench.backend;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rngcntr.janusbench.backend.Configuration;
-import de.rngcntr.janusbench.backend.Index;
-import de.rngcntr.janusbench.backend.InvalidConfigurationException;
-import de.rngcntr.janusbench.backend.Storage;
+import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 

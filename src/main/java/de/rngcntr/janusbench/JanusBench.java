@@ -20,7 +20,7 @@ public class JanusBench implements Callable<Integer> {
     public static void main(final String[] args) {
         int exitCode = new CommandLine(new JanusBench()).execute(args);
 
-        ResultLogger.getInstance().terminate();
+        ResultLogger.getInstance().close();
         System.exit(exitCode);
     }
 }

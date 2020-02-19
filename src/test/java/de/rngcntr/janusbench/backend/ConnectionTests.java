@@ -1,9 +1,8 @@
-package de.rngcntr.janusbench;
+package de.rngcntr.janusbench.backend;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import de.rngcntr.janusbench.backend.Connection;
 import java.io.File;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.jupiter.api.Test;

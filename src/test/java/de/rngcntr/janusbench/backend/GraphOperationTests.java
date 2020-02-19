@@ -1,8 +1,7 @@
-package de.rngcntr.janusbench;
+package de.rngcntr.janusbench.backend;
 
 import static org.junit.Assert.*;
 
-import de.rngcntr.janusbench.backend.Connection;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
