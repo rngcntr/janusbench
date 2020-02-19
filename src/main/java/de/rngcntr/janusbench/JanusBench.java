@@ -2,6 +2,7 @@ package de.rngcntr.janusbench;
 
 import de.rngcntr.janusbench.subcommands.ListSubcommand;
 import de.rngcntr.janusbench.subcommands.RunSubcommand;
+import de.rngcntr.janusbench.util.ExitCode;
 import de.rngcntr.janusbench.util.ResultLogger;
 import java.util.concurrent.Callable;
 import picocli.CommandLine;
@@ -14,7 +15,7 @@ public class JanusBench implements Callable<Integer> {
 
     public Integer call() throws Exception {
         CommandLine.usage(new JanusBench(), System.out);
-        return 0;
+        return ExitCode.INVALID_INPUT;
     }
 
     public static void main(final String[] args) {
