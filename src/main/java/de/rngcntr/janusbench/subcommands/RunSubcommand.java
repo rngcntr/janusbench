@@ -107,7 +107,7 @@ public class RunSubcommand implements Callable<Integer> {
             connection.submit(initRequest);
             log.info("Done creating schema");
         } catch (IOException ioex) {
-            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT);
+            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT, ioex);
         }
     }
 

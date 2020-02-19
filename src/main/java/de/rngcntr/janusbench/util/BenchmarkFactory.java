@@ -1,6 +1,8 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.exceptions.UnavailableBenchmarkException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -113,11 +115,22 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
     public static Benchmark getDefaultBenchmark(Class<? extends Benchmark> benchmarkClass,
                                                 Connection conn) {
         Supplier<? extends Benchmark> supplier = registeredSuppliers.get(benchmarkClass);
-        return supplier != null ? supplier.get(conn) : null;
+        if (supplier != null) {
+            return supplier.get(conn);
+        } else {
+            throw new UnavailableBenchmarkException("Benchmark " + benchmarkClass.getName() +
+                                                    " has no registered default");
+        }
     }
 
     @Override
-    public Class<? extends Benchmark> convert(String className) throws Exception {
-        return registeredBenchmarks.get(className);
+    public Class<? extends Benchmark> convert(String className) {
+        Class<? extends Benchmark> returnValue = registeredBenchmarks.get(className);
+
+        if (returnValue != null) {
+            return returnValue;
+        } else {
+            throw new UnavailableBenchmarkException("Benchmark " + className + " does not exist");
+        }
     }
 }
