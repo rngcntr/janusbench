@@ -1,6 +1,5 @@
 package de.rngcntr.janusbench.subcommands;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rngcntr.janusbench.backend.Index;
@@ -43,7 +42,7 @@ public class RunSubcommandTests {
                 : new String[] {"-s", storage.toString(), "-i", index.toString(),
                                 "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(0, returnCode);
@@ -53,7 +52,7 @@ public class RunSubcommandTests {
     public void testNoStorageNoIndex()  {
         String[] args = {"IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INVALID_INPUT, returnCode);
@@ -64,7 +63,7 @@ public class RunSubcommandTests {
         String[] args = {"-s", "nonExistentStorage", "-i", "elasticsearch",
                          "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INVALID_INPUT, returnCode);
@@ -74,7 +73,7 @@ public class RunSubcommandTests {
     public void testInvalidStorageNoIndex()  {
         String[] args = {"-s", "nonExistentStorage", "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INVALID_INPUT, returnCode);
@@ -85,7 +84,7 @@ public class RunSubcommandTests {
         String[] args = {"-s", "cassandra", "-i", "nonExistentIndex",
                          "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INVALID_INPUT, returnCode);
@@ -96,7 +95,7 @@ public class RunSubcommandTests {
         String[] args = {"-s", "inmemory", "--schema-script", "nonExistentSchemaScript",
                          "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.MISSING_SCHEMA_FILE, returnCode);
@@ -107,7 +106,7 @@ public class RunSubcommandTests {
         String[] args = {"-s", "inmemory", "-i", "elasticsearch",
                          "IndexedEdgeExistenceOnSupernode"};
 
-        final RunSubcommand runner = assertDoesNotThrow(() -> new RunSubcommand());
+        final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INCOMPATIBLE_BACKENDS, returnCode);
