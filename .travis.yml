@@ -1,0 +1,7 @@
+language: java
+services:
+    - docker
+jdk:
+    - openjdk8
+env:
+    - DOCKER_COMPOSE_VERSION=1.25.4

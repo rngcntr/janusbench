@@ -19,9 +19,13 @@ import picocli.CommandLine;
 @Testcontainers
 public class RunSubcommandTests {
 
-    public Stream<Arguments> generateConfigurations() {
-        List<Storage> storages = Arrays.asList(Storage.values());
-        List<Index> indexes = Arrays.asList(Index.values());
+    static Stream<Arguments> generateConfigurations() {
+        List<Storage> storages = new ArrayList<Storage>();
+        storages.addAll(Arrays.asList(Storage.values()));
+
+        List<Index> indexes = new ArrayList<Index>();
+        indexes.addAll(Arrays.asList(Index.values()));
+
         List<Arguments> configurations = new ArrayList<Arguments>();
 
         // special treatment for inmemory backend: don't combine with any index backend
