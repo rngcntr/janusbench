@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.util.ExitCode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +34,8 @@ public class RunSubcommandTests {
 
     @ParameterizedTest(name = "Run configuration {0}")
     @MethodSource("generateConfigurations")
-    public void testContainerStartupWithJanusBench(Storage storage, Index index)  {
+    public void testContainerStartupWithJanusBench(Storage storage, Index index)
+        throws InterruptedException {
         String[] args =
             index == null
                 ? new String[] {"-s", storage.toString(), "IndexedEdgeExistenceOnSupernode"}
@@ -46,6 +46,9 @@ public class RunSubcommandTests {
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(0, returnCode);
+
+        // add some delay to allow proper cleanup of docker containers
+        Thread.sleep(10000);
     }
 
     @Test
