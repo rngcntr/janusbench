@@ -44,7 +44,7 @@ public class InsertVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) throws TimeoutException {
+    public void performAction() throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             // assume vertex does not exist -> insert
             g.addV("person").property("name", names[index]).property("age", ages[index]).next();

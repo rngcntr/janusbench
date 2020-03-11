@@ -50,9 +50,6 @@ public class RunSubcommandTests {
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(0, returnCode);
-
-        // add some delay to allow proper cleanup of docker containers
-        Thread.sleep(10000);
     }
 
     @Test

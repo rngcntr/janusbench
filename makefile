@@ -10,3 +10,6 @@ test:
 
 clean:
 	mvn clean
+
+doc:
+	mvn javadoc:javadoc

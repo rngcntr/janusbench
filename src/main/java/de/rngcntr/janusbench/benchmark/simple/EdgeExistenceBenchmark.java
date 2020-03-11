@@ -47,7 +47,7 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) throws TimeoutException {
+    public void performAction() throws TimeoutException {
         vertexExistenceParameters.put("searchKey", propertyName);
         edgeExistenceParameters.put("supernode", supernode);
 

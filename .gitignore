@@ -1,6 +1,7 @@
 results/
 docker/hosts.txt
 docker/results/
+javadoc/
 
 ### Maven ###
 target/

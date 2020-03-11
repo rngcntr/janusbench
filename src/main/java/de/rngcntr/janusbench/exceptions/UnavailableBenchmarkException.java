@@ -1,5 +1,10 @@
 package de.rngcntr.janusbench.exceptions;
 
+/**
+ * This exception is used when trying to instantiate a benchmark that has no registered implementation.
+ * 
+ * @author Florian Grieskamp
+ */
 public class UnavailableBenchmarkException extends RuntimeException {
 
     private static final long serialVersionUID = 1822446746749214948L;

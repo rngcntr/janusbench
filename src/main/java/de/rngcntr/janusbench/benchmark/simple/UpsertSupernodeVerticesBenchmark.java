@@ -52,7 +52,7 @@ public class UpsertSupernodeVerticesBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) throws TimeoutException {
+    public void performAction() throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V().has("name", names[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // vertex already exists -> update edge
