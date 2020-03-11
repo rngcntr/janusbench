@@ -1,9 +1,10 @@
 package de.rngcntr.janusbench.subcommands;
 
-import de.rngcntr.janusbench.backend.Configuration;
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
+import de.rngcntr.janusbench.backend.configuration.ComposeConfiguration;
+import de.rngcntr.janusbench.backend.configuration.Configuration;
 import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
@@ -61,7 +62,7 @@ public class RunSubcommand implements Callable<Integer> {
         log.info("Using " + benchmarkClass.getName());
 
         try {
-            configuration = new Configuration(STORAGE_BACKEND, INDEX_BACKEND);
+            configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
         } catch (final InvalidConfigurationException icex) {
             log.error("Invalid configuration: " + STORAGE_BACKEND.toString() + " and " +
                       INDEX_BACKEND.toString() + " are incompatible.");

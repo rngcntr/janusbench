@@ -1,24 +1,21 @@
-package de.rngcntr.janusbench.backend;
+package de.rngcntr.janusbench.backend.configuration;
 
+import de.rngcntr.janusbench.backend.Index;
+import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import java.io.File;
 import org.apache.log4j.Logger;
-import org.testcontainers.containers.ContainerLaunchException;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
-public class Configuration {
+public abstract class Configuration {
 
-    private static final String CONFIG_BASE_PATH = "docker/configurations/";
-    private static final String FILE_EXTENSION = ".yml";
-    private static final int JANUSGRAPH_PORT = 8182;
+    protected static final String CONFIG_BASE_PATH = "docker/configurations/";
+    protected static final String FILE_EXTENSION = ".yml";
+    protected static final int JANUSGRAPH_PORT = 8182;
 
-    private static final Logger log = Logger.getLogger(Configuration.class);
+    protected static final Logger log = Logger.getLogger(Configuration.class);
 
-    private Storage storage;
-    private Index index;
-
-    private DockerComposeContainer<?> environment;
+    protected Storage storage;
+    protected Index index;
 
     /**
      * Initializes a new Configuration from a given storage and index backend.
@@ -54,46 +51,17 @@ public class Configuration {
         this.index = null;
     }
 
-    private DockerComposeContainer<?> getEnvironment() {
-        File composeFile = new File(getPath());
-        DockerComposeContainer<?> environment = new DockerComposeContainer<>(composeFile);
-        return environment;
-    }
-
     /**
-     * Starts this configuration as a Docker Compose environment.
+     * Starts this configuration.
      * 
      * @return <ul><li>true if the environment was started successfully</li><li>false if not</li></ul>
      */
-    public boolean start() {
-        if (environment != null) {
-            environment.stop();
-        }
-
-        environment =
-            getEnvironment()
-                .withExposedService("janusgraph", JANUSGRAPH_PORT)
-                .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
-                .withLocalCompose(true);
-
-        try {
-            environment.start();
-            return true;
-        } catch (final ContainerLaunchException clex) {
-            log.error("docker-compose environment could not be started.");
-            log.error(clex);
-            return false;
-        }
-    }
+    public abstract boolean start();
 
     /**
-     * Stops the Docker Compose environment.
+     * Stops this environment.
      */
-    public void stop() {
-        if (environment != null) {
-            environment.close();
-        }
-    }
+    public abstract void stop();
 
     /**
      * Returns the path of the corresponding Docker Compose file

@@ -1,6 +1,6 @@
 package de.rngcntr.janusbench.exceptions;
 
-import de.rngcntr.janusbench.backend.Configuration;
+import de.rngcntr.janusbench.backend.configuration.Configuration;
 
 /**
  * This exception indicates that a {@link Configuration} was created with out-of-specification parameters.
