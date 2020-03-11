@@ -21,6 +21,7 @@
     <picocli.version>4.1.4</picocli.version>
     <snakeyaml.version>1.11</snakeyaml.version>
     <mockito.version>2.10.0</mockito.version>
+    <sunfire.version>2.22.1</sunfire.version>
 </properties>
 
 <dependencies>
@@ -153,8 +154,14 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.1</version>
+            <version>${sunfire.version}</version>
+            <configuration>
+                <excludes>
+                    <exclude>**/RunSubcommandBigTests.java</exclude>
+                </excludes>
+            </configuration>
         </plugin>
+
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
