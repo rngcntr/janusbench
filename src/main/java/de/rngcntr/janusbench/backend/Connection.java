@@ -14,6 +14,11 @@ import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
+/**
+ * A Connection manages all interactions with a graph instance.
+ *
+ * @author Florian Grieskamp
+ */
 public class Connection {
 
     private int TIMEOUT_MS = 60000;
@@ -27,13 +32,30 @@ public class Connection {
 
     private static final Logger log = Logger.getLogger(Connection.class);
 
+    /**
+     * Initializes a new Connection with the parameters given in the property file.
+     * 
+     * @param propertiesFileName The path to the property file.
+     * This file is a TinkerPop <code>remote-graph.properties</code> file.
+     */
     public Connection(final String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
         sessionUuid = UUID.randomUUID();
     }
 
+    /**
+     * Sets a timeout after which a stable connection should be established.
+     * @param timeoutMs The timeout in milliseconds.
+     */
     public void setTimeout(int timeoutMs) { this.TIMEOUT_MS = timeoutMs; }
 
+    /**
+     * Opens a connection to the graph instance using the given settings.
+     *
+     * @throws ConfigurationException if the given settings are invalid or the connection can't be
+     *     established within the time limit.
+     * @see #setTimeout(int)
+     */
     public void open() throws ConfigurationException {
         conf = new PropertiesConfiguration(propertiesFileName);
 
@@ -62,6 +84,11 @@ public class Connection {
         }
     }
 
+    /**
+     * Terminates the connection.
+     *
+     * @throws Exception if closing one of the connection components raises an Exception.
+     */
     public void close() throws Exception {
         try {
             g.close();
@@ -74,12 +101,35 @@ public class Connection {
         }
     }
 
+    /**
+     * Returns a GraphTraversalSource to perform queries on.
+     *
+     * @return A GraphTraversalSource which operates on the connected graph.
+     */
     public GraphTraversalSource g() { return g; }
 
+    /**
+     * Synchronously sends a traversal to the graph database and blocks until the traversal is
+     * executed completely.
+     *
+     * @param traversal The traversal in string representation.
+     * @return The results of the query.
+     */
     public ResultSet submit(final String traversal) {
         return awaitResults(client.submit(traversal));
     }
 
+    /**
+     * Asynchronously sends a traversal to the graph database. A ResultSet is returned immediately
+     * and will be populated with values once the query finishes.
+     *
+     * @param traversal The traversal in string representation.
+     * @param parameters A map of values for parameterized queries.
+     * @return The results of the query. These will not contain any data until the query has
+     *     finished.
+     * @throws TimeoutException if the traversal submission causes a {@link
+     *     java.lang.RuntimeException}.
+     */
     public ResultSet submitAsync(final String traversal, final Map<String, Object> parameters)
         throws TimeoutException {
         ResultSet results = null;
@@ -94,14 +144,36 @@ public class Connection {
         return results;
     }
 
+    /**
+     * Synchronously sends a traversal to the graph database and blocks until the traversal is
+     * executed completely.
+     *
+     * @param traversal The traversal in string representation.
+     * @param parameters A map of values for parameterized queries.
+     * @return The results of the query.
+     */
     public ResultSet submit(final String traversal, final Map<String, Object> parameters) {
         return awaitResults(client.submit(traversal, parameters));
     }
 
+    /**
+     * Synchronously sends a traversal to the graph database and blocks until the traversal is
+     * executed completely.
+     *
+     * @param traversal The traversal to execute.
+     * @return The results of the query.
+     */
     public ResultSet submit(final GraphTraversal<?, ?> traversal) {
         return awaitResults(client.submit(traversal));
     }
 
+    /**
+     * Synchronously waits for results to become available. This call blocks until all results are
+     * available.
+     *
+     * @param rs The ResultSet to wait for.
+     * @return The same ResultSet once all results are available.
+     */
     public ResultSet awaitResults(final ResultSet rs) {
         while (!rs.allItemsAvailable()) {
         }

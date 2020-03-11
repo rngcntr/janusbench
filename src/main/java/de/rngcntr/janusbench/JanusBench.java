@@ -8,6 +8,12 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
+/**
+ * The main class of <code>janusbench</code>.
+ * This class handles command line interactions of <code>janusbench</code> calls.
+ * 
+ * @author Florian Grieskamp
+ */
 @Command(name = "janusbench", subcommands = {RunSubcommand.class, ListSubcommand.class},
          mixinStandardHelpOptions = true,
          versionProvider = de.rngcntr.janusbench.util.VersionProvider.class)

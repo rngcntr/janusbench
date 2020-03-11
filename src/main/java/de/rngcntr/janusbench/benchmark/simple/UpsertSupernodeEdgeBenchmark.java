@@ -45,7 +45,7 @@ public class UpsertSupernodeEdgeBenchmark extends Benchmark {
     }
 
     @Override
-    public void performAction(final BenchmarkResult result) throws TimeoutException {
+    public void performAction() throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
             if (g.V(neighbours[index]).in("knows").where(__.is(supernode)).hasNext()) {
                 // edge already exists -> update

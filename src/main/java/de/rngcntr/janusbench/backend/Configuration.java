@@ -20,6 +20,12 @@ public class Configuration {
 
     private DockerComposeContainer<?> environment;
 
+    /**
+     * Initializes a new Configuration from a given storage and index backend.
+     * 
+     * @param storage The storage backend to use.
+     * @param index The index backend to use.
+     */
     public Configuration(Storage storage, Index index) {
         if (storage == null) {
             throw new InvalidConfigurationException(String.format("A storage backend is required"));
@@ -34,6 +40,11 @@ public class Configuration {
         }
     }
 
+    /**
+     * Initializes a new Configuration from a given storage backend without an index backend.
+     * 
+     * @param storage The storage backend to use.
+     */
     public Configuration(Storage storage) {
         if (storage == null) {
             throw new InvalidConfigurationException(String.format("A storage backend is required"));
@@ -49,6 +60,11 @@ public class Configuration {
         return environment;
     }
 
+    /**
+     * Starts this configuration as a Docker Compose environment.
+     * 
+     * @return <ul><li>true if the environment was started successfully</li><li>false if not</li></ul>
+     */
     public boolean start() {
         if (environment != null) {
             environment.stop();
@@ -70,12 +86,20 @@ public class Configuration {
         }
     }
 
+    /**
+     * Stops the Docker Compose environment.
+     */
     public void stop() {
         if (environment != null) {
-            environment.stop();
+            environment.close();
         }
     }
 
+    /**
+     * Returns the path of the corresponding Docker Compose file
+     * 
+     * @return The path of the Docker Compose file for this configuration.
+     */
     public String getPath() {
         String fileName = "janusgraph";
         fileName += (storage != null ? "-" + storage : "");

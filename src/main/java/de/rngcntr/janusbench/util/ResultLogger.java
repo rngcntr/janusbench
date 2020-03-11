@@ -5,15 +5,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/**
+ * This class handles the logging of {@link BenchmarkResult} objects.
+ * 
+ * @author Florian Grieskamp
+ */
 public class ResultLogger implements AutoCloseable {
-    // singleton instance
+    
+    /**
+     * Initialized with "results" by default.
+     */
+    public final String OUTPUT_DIR = "results";
+
     private static ResultLogger instance;
     private PrintStream outputStream;
-    private final String OUTPUT_DIR = "results";
     private final String SEPARATOR = "/";
 
     private ResultLogger() {}
 
+    /**
+     * Returns the singleton instance of this class.
+     * 
+     * @return An initialized ResultLogger.
+     */
     synchronized public static ResultLogger getInstance() {
         if (instance == null) {
             instance = new ResultLogger();
@@ -21,6 +35,11 @@ public class ResultLogger implements AutoCloseable {
         return instance;
     }
 
+    /**
+     * Appends a serialization of result to the output.
+     * 
+     * @param result The result to write to the output.
+     */
     synchronized public void log(final BenchmarkResult result) {
         if (outputStream != null) {
             outputStream.println(result);
@@ -28,10 +47,22 @@ public class ResultLogger implements AutoCloseable {
         }
     }
 
+    /**
+     * Redirects the output to a custom {@link PrintStream}.
+     * 
+     * @param outputStream The {@link PrintStream} to use for any further output.
+     */
     synchronized public void setOutputMethod(final PrintStream outputStream) {
         this.outputStream = outputStream;
     }
 
+    /**
+     * Redirects the output to a file with a given name.
+     * This file will be placed in the directory specified by {@link #OUTPUT_DIR}.
+     * 
+     * @param fileName The name of the output file.
+     * @throws IOException If the given file can't be written.
+     */
     synchronized public void setOutputMethod(final String fileName) throws IOException {
         final File outputDirectory = new File(OUTPUT_DIR);
         final File outputFile = new File(OUTPUT_DIR + SEPARATOR + fileName);
@@ -40,6 +71,9 @@ public class ResultLogger implements AutoCloseable {
         outputStream = new PrintStream(new FileOutputStream(OUTPUT_DIR + SEPARATOR + fileName));
     }
 
+    /**
+     * Closes the underlying {@link PrintStream}.
+     */
     synchronized public void close() {
         if (outputStream != null) {
             outputStream.close();
