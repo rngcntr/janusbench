@@ -6,4 +6,5 @@ public class ExitCode {
 	public static final int INCOMPATIBLE_BACKENDS = 2;
 	public static final int MISSING_SCHEMA_FILE = 3;
 	public static final int INACCESSIBLE_RESULT_FILE = 4;
+	public static final int SERVICE_SETUP_ERROR = 5;
 }

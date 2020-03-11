@@ -41,8 +41,8 @@ services:
             args:
                 VERSION: 3.11
         ports:
-            - "9042:9042" # CQL ports (native_transport_port)
-            - "9160:9160" # Thrift (rpc_port)
-            - "7000:7000" # Internode
-            - "7001:7001"
-            - "7199:7199"
+            - "9042" # CQL ports (native_transport_port)
+            - "9160" # Thrift (rpc_port)
+            - "7000" # Internode
+            - "7001"
+            - "7199"

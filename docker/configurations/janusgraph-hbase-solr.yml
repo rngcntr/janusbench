@@ -44,9 +44,9 @@ services:
             args:
                 VERSION: 2.1
         ports:
-            - "16010:16010" # Master Server
-            - "9095:9095" # Thrift
-            - "8085:8085" # REST server UI
+            - "16010" # Master Server
+            - "9095" # Thrift
+            - "8085" # REST server UI
 
     solr:
         image: artifactory.gdata.de:6555/development/gaia/janusbench/solr:7.7.2
@@ -57,7 +57,7 @@ services:
         environment:
             - ZK_HOST=zookeeper:2181
         ports:
-            - "8983:8983"
+            - "8983"
         depends_on:
             - zookeeper
 
@@ -73,4 +73,4 @@ services:
             ZOO_MY_ID: 1
             ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
         ports:
-            - "2181:2181"
+            - "2181"
