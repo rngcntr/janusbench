@@ -10,3 +10,7 @@ test:
 
 clean:
 	mvn clean
+
+doc:
+	mkdir -p javadoc
+	javadoc -d javadoc -sourcepath src/main/java -subpackages de
