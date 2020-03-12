@@ -5,6 +5,7 @@ import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.backend.configuration.ComposeConfiguration;
 import de.rngcntr.janusbench.backend.configuration.Configuration;
+import de.rngcntr.janusbench.backend.configuration.SwarmConfiguration;
 import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
@@ -30,6 +31,10 @@ public class RunSubcommand implements Callable<Integer> {
             description = "The remote graph properties file"
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static String REMOTE_PROPERTIES;
+
+    @Option(names = {"--swarm"}, negatable = true,
+            description = "Whether or not to use Docker Swarm instead of Docker Compose")
+    private static boolean useDockerSwarm = false;
 
     @Option(names = {"--schema-script"}, paramLabel = "FILE",
             defaultValue = "conf/initialize-graph.groovy",
@@ -62,7 +67,11 @@ public class RunSubcommand implements Callable<Integer> {
         log.info("Using " + benchmarkClass.getName());
 
         try {
-            configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
+            if (useDockerSwarm) {
+                configuration = new SwarmConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
+            } else {
+                configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
+            }
         } catch (final InvalidConfigurationException icex) {
             log.error("Invalid configuration: " + STORAGE_BACKEND.toString() + " and " +
                       INDEX_BACKEND.toString() + " are incompatible.");
@@ -75,12 +84,18 @@ public class RunSubcommand implements Callable<Integer> {
         final boolean open = openGraph();
 
         try {
-            if (started && open) {
+            if (!started) {
+                log.error("Unable to start configuration");
+                return ExitCode.SERVICE_SETUP_ERROR;
+            } else if (!open) {
+                log.error("Unable to open graph");
+                return ExitCode.SERVICE_SETUP_ERROR;
+            } else {
                 createSchema();
                 ResultLogger.getInstance().setOutputMethod("results.txt");
                 runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection));
+                return ExitCode.OK;
             }
-            return ExitCode.OK;
         } catch (final NoSchemaFoundException nsfex) {
             log.error("Graph initialization script not found: " + INIT_SCRIPT);
             return ExitCode.MISSING_SCHEMA_FILE;

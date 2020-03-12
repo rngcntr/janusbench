@@ -38,6 +38,6 @@ services:
             args:
                 VERSION: 2.1
         ports:
-            - "16010:16010" # Master Server
-            - "9095:9095" # Thrift
-            - "8085:8085" # REST server UI
+            - "16010" # Master Server
+            - "9095" # Thrift
+            - "8085" # REST server UI

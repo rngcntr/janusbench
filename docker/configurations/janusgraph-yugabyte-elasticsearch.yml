@@ -47,7 +47,7 @@ services:
             "--master_addresses=yb-master:7100",
             "--replication_factor=1"]
         ports:
-            - "7000:7000"
+            - "7000"
         environment:
             SERVICE_7000_NAME: yb-master
 
@@ -62,10 +62,10 @@ services:
             "--start_pgsql_proxy",
             "--tserver_master_addrs=yb-master:7100"]
         ports:
-            - "9042:9042"
-            - "6379:6379"
-            - "5433:5433"
-            - "9000:9000"
+            - "9042"
+            - "6379"
+            - "5433"
+            - "9000"
         environment:
             SERVICE_5433_NAME: ysql
             SERVICE_9042_NAME: ycql
@@ -82,5 +82,5 @@ services:
             args:
                 VERSION: 6.6.0
         ports:
-            - "9200:9200"
-            - "9300:9300"
+            - "9200"
+            - "9300"

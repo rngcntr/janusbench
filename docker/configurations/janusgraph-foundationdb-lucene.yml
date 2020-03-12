@@ -49,7 +49,7 @@ services:
         volumes:
             - clusterfile:/var/fdb/share
         ports:
-            - "4500:4500"
+            - "4500"
 
 volumes:
     clusterfile:

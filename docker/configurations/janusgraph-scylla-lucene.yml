@@ -43,11 +43,11 @@ services:
                 VERSION: 3.0.8
         ports:
             # http://docs.scylladb.com/kb/posix/
-            - "10000:10000" # REST API
-            - "9042:9042" # CQL ports (native_transport_port)
-            - "9160:9160" # Thrift (rpc_port)
-            - "7000:7000" # Internode
-            - "7001:7001"
-            - "7199:7199" # JMX
-            - "9180:9180" # Prometheus monitoring
-            - "9100:9100"
+            - "10000" # REST API
+            - "9042" # CQL ports (native_transport_port)
+            - "9160" # Thrift (rpc_port)
+            - "7000" # Internode
+            - "7001"
+            - "7199" # JMX
+            - "9180" # Prometheus monitoring
+            - "9100"

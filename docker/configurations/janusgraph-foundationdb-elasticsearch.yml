@@ -51,7 +51,7 @@ services:
         volumes:
             - clusterfile:/var/fdb/share
         ports:
-            - "4500:4500"
+            - "4500"
 
     # from sunsided/janusgraph-docker
     elasticsearch:
@@ -61,8 +61,8 @@ services:
             args:
                 VERSION: 6.6.0
         ports:
-            - "9200:9200"
-            - "9300:9300"
+            - "9200"
+            - "9300"
 
 volumes:
     clusterfile:

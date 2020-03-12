@@ -43,11 +43,11 @@ services:
             args:
                 VERSION: 3.11
         ports:
-            - "9042:9042" # CQL ports (native_transport_port)
-            - "9160:9160" # Thrift (rpc_port)
-            - "7000:7000" # Internode
-            - "7001:7001"
-            - "7199:7199"
+            - "9042" # CQL ports (native_transport_port)
+            - "9160" # Thrift (rpc_port)
+            - "7000" # Internode
+            - "7001"
+            - "7199"
 
     solr:
         image: artifactory.gdata.de:6555/development/gaia/janusbench/solr:7.7.2
@@ -59,7 +59,7 @@ services:
         environment:
             - ZK_HOST=zookeeper:2181
         ports:
-            - "8983:8983"
+            - "8983"
         depends_on:
             - zookeeper
 
@@ -75,4 +75,4 @@ services:
             ZOO_MY_ID: 1
             ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
         ports:
-            - "2181:2181"
+            - "2181"
