@@ -1,6 +1,7 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.backend.configuration.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -31,6 +32,8 @@ public abstract class Benchmark implements Runnable {
     private final ArrayList<BenchmarkProperty> trackAfterRun;
 
     private boolean collectResults;
+
+    protected Configuration configuration;
 
     /**
      * Initializes a Benchmark with a step size of 1.
@@ -77,6 +80,16 @@ public abstract class Benchmark implements Runnable {
     }
 
     /**
+     * Sets the configuration which is used to run this benchmark. This configuration is later used
+     * to log the used storage and index backends.
+     * 
+     * @param configuration The configuration from which the used backends are obtained.
+     */
+    public void setConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    /**
      * Enables or disables the collection of results.
      * This can be helpful if a benchmark is used only as a set-up for following benchmarks.
      *
@@ -91,11 +104,14 @@ public abstract class Benchmark implements Runnable {
      * Runs a single iteration of the benchmark.
      * This includes calling the {@link #buildUp()} and {@link #tearDown()} methods, measuring the
      * execution time and evaluating BenchmarkProperties.
+     * 
+     * @param config The configuration (consisting of backends) on which the benchmark is run
      */
     public void run() {
         buildUp();
 
         final BenchmarkResult result = new BenchmarkResult(this);
+        result.setConfiguration(configuration);
         final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
         result.injectBenchmarkProperty(stepSizeProperty);
 

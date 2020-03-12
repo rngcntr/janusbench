@@ -1,6 +1,8 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.backend.configuration.Configuration;
+
 import java.util.ArrayList;
 
 /**
@@ -50,7 +52,21 @@ public abstract class ComposableBenchmark extends Benchmark {
      */
     public void addComponent(final Benchmark component) {
         if (component != null && component != this) {
+            component.setConfiguration(configuration);
             components.add(component);
+        }
+    }
+
+    /**
+     * Sets the configuration which is used to run this benchmark. This configuration is later used
+     * to log the used storage and index backends.
+     * 
+     * @param configuration The configuration from which the used backends are obtained.
+     */
+    public void setConfiguration(final Configuration configuration) {
+        this.configuration = configuration;
+        for (final Benchmark component : components) {
+            component.setConfiguration(configuration);
         }
     }
 
@@ -64,6 +80,7 @@ public abstract class ComposableBenchmark extends Benchmark {
     public void addComponent(final Benchmark component, final int repetitions) {
         if (component != null && component != this) {
             for (int repCnt = 0; repCnt < repetitions; ++repCnt) {
+                component.setConfiguration(configuration);
                 components.add(component);
             }
         }

@@ -16,6 +16,7 @@ import de.rngcntr.janusbench.util.ResultLogger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.concurrent.Callable;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -72,6 +73,7 @@ public class RunSubcommand implements Callable<Integer> {
             } else {
                 configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
             }
+            configuration.setTimeout(Duration.ofMinutes(1));
         } catch (final InvalidConfigurationException icex) {
             log.error("Invalid configuration: " + STORAGE_BACKEND.toString() + " and " +
                       INDEX_BACKEND.toString() + " are incompatible.");
@@ -93,7 +95,8 @@ public class RunSubcommand implements Callable<Integer> {
             } else {
                 createSchema();
                 ResultLogger.getInstance().setOutputMethod("results.txt");
-                runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection));
+                runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection),
+                             configuration);
                 return ExitCode.OK;
             }
         } catch (final NoSchemaFoundException nsfex) {
@@ -109,7 +112,8 @@ public class RunSubcommand implements Callable<Integer> {
         }
     }
 
-    public void runBenchmark(final Benchmark benchmark) {
+    public void runBenchmark(final Benchmark benchmark, Configuration config) {
+        benchmark.setConfiguration(config);
         benchmark.run();
         for (final BenchmarkResult br : benchmark.getResults()) {
             System.out.println(br);

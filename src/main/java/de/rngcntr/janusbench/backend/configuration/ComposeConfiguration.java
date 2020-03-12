@@ -3,8 +3,6 @@ package de.rngcntr.janusbench.backend.configuration;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import java.io.File;
-import java.time.Duration;
-
 import org.testcontainers.containers.ContainerLaunchException;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -52,7 +50,7 @@ public class ComposeConfiguration extends Configuration {
             getEnvironment()
                 .withExposedService(
                     "janusgraph", JANUSGRAPH_PORT,
-                    Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(5)))
+                    Wait.forListeningPort().withStartupTimeout(timeoutDuration))
                 .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
                 .withLocalCompose(true);
 

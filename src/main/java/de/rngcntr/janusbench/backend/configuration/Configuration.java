@@ -4,6 +4,7 @@ import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import java.io.File;
+import java.time.Duration;
 import org.apache.log4j.Logger;
 
 public abstract class Configuration {
@@ -17,9 +18,11 @@ public abstract class Configuration {
     protected Storage storage;
     protected Index index;
 
+    protected Duration timeoutDuration;
+
     /**
      * Initializes a new Configuration from a given storage and index backend.
-     * 
+     *
      * @param storage The storage backend to use.
      * @param index The index backend to use.
      */
@@ -39,7 +42,7 @@ public abstract class Configuration {
 
     /**
      * Initializes a new Configuration from a given storage backend without an index backend.
-     * 
+     *
      * @param storage The storage backend to use.
      */
     public Configuration(Storage storage) {
@@ -52,9 +55,17 @@ public abstract class Configuration {
     }
 
     /**
+     * Sets the maximum duration before the configuration startup will abort.
+     *
+     * @param timeoutDuration The maximum time to wait.
+     */
+    public void setTimeout(Duration timeoutDuration) { this.timeoutDuration = timeoutDuration; }
+
+    /**
      * Starts this configuration.
-     * 
-     * @return <ul><li>true if the environment was started successfully</li><li>false if not</li></ul>
+     *
+     * @return <ul><li>true if the environment was started successfully</li><li>false if
+     *     not</li></ul>
      */
     public abstract boolean start();
 
@@ -65,7 +76,7 @@ public abstract class Configuration {
 
     /**
      * Returns the path of the corresponding Docker Compose file
-     * 
+     *
      * @return The path of the Docker Compose file for this configuration.
      */
     public String getPath() {
@@ -75,4 +86,19 @@ public abstract class Configuration {
         fileName += FILE_EXTENSION;
         return CONFIG_BASE_PATH + fileName;
     }
+
+    /**
+     * Returns the storage backend used in this configuration.
+     *
+     * @return The used storage backend.
+     */
+    public Storage getStorage() { return storage; }
+
+    /**
+     * Returns the index backend used in this configuration. Returns <code>null</code> if no
+     * index backend is used.
+     *
+     * @return The used index backend.
+     */
+    public Index getIndex() { return index; }
 }

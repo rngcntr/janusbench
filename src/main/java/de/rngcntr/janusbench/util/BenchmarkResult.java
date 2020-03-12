@@ -3,6 +3,8 @@ package de.rngcntr.janusbench.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.rngcntr.janusbench.backend.configuration.Configuration;
+
 /**
  * A BenchmarkResult represents all information gained by a single benchmark run.
  * 
@@ -51,9 +53,21 @@ public class BenchmarkResult {
             sb.append(" ");
             sb.append(property.getKey());
             sb.append("=");
-            sb.append(property.getValue().toString());
+            sb.append(property.getValue() != null ? property.getValue().toString() : "null");
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Injects BenchmarkProperties for both the storage and index backend.
+     * 
+     * @param config The configuration which the used backends are obtained from.
+     */
+    public void setConfiguration(Configuration config) {
+        if (config != null) {
+            injectBenchmarkProperty(new BenchmarkProperty("storage", config.getStorage()));
+            injectBenchmarkProperty(new BenchmarkProperty("index", config.getIndex()));
+        }
     }
 }
