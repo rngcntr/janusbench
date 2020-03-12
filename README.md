@@ -1,4 +1,4 @@
-# JanusBench
+# JanusBench [![Build Status](https://travis-ci.org/rngcntr/janusbench.svg?branch=master)](https://travis-ci.org/rngcntr/janusbench)
 ### A benchmark framework for JanusGraph backend solutions
 
 ## Quick Start
