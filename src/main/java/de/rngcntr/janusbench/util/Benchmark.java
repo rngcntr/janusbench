@@ -104,8 +104,6 @@ public abstract class Benchmark implements Runnable {
      * Runs a single iteration of the benchmark.
      * This includes calling the {@link #buildUp()} and {@link #tearDown()} methods, measuring the
      * execution time and evaluating BenchmarkProperties.
-     * 
-     * @param config The configuration (consisting of backends) on which the benchmark is run
      */
     public void run() {
         buildUp();

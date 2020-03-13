@@ -29,28 +29,36 @@ public class BenchmarkProperty {
     public static final Tracking AFTER = Tracking.AFTER;
 
     private final String name;
-    private final Object value;
+    private final ValueProvider value;
 
     /**
-     * Initializes a new BenchmarkProperty whose value is determined by the result of a traversal.
-     * 
+     * Initializes a new BenchmarkProperty whose value is produced by a {@link ValueProvider}.
+     *
      * @param name The name of the BenchmarkProperty.
-     * @param statCollector The Traversal which collects the result value.
+     * @param vp The ValueProvider which produces the value of the BenchmarkProperty. It is
+     *     evaluated once the Property is serialized.
      */
-    public BenchmarkProperty(final String name, final DefaultGraphTraversal<?, ?> statCollector) {
+    public BenchmarkProperty(final String name, final ValueProvider vp) {
         this.name = name;
-        this.value = statCollector;
+        this.value = vp;
     }
 
     /**
-     * Initializes a new BenchmarkProperty whose value is pre-determined.
-     * 
+     * Initializes a new BenchmarkProperty whose value is pre-determined. If value is a graph
+     * traversal, it will be automatically evaluated when needed.
+     *
      * @param name The name of the BenchmarkProperty.
      * @param value The pre-determined value.
      */
     public BenchmarkProperty(final String name, final Object value) {
-        this.name = name;
-        this.value = value;
+        this(name, () -> {
+            if (value instanceof DefaultGraphTraversal<?,?>) {
+                final DefaultGraphTraversal<?,?> statCollector = (DefaultGraphTraversal<?,?>) value;
+                return statCollector.clone().next();
+            } else {
+                return value;
+            }
+        });
     }
 
     /**
@@ -67,11 +75,16 @@ public class BenchmarkProperty {
      * @return The evaluated result of the BenchmarkProperty.
      */
     public Object evaluate() {
-        if (value instanceof DefaultGraphTraversal<?, ?>) {
-            final DefaultGraphTraversal<?, ?> statCollector = (DefaultGraphTraversal<?, ?>) value;
-            return statCollector.clone().next();
-        } else {
-            return value;
-        }
+        return value.evaluate();
+    }
+
+    /**
+     * A ValueProvider has the ability to return an Object which is only evaluated when needed.
+     * Therefore, BenchmarkProperties can contain Objects that are unknown at initialization time
+     * but known at execution time.
+     */
+    @FunctionalInterface
+    public interface ValueProvider {
+        Object evaluate();
     }
 }

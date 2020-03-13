@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -21,16 +20,16 @@ public class GraphOperationTests {
 
     private static int JG_PORT = 8182;
 
-    private static File composeFile = new File("docker/configurations/janusgraph-inmemory.yml");
-    private static String schemaFileName = "conf/initialize-graph.groovy";
+    private static final File COMPOSE_FILE = new File("docker/configurations/janusgraph-inmemory.yml");
+    private static final File INIT_SCRIPT = new File("conf/initialize-graph.groovy");
 
-    private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
+    private static final File REMOTE_PROPERTIES = new File("conf/remote-graph.properties");
 
     private Connection conn;
 
     @Container
     public static DockerComposeContainer<?> environment =
-        new DockerComposeContainer<>(composeFile)
+        new DockerComposeContainer<>(COMPOSE_FILE)
             .withExposedService("janusgraph", JG_PORT)
             .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
             .withLocalCompose(true);
@@ -50,7 +49,7 @@ public class GraphOperationTests {
 
     @Test
     public void testCreateSchema() throws Exception {
-        final String initRequest = new String(Files.readAllBytes(Paths.get(schemaFileName)));
+        final String initRequest = new String(Files.readAllBytes(INIT_SCRIPT.toPath()));
         conn.submit(initRequest);
     }
 

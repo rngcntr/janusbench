@@ -68,7 +68,7 @@ The files themselves use the normal Docker Compose format and define combination
 In janusbench, there are two kinds of benchmarks:
 
 ### Simple Benchmarks
-Simple Benchmarks -- located within the package [de.rngcntr.janusbench.benchmark.simple](https://github.com/rngcntr/janusbench/blob/master/src/main/java/de/rngcntr/janusbench/benchmark/simple) -- are very basic tasks like adding vertices and edges or testing the existence of such elements.
+Simple Benchmarks - located within the package [de.rngcntr.janusbench.benchmark.simple](https://github.com/rngcntr/janusbench/blob/master/src/main/java/de/rngcntr/janusbench/benchmark/simple) - are very basic tasks like adding vertices and edges or testing the existence of such elements.
 This kind of benchmark is not thought to be called by the user directly.
 Instead, it represents a key task, whose runtime is measured by a composed benchmark (see section below).
 

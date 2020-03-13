@@ -1,0 +1,4 @@
+runs: 2
+stepsPerRun: 2
+edgesPerStep: 2
+approach: "INDIRECT_ID"

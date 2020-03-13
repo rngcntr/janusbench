@@ -10,12 +10,12 @@ import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
-import de.rngcntr.janusbench.util.BenchmarkResult;
 import de.rngcntr.janusbench.util.ExitCode;
 import de.rngcntr.janusbench.util.ResultLogger;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import org.apache.commons.configuration.ConfigurationException;
@@ -31,17 +31,22 @@ public class RunSubcommand implements Callable<Integer> {
             defaultValue = "conf/remote-graph.properties",
             description = "The remote graph properties file"
                           + "\ndefault: ${DEFAULT-VALUE}")
-    private static String REMOTE_PROPERTIES;
+    private static File REMOTE_PROPERTIES;
 
     @Option(names = {"--swarm"}, negatable = true,
             description = "Whether or not to use Docker Swarm instead of Docker Compose")
-    private static boolean useDockerSwarm = false;
+    private static boolean USE_SWARM = false;
 
     @Option(names = {"--schema-script"}, paramLabel = "FILE",
             defaultValue = "conf/initialize-graph.groovy",
             description = "The groovy script used for initialization of the graph schema"
                           + "\ndefault: ${DEFAULT-VALUE}")
-    private static String INIT_SCRIPT;
+    private static File INIT_SCRIPT;
+
+    @Option(names = {"-o", "--output"}, paramLabel = "OUTPUT FILE",
+            description = "The desired location to write the collected results."
+                          + " If unassigned, results/results.txt will be used.")
+    private static File OUTPUT_FILE;
 
     @Option(names = {"-s", "--storage"}, paramLabel = "STORAGE BACKEND", required = true,
             description = "One of the supported storage backends."
@@ -68,7 +73,7 @@ public class RunSubcommand implements Callable<Integer> {
         log.info("Using " + benchmarkClass.getName());
 
         try {
-            if (useDockerSwarm) {
+            if (USE_SWARM) {
                 configuration = new SwarmConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
             } else {
                 configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
@@ -94,13 +99,19 @@ public class RunSubcommand implements Callable<Integer> {
                 return ExitCode.SERVICE_SETUP_ERROR;
             } else {
                 createSchema();
-                ResultLogger.getInstance().setOutputMethod("results.txt");
+
+                if (OUTPUT_FILE != null) {
+                    ResultLogger.getInstance().setOutputMethod(OUTPUT_FILE);
+                } else {
+                    ResultLogger.getInstance().setOutputMethod("results.txt");
+                }
+
                 runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection),
                              configuration);
                 return ExitCode.OK;
             }
         } catch (final NoSchemaFoundException nsfex) {
-            log.error("Graph initialization script not found: " + INIT_SCRIPT);
+            log.error("Graph initialization script not found: " + INIT_SCRIPT.getAbsolutePath());
             return ExitCode.MISSING_SCHEMA_FILE;
         } catch (final IOException ioex) {
             log.error("Unable to create results file");
@@ -115,19 +126,16 @@ public class RunSubcommand implements Callable<Integer> {
     public void runBenchmark(final Benchmark benchmark, Configuration config) {
         benchmark.setConfiguration(config);
         benchmark.run();
-        for (final BenchmarkResult br : benchmark.getResults()) {
-            System.out.println(br);
-        }
     }
 
     public void createSchema() throws NoSchemaFoundException {
         log.info("Creating schema");
         try {
-            String initRequest = new String(Files.readAllBytes(Paths.get(INIT_SCRIPT)));
+            String initRequest = new String(Files.readAllBytes(INIT_SCRIPT.toPath()));
             connection.submit(initRequest);
             log.info("Done creating schema");
         } catch (IOException ioex) {
-            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT, ioex);
+            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT.getAbsolutePath(), ioex);
         }
     }
 

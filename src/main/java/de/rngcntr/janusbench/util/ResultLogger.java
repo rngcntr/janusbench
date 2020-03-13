@@ -72,6 +72,22 @@ public class ResultLogger implements AutoCloseable {
     }
 
     /**
+     * Redirects the output to a given file.
+     * If the file or the containing directory does not exist, it's created by this call.
+     * 
+     * @param file The desired output file.
+     * @throws IOException If the given file can't be written.
+     */
+    synchronized public void setOutputMethod(final File file) throws IOException {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+
+        outputStream = new PrintStream(new FileOutputStream(file));
+    }
+
+    /**
      * Closes the underlying {@link PrintStream}.
      */
     synchronized public void close() {

@@ -14,15 +14,15 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public class ConnectionTests {
 
-    private static int JG_PORT = 8182;
+    private static final int JG_PORT = 8182;
 
-    private static File composeFile = new File("docker/configurations/janusgraph-inmemory.yml");
+    private static final File COMPOSE_FILE = new File("docker/configurations/janusgraph-inmemory.yml");
 
-    private static final String REMOTE_PROPERTIES = "conf/remote-graph.properties";
+    private static final File REMOTE_PROPERTIES = new File("conf/remote-graph.properties");
 
     @Container
     public static DockerComposeContainer<?> environment =
-        new DockerComposeContainer<>(composeFile)
+        new DockerComposeContainer<>(COMPOSE_FILE)
             .withExposedService("janusgraph", JG_PORT)
             .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
             .withLocalCompose(true);
@@ -46,7 +46,7 @@ public class ConnectionTests {
 
     @Test
     public void testEstablishInvalidConnection() {
-        Connection conn = new Connection("/dev/null");
+        Connection conn = new Connection(new File("/dev/null"));
         Exception exception = assertThrows(ConfigurationException.class, () -> conn.open());
 
         assertTrue("ConfigurationException should be thrown",

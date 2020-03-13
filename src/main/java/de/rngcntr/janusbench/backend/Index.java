@@ -2,7 +2,7 @@ package de.rngcntr.janusbench.backend;
 
 /**
  * The <code>Index</code> enum manages the available options for index backends.
- * Every {@link de.rngcntr.janusbench.backend.Configuration} uses up to one of these to store and manage graph indexes.
+ * Every {@link de.rngcntr.janusbench.backend.configuration.Configuration} uses up to one of these to store and manage graph indexes.
  * 
  * If new index backends are implemented in JanusGraph, this enum needs to be extended by the classifiers of the new backends.
  * 

@@ -2,6 +2,7 @@ package de.rngcntr.janusbench.backend;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
 
+import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
@@ -35,11 +36,11 @@ public class Connection {
     /**
      * Initializes a new Connection with the parameters given in the property file.
      * 
-     * @param propertiesFileName The path to the property file.
+     * @param propertiesFile The file to read the properties from.
      * This file is a TinkerPop <code>remote-graph.properties</code> file.
      */
-    public Connection(final String propertiesFileName) {
-        this.propertiesFileName = propertiesFileName;
+    public Connection(final File propertiesFile) {
+        this.propertiesFileName = propertiesFile.getAbsolutePath();
         sessionUuid = UUID.randomUUID();
     }
 
