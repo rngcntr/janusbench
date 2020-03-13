@@ -4,7 +4,8 @@ import de.rngcntr.janusbench.backend.Storage;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
-@Command(name = "storage", description = "Prints a list of supported storage backends to STDOUT.")
+@Command(name = "storage", description = "Prints a list of supported storage backends to STDOUT.",
+         sortOptions = false)
 public class ListStorageSubcommand implements Callable<Integer> {
 
     public Integer call() throws Exception {

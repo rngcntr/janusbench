@@ -14,7 +14,7 @@ import picocli.CommandLine.Spec;
 @Command(name = "list", description = "Show all available instances of a given feature",
          subcommands = {ListBenchmarkSubcommand.class, ListStorageSubcommand.class,
                         ListIndexSubcommand.class},
-         exitCodeOnInvalidInput = ExitCode.INVALID_INPUT)
+         exitCodeOnInvalidInput = ExitCode.INVALID_INPUT, sortOptions = false)
 public class ListSubcommand implements Callable<Integer> {
     @Spec CommandSpec spec;
 

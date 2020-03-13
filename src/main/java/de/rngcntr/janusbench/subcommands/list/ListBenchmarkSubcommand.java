@@ -4,7 +4,8 @@ import de.rngcntr.janusbench.util.BenchmarkFactory;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
-@Command(name = "benchmark", description = "Prints a list of implemented benchmarks to STDOUT.")
+@Command(name = "benchmark", description = "Prints a list of implemented benchmarks to STDOUT.",
+         sortOptions = false)
 public class ListBenchmarkSubcommand implements Callable<Integer> {
 
     public Integer call() throws Exception {

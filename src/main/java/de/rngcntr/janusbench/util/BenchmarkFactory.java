@@ -2,7 +2,6 @@ package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.exceptions.UnavailableBenchmarkException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

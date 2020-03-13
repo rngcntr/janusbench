@@ -4,7 +4,8 @@ import de.rngcntr.janusbench.backend.Index;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 
-@Command(name = "index", description = "Prints a list of supported index backends to STDOUT.")
+@Command(name = "index", description = "Prints a list of supported index backends to STDOUT.",
+         sortOptions = false)
 public class ListIndexSubcommand implements Callable<Integer> {
 
     public Integer call() throws Exception {

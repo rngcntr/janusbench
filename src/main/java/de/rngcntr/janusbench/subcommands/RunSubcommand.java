@@ -12,7 +12,6 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.ExitCode;
 import de.rngcntr.janusbench.util.ResultLogger;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +23,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(name = "run", description = "Runs a specified benchmark", exitCodeOnInvalidInput = ExitCode.INVALID_INPUT)
+@Command(name = "run", description = "Runs a specified benchmark",
+         exitCodeOnInvalidInput = ExitCode.INVALID_INPUT, sortOptions = false)
 public class RunSubcommand implements Callable<Integer> {
 
     @Option(names = {"--remote-properties"}, paramLabel = "FILE",
@@ -53,18 +53,21 @@ public class RunSubcommand implements Callable<Integer> {
             required = true,
             description = "One of the supported storage backends."
                           + " For a list of supported storage backends use"
-                          + "\njanusbench list storage")
+                          + " janusbench list storage"
+                          + "\nAvailable: ${COMPLETION-CANDIDATES}")
     private static Storage[] STORAGE_BACKENDS;
 
     @Option(names = {"-i", "--index"}, split = ",\\s*", paramLabel = "INDEX BACKEND",
             defaultValue = "none",
             description = "One of the supported storage index."
                           + " For a list of supported index backends use"
-                          + "\njanusbench list index")
+                          + " janusbench list index"
+                          + "\nAvailable: ${COMPLETION-CANDIDATES}")
     private static Index[] INDEX_BACKENDS;
 
     @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
-                description = "The benchmark to run")
+                description = "The benchmark to run"
+                              + "\nAvailable: ${COMPLETION-CANDIDATES}")
     private static Class<? extends Benchmark> benchmarkClass;
 
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
@@ -94,7 +97,7 @@ public class RunSubcommand implements Callable<Integer> {
                     initializeConfiguration(storage, index);
                 } catch (final InvalidConfigurationException icex) {
                     log.error("Invalid configuration: " + storage.toString() + " and " +
-                            index.toString() + " are incompatible.");
+                              index.toString() + " are incompatible.");
                     return ExitCode.INCOMPATIBLE_BACKENDS;
                 }
 
@@ -110,8 +113,9 @@ public class RunSubcommand implements Callable<Integer> {
         ResultLogger.getInstance().close();
         return ExitCode.OK;
     }
-    
-    private void initializeConfiguration(Storage storage, Index index) throws InvalidConfigurationException {
+
+    private void initializeConfiguration(Storage storage, Index index)
+        throws InvalidConfigurationException {
         if (NATIVE) {
             configuration = new NativeConfiguration(storage, index);
         } else {
@@ -120,7 +124,7 @@ public class RunSubcommand implements Callable<Integer> {
         configuration.setTimeout(Duration.ofMinutes(1));
     }
 
-    private int runConfiguration(Storage storage, Index index){
+    private int runConfiguration(Storage storage, Index index) {
 
         this.connection = new Connection(REMOTE_PROPERTIES);
 
@@ -137,7 +141,8 @@ public class RunSubcommand implements Callable<Integer> {
             } else {
                 createSchema();
 
-                Benchmark benchmark = BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection);
+                Benchmark benchmark =
+                    BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection);
                 benchmark.setConfiguration(configuration);
                 benchmark.run();
 
@@ -158,7 +163,8 @@ public class RunSubcommand implements Callable<Integer> {
             connection.submit(initRequest);
             log.info("Done creating schema");
         } catch (IOException ioex) {
-            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT.getAbsolutePath(), ioex);
+            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT.getAbsolutePath(),
+                                             ioex);
         }
     }
 
