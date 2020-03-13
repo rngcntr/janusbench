@@ -11,8 +11,8 @@ import picocli.CommandLine;
 public class RunSubcommandTests {
 
     @Test
-    public void testNoStorageNoIndex()  {
-        String[] args = {"IndexedEdgeExistenceOnSupernode"};
+    public void testNoStorageNoIndex() {
+        String[] args = {"EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -21,9 +21,9 @@ public class RunSubcommandTests {
     }
 
     @Test
-    public void testInvalidStorageValidIndex()  {
+    public void testInvalidStorageValidIndex() {
         String[] args = {"-s", "nonExistentStorage", "-i", "elasticsearch",
-                         "IndexedEdgeExistenceOnSupernode"};
+                         "EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -32,8 +32,8 @@ public class RunSubcommandTests {
     }
 
     @Test
-    public void testInvalidStorageNoIndex()  {
-        String[] args = {"-s", "nonExistentStorage", "IndexedEdgeExistenceOnSupernode"};
+    public void testInvalidStorageNoIndex() {
+        String[] args = {"-s", "nonExistentStorage", "EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -42,9 +42,9 @@ public class RunSubcommandTests {
     }
 
     @Test
-    public void testValidStorageInvalidIndex()  {
+    public void testValidStorageInvalidIndex() {
         String[] args = {"-s", "cassandra", "-i", "nonExistentIndex",
-                         "IndexedEdgeExistenceOnSupernode"};
+                         "EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -53,9 +53,9 @@ public class RunSubcommandTests {
     }
 
     @Test
-    public void testValidStorageInvalidSchema()  {
+    public void testValidStorageInvalidSchema() {
         String[] args = {"-s", "inmemory", "--schema-script", "nonExistentSchemaScript",
-                         "IndexedEdgeExistenceOnSupernode"};
+                         "EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -64,13 +64,63 @@ public class RunSubcommandTests {
     }
 
     @Test
-    public void testValidStorageValidIndexInvalidCombination()  {
+    public void testValidStorageValidIndexInvalidCombination() {
         String[] args = {"-s", "inmemory", "-i", "elasticsearch",
-                         "IndexedEdgeExistenceOnSupernode"};
+                         "EdgeExistenceOnSupernode"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
         int returnCode = cli.execute(args);
         assertEquals(ExitCode.INCOMPATIBLE_BACKENDS, returnCode);
+    }
+
+    @Test
+    public void testValidStorageNoIndex() {
+        String[] args = {"-s", "inmemory", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testMultipleValidStoragesNoIndex() {
+        String[] args = {"-s", "inmemory, berkeleyje", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testValidStorageValidIndex() {
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testValidStorageMultipleValidIndexes() {
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testMultipleValidStoragesMultipleValidIndexes() {
+        String[] args = {"-s", "berkeleyje, scylla", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
     }
 }

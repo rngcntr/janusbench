@@ -11,6 +11,7 @@ package de.rngcntr.janusbench.backend;
  * @author Florian Grieskamp
  */
 public enum Index {
+    NONE,
     ELASTICSEARCH,
     SOLR,
     LUCENE;

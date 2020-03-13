@@ -48,17 +48,19 @@ public class RunSubcommand implements Callable<Integer> {
                           + " If unassigned, results/results.txt will be used.")
     private static File OUTPUT_FILE;
 
-    @Option(names = {"-s", "--storage"}, paramLabel = "STORAGE BACKEND", required = true,
+    @Option(names = {"-s", "--storage"}, split = ",", paramLabel = "STORAGE BACKEND",
+            required = true,
             description = "One of the supported storage backends."
                           + " For a list of supported storage backends use"
                           + "\njanusbench list storage")
-    private static Storage STORAGE_BACKEND;
+    private static Storage[] STORAGE_BACKENDS;
 
-    @Option(names = {"-i", "--index"}, paramLabel = "INDEX BACKEND",
+    @Option(names = {"-i", "--index"}, split = ",", paramLabel = "INDEX BACKEND",
+            defaultValue = "none",
             description = "One of the supported storage index."
                           + " For a list of supported index backends use"
                           + "\njanusbench list index")
-    private static Index INDEX_BACKEND;
+    private static Index[] INDEX_BACKENDS;
 
     @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
                 description = "The benchmark to run")
@@ -72,18 +74,52 @@ public class RunSubcommand implements Callable<Integer> {
     public Integer call() throws Exception {
         log.info("Using " + benchmarkClass.getName());
 
+        // create result file
         try {
-            if (USE_SWARM) {
-                configuration = new SwarmConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
+            if (OUTPUT_FILE != null) {
+                ResultLogger.getInstance().setOutputMethod(OUTPUT_FILE);
             } else {
-                configuration = new ComposeConfiguration(STORAGE_BACKEND, INDEX_BACKEND);
+                ResultLogger.getInstance().setOutputMethod("results.txt");
             }
-            configuration.setTimeout(Duration.ofMinutes(1));
-        } catch (final InvalidConfigurationException icex) {
-            log.error("Invalid configuration: " + STORAGE_BACKEND.toString() + " and " +
-                      INDEX_BACKEND.toString() + " are incompatible.");
-            return ExitCode.INCOMPATIBLE_BACKENDS;
+        } catch (final IOException ioex) {
+            log.error("Unable to create results file");
+            return ExitCode.INACCESSIBLE_RESULT_FILE;
         }
+
+        // iterate over backend combinations
+        for (Storage storage : STORAGE_BACKENDS) {
+            for (Index index : INDEX_BACKENDS) {
+                try {
+                    initializeConfiguration(storage, index);
+                } catch (final InvalidConfigurationException icex) {
+                    log.error("Invalid configuration: " + storage.toString() + " and " +
+                            index.toString() + " are incompatible.");
+                    return ExitCode.INCOMPATIBLE_BACKENDS;
+                }
+
+                int exitCode = runConfiguration(storage, index);
+                if (exitCode != ExitCode.OK) {
+                    return exitCode;
+                }
+
+                configuration.stop();
+            }
+        }
+
+        ResultLogger.getInstance().close();
+        return ExitCode.OK;
+    }
+    
+    private void initializeConfiguration(Storage storage, Index index) throws InvalidConfigurationException {
+        if (USE_SWARM) {
+            configuration = new SwarmConfiguration(storage, index);
+        } else {
+            configuration = new ComposeConfiguration(storage, index);
+        }
+        configuration.setTimeout(Duration.ofMinutes(1));
+    }
+
+    private int runConfiguration(Storage storage, Index index){
 
         this.connection = new Connection(REMOTE_PROPERTIES);
 
@@ -100,32 +136,18 @@ public class RunSubcommand implements Callable<Integer> {
             } else {
                 createSchema();
 
-                if (OUTPUT_FILE != null) {
-                    ResultLogger.getInstance().setOutputMethod(OUTPUT_FILE);
-                } else {
-                    ResultLogger.getInstance().setOutputMethod("results.txt");
-                }
+                Benchmark benchmark = BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection);
+                benchmark.setConfiguration(configuration);
+                benchmark.run();
 
-                runBenchmark(BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection),
-                             configuration);
                 return ExitCode.OK;
             }
         } catch (final NoSchemaFoundException nsfex) {
             log.error("Graph initialization script not found: " + INIT_SCRIPT.getAbsolutePath());
             return ExitCode.MISSING_SCHEMA_FILE;
-        } catch (final IOException ioex) {
-            log.error("Unable to create results file");
-            return ExitCode.INACCESSIBLE_RESULT_FILE;
         } finally {
             closeGraph();
-            configuration.stop();
-            ResultLogger.getInstance().close();
         }
-    }
-
-    public void runBenchmark(final Benchmark benchmark, Configuration config) {
-        benchmark.setConfiguration(config);
-        benchmark.run();
     }
 
     public void createSchema() throws NoSchemaFoundException {

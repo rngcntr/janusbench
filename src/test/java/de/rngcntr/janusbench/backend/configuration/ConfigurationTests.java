@@ -37,6 +37,13 @@ public class ConfigurationTests {
     }
 
     @Test
+    public void testValidConfigurationPathWithNoneIndex() {
+        Configuration c = new ComposeConfiguration(Storage.INMEMORY, Index.NONE);
+
+        assertEquals("docker/configurations/janusgraph-inmemory.yml", c.getPath());
+    }
+
+    @Test
     public void testValidConfigurationPathWithIndex() {
         Configuration c = new ComposeConfiguration(Storage.CASSANDRA, Index.ELASTICSEARCH);
 

@@ -82,7 +82,7 @@ public abstract class Configuration {
     public String getPath() {
         String fileName = "janusgraph";
         fileName += (storage != null ? "-" + storage : "");
-        fileName += (index != null ? "-" + index : "");
+        fileName += (index != null && index != Index.NONE ? "-" + index : "");
         fileName += FILE_EXTENSION;
         return CONFIG_BASE_PATH + fileName;
     }
