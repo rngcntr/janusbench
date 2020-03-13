@@ -95,7 +95,7 @@ public class ListSubcommandTests {
         String outputString = outContent.toString();
 
         assertTrue(
-            outputString.contains("IndexedEdgeExistenceOnSupernode"),
-            "IndexedEdgeExistenceOnSupernode is expected to be returnd by 'janusbench list storage'");
+            outputString.contains("EdgeExistenceOnSupernode"),
+            "EdgeExistenceOnSupernode is expected to be returnd by 'janusbench list storage'");
     }
 }

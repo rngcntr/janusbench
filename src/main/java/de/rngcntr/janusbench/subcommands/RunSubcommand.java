@@ -48,14 +48,14 @@ public class RunSubcommand implements Callable<Integer> {
                           + " If unassigned, results/results.txt will be used.")
     private static File OUTPUT_FILE;
 
-    @Option(names = {"-s", "--storage"}, split = ",", paramLabel = "STORAGE BACKEND",
+    @Option(names = {"-s", "--storage"}, split = ",\\s*", paramLabel = "STORAGE BACKEND",
             required = true,
             description = "One of the supported storage backends."
                           + " For a list of supported storage backends use"
                           + "\njanusbench list storage")
     private static Storage[] STORAGE_BACKENDS;
 
-    @Option(names = {"-i", "--index"}, split = ",", paramLabel = "INDEX BACKEND",
+    @Option(names = {"-i", "--index"}, split = ",\\s*", paramLabel = "INDEX BACKEND",
             defaultValue = "none",
             description = "One of the supported storage index."
                           + " For a list of supported index backends use"

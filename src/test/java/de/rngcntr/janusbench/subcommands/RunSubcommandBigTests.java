@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
+import de.rngcntr.janusbench.util.ExitCode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -50,5 +52,55 @@ public class RunSubcommandBigTests {
         assertEquals(0, returnCode);
 
         Thread.sleep(15000);
+    }
+
+    @Test
+    public void testValidStorageNoIndex() {
+        String[] args = {"-s", "inmemory", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testMultipleValidStoragesNoIndex() {
+        String[] args = {"-s", "inmemory, berkeleyje", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testValidStorageValidIndex() {
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testValidStorageMultipleValidIndexes() {
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
+    }
+
+    @Test
+    public void testMultipleValidStoragesMultipleValidIndexes() {
+        String[] args = {"-s", "berkeleyje, scylla", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+
+        final RunSubcommand runner = new RunSubcommand();
+        CommandLine cli = new CommandLine(runner);
+        int returnCode = cli.execute(args);
+        assertEquals(ExitCode.OK, returnCode);
     }
 }
