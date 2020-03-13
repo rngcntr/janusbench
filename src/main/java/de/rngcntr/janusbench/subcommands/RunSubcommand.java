@@ -5,7 +5,7 @@ import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
 import de.rngcntr.janusbench.backend.configuration.ComposeConfiguration;
 import de.rngcntr.janusbench.backend.configuration.Configuration;
-import de.rngcntr.janusbench.backend.configuration.SwarmConfiguration;
+import de.rngcntr.janusbench.backend.configuration.NativeConfiguration;
 import de.rngcntr.janusbench.exceptions.InvalidConfigurationException;
 import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
@@ -33,9 +33,10 @@ public class RunSubcommand implements Callable<Integer> {
                           + "\ndefault: ${DEFAULT-VALUE}")
     private static File REMOTE_PROPERTIES;
 
-    @Option(names = {"--swarm"}, negatable = true,
-            description = "Whether or not to use Docker Swarm instead of Docker Compose")
-    private static boolean USE_SWARM = false;
+    @Option(names = {"--native"},
+            description = "This option instructs janusbench to use an existing environment and"
+                          + " skip creating the services defined in local docker compose files.")
+    private static boolean NATIVE = false;
 
     @Option(names = {"--schema-script"}, paramLabel = "FILE",
             defaultValue = "conf/initialize-graph.groovy",
@@ -111,8 +112,8 @@ public class RunSubcommand implements Callable<Integer> {
     }
     
     private void initializeConfiguration(Storage storage, Index index) throws InvalidConfigurationException {
-        if (USE_SWARM) {
-            configuration = new SwarmConfiguration(storage, index);
+        if (NATIVE) {
+            configuration = new NativeConfiguration(storage, index);
         } else {
             configuration = new ComposeConfiguration(storage, index);
         }
