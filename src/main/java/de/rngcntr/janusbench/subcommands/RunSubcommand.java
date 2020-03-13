@@ -24,7 +24,8 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(name = "run", description = "Runs a specified benchmark",
-         exitCodeOnInvalidInput = ExitCode.INVALID_INPUT, sortOptions = false)
+         exitCodeOnInvalidInput = ExitCode.INVALID_INPUT, sortOptions = false,
+         usageHelpAutoWidth = true)
 public class RunSubcommand implements Callable<Integer> {
 
     @Option(names = {"--remote-properties"}, paramLabel = "FILE",
