@@ -46,12 +46,16 @@ public class ComposeConfiguration extends Configuration {
             environment.stop();
         }
 
+        // watch out for differently named container when using foundationdb backend
+        String janusgraphService =
+            storage == Storage.FOUNDATIONDB ? "janusgraph-fdb" : "janusgraph";
+
         environment =
             getEnvironment()
                 .withExposedService(
-                    "janusgraph", JANUSGRAPH_PORT,
+                    janusgraphService, JANUSGRAPH_PORT,
                     Wait.forListeningPort().withStartupTimeout(timeoutDuration))
-                .waitingFor("janusgraph", Wait.forLogMessage(".*Channel started at port.*", 1))
+                .waitingFor(janusgraphService, Wait.forLogMessage(".*Channel started at port.*", 1))
                 .withLocalCompose(true);
 
         try {
