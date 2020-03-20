@@ -1,5 +1,17 @@
 package de.rngcntr.janusbench.subcommands;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.util.concurrent.Callable;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.backend.Index;
 import de.rngcntr.janusbench.backend.Storage;
@@ -12,13 +24,6 @@ import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.ExitCode;
 import de.rngcntr.janusbench.util.ResultLogger;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Duration;
-import java.util.concurrent.Callable;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -71,25 +76,26 @@ public class RunSubcommand implements Callable<Integer> {
                               + "\nAvailable: ${COMPLETION-CANDIDATES}")
     private static Class<? extends Benchmark> benchmarkClass;
 
+    @Option(names = "-v", description = {"Specify multiple -v options to increase verbosity.",
+                                         "For example, `-v`, `-vv` or `-vvv`"})
+    boolean[] verbosity = new boolean[]{};
+
     private static final Logger log = Logger.getLogger(RunSubcommand.class);
 
     private Configuration configuration;
     private Connection connection;
 
     public Integer call() throws Exception {
-        log.info("Using " + benchmarkClass.getName());
+        initializeLogger();
 
-        // create result file
         try {
-            if (OUTPUT_FILE != null) {
-                ResultLogger.getInstance().setOutputMethod(OUTPUT_FILE);
-            } else {
-                ResultLogger.getInstance().setOutputMethod("results.txt");
-            }
+            initializeResultOutput();
         } catch (final IOException ioex) {
             log.error("Unable to create results file");
             return ExitCode.INACCESSIBLE_RESULT_FILE;
         }
+
+        log.info("Using " + benchmarkClass.getName());
 
         // iterate over backend combinations
         for (Storage storage : STORAGE_BACKENDS) {
@@ -113,6 +119,39 @@ public class RunSubcommand implements Callable<Integer> {
 
         ResultLogger.getInstance().close();
         return ExitCode.OK;
+    }
+
+    private void initializeLogger() {
+        Logger root = Logger.getRootLogger();
+        root.removeAllAppenders();
+        PatternLayout layout = new PatternLayout("%d [%t] %-5p %c - %m%n");
+        ConsoleAppender stderr = new ConsoleAppender(layout, "System.err");
+        root.addAppender(stderr);
+        
+        switch (verbosity.length) {
+        case 1:
+            root.setLevel(Level.WARN);
+            break;
+        case 2:
+            root.setLevel(Level.INFO);
+            break;
+        case 3:
+            root.setLevel(Level.DEBUG);
+            break;
+        case 4:
+            root.setLevel(Level.TRACE);
+            break;
+        default:
+            root.setLevel(Level.ERROR);
+        }
+    }
+
+    private void initializeResultOutput() throws IOException {
+        if (OUTPUT_FILE != null) {
+            ResultLogger.getInstance().setOutputMethod(OUTPUT_FILE);
+        } else {
+            ResultLogger.getInstance().setOutputMethod(System.out);
+        }
     }
 
     private void initializeConfiguration(Storage storage, Index index)

@@ -22,14 +22,4 @@ public class BenchmarkPropertyTests {
         BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
         assertEquals("BenchmarkProperty needs to keep key unchanged", "value", prop.evaluate());
     }
-
-    @Test
-    public void testEvaluateTraversal() {
-        DefaultGraphTraversal<?,?> mockedStatCollector = mock(DefaultGraphTraversal.class);
-        Mockito.doReturn(mockedStatCollector).when(mockedStatCollector).clone();
-        Mockito.doReturn("value").when(mockedStatCollector).next();
-
-        BenchmarkProperty prop = new BenchmarkProperty("key", () -> mockedStatCollector);
-        assertEquals("BenchmarkProperty needs to evaluate traversals", "value", prop.evaluate());
-    }
 }
