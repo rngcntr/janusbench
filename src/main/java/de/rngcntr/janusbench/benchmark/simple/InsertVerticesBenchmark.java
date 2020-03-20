@@ -6,6 +6,9 @@ import java.util.Random;
 import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang3.RandomStringUtils;
 
+/**
+ * Inserts random vertices with name and age properties into the graph.
+ */
 public class InsertVerticesBenchmark extends Benchmark {
 
     private String[] names;

@@ -12,6 +12,11 @@ import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.graphdb.types.system.ImplicitKey;
 
+/**
+ * Receives a supernode with many neighbours and uses one of the available approaches to check
+ * whether or not the supernode has an outgoing edge that points to a vertex with the given property
+ * value.
+ */
 public class EdgeExistenceBenchmark<T> extends Benchmark {
 
     private final Vertex supernode;
@@ -34,8 +39,12 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
         this.supernode = supernode;
         this.propertyName = propertyName;
         this.nodeProperties = nodeProperties;
-
         approach = Approach.DIRECT_ID;
+
+        if (nodeProperties.length != stepSize) {
+            throw new IllegalArgumentException("Must receive one node property per step");
+        }
+
         BenchmarkProperty useIndexProperty = new BenchmarkProperty(
             "approach", () -> approach.toString().toLowerCase().replace("_", "-"));
         collectBenchmarkProperty(useIndexProperty, Tracking.BEFORE);

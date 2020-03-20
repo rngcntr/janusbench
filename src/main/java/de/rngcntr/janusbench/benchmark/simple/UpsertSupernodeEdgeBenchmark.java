@@ -10,6 +10,10 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
+/**
+ * Selects a random vertex from the graph and connects it to the given supernode with an edge.
+ * If the connection already exists, only the edge's property is updated.
+ */
 public class UpsertSupernodeEdgeBenchmark extends Benchmark {
     private final Vertex supernode;
     private Vertex[] neighbours;

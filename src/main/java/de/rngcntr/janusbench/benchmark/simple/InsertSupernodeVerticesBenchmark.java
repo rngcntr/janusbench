@@ -11,6 +11,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
+/**
+ * Inserts random vertices with name and age properties into the graph and connects all of them to a
+ * single supernode.
+ */
 public class InsertSupernodeVerticesBenchmark extends Benchmark {
     private final Vertex supernode;
 

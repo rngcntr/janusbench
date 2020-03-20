@@ -10,6 +10,10 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
+/**
+ * Selects two random vertices from the graph and connects them with an edge.
+ * If the connection already exists, only the edge's property is updated.
+ */
 public class UpsertRandomEdgeBenchmark extends Benchmark {
     private Vertex[] a;
     private Vertex[] b;
@@ -38,11 +42,11 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
             a[i] = allVertices.get(selectedIndexA);
 
             // one vertex less to sample from
-            int selectedIndexB = rand.nextInt(allVertices.size() - 1);
-            if (selectedIndexA == selectedIndexB) {
+            int selectedIndexB;
+            do {
+                selectedIndexB = rand.nextInt(allVertices.size() - 1);
                 // if the same index is selected, use another vertex instead
-                selectedIndexB = allVertices.size() - 1;
-            }
+            } while (selectedIndexA == selectedIndexB);
             b[i] = allVertices.get(selectedIndexB);
         }
     }

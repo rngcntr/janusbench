@@ -10,6 +10,11 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
+/**
+ * Creates a vertex with name and age properties and inserts it into the graph if no such vertex
+ * exists yet. The newly inserted vertex is then connected to the given supernode by an edge. If the
+ * connection already exists, only the edge's property is updated.
+ */
 public class UpsertSupernodeVerticesBenchmark extends Benchmark {
     private final Vertex supernode;
 
