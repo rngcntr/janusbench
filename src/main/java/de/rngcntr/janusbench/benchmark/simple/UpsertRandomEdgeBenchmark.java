@@ -2,12 +2,14 @@ package de.rngcntr.janusbench.benchmark.simple;
 
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
-import org.apache.tinkerpop.gremlin.structure.Edge;
+
+import org.apache.tinkerpop.gremlin.driver.Result;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
@@ -19,6 +21,11 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
     private Vertex[] b;
 
     private Random rand;
+
+    private String edgeExistenceQuery;
+    private String edgeInsertQuery;
+    private String edgeUpdateQuery;
+    private Map<String, Object> parameters;
 
     public UpsertRandomEdgeBenchmark(final Connection connection) { super(connection); }
 
@@ -33,7 +40,7 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
         b = new Vertex[stepSize];
 
         // get a list of all vertices to select from
-        final ArrayList<Vertex> allVertices = new ArrayList<Vertex>(g.V().toList());
+        final List<Vertex> allVertices = g.V().toList();
         rand = new Random(System.nanoTime());
 
         for (int i = 0; i < stepSize; ++i) {
@@ -42,31 +49,52 @@ public class UpsertRandomEdgeBenchmark extends Benchmark {
             a[i] = allVertices.get(selectedIndexA);
 
             // one vertex less to sample from
-            int selectedIndexB;
-            do {
-                selectedIndexB = rand.nextInt(allVertices.size() - 1);
+            int selectedIndexB = rand.nextInt(allVertices.size() - 1);
+            if (selectedIndexA == selectedIndexB) {
                 // if the same index is selected, use another vertex instead
-            } while (selectedIndexA == selectedIndexB);
+                selectedIndexB = allVertices.size() - 1;
+            }
+
             b[i] = allVertices.get(selectedIndexB);
         }
+
+        edgeExistenceQuery = "g.V(vertexA)"
+                             + ".outE(edgeLabel)"
+                             + ".as(\"e\")"
+                             + ".inV()"
+                             + ".is(vertexB)"
+                             + ".select(\"e\")"
+                             + ".limit(1)"
+                             + ".toList()";
+        edgeUpdateQuery = "g.E(foundEdge)"
+                             + ".property(propertyLabel, propertyValue)"
+                             + ".iterate()";
+        edgeInsertQuery = "g.addE(edgeLabel)"
+                          + ".from(vertexA)"
+                          + ".to(vertexB)"
+                          + ".property(propertyLabel, propertyValue)"
+                          + ".next()";
+        parameters = new HashMap<String, Object>();
+
+        parameters.put("edgeLabel", "knows");
+        parameters.put("propertyLabel", "lastSeen");
     }
 
     @Override
     public void performAction() throws TimeoutException {
         for (int index = 0; index < stepSize; ++index) {
-            if (g.V(a[index]).in("knows").where(__.is(b[index])).hasNext()) {
+            parameters.put("vertexA", a[index]);
+            parameters.put("vertexB", b[index]);
+            parameters.put("propertyValue", new Date());
+
+            Result candidate = connection.submitAsync(edgeExistenceQuery, parameters).one();
+            if (candidate != null) {
                 // edge already exists -> update
-                final Edge e = (Edge) g.V(a[index])
-                                   .inE("knows")
-                                   .as("e")
-                                   .outV()
-                                   .where(__.is(b[index]))
-                                   .select("e")
-                                   .next();
-                e.property("lastSeen", new Date());
+                parameters.put("foundEdge", candidate.getEdge());
+                connection.submit(edgeUpdateQuery, parameters);
             } else {
                 // edge does not exist -> insert
-                g.addE("knows").from(a[index]).to(b[index]).property("lastSeen", new Date()).next();
+                connection.submit(edgeInsertQuery, parameters);
             }
         }
     }

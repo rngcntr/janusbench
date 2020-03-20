@@ -36,10 +36,10 @@ public class EdgeExistenceOnSupernode extends ComposableBenchmark {
         final InsertSupernodeVerticesBenchmark isvb =
             new InsertSupernodeVerticesBenchmark(connection, edgesPerStep, supernode);
         final BenchmarkProperty connectionsBefore =
-            new BenchmarkProperty("connectionsBefore", connection.g().V(supernode).outE().count());
+            new BenchmarkProperty("connectionsBefore", () -> connection.g().V(supernode).outE().count().next());
         isvb.collectBenchmarkProperty(connectionsBefore, Tracking.BEFORE);
         final BenchmarkProperty connectionsAfter =
-            new BenchmarkProperty("connectionsAfter", connection.g().V(supernode).outE().count());
+            new BenchmarkProperty("connectionsAfter", () -> connection.g().V(supernode).outE().count().next());
         isvb.collectBenchmarkProperty(connectionsAfter, Tracking.AFTER);
 
         // create edge existence checker
@@ -48,7 +48,7 @@ public class EdgeExistenceOnSupernode extends ComposableBenchmark {
             connection, supernode, "name", new String[] {supernodeName});
         eeb.useApproach(lookupApproach);
         final BenchmarkProperty connections =
-            new BenchmarkProperty("connections", connection.g().V(supernode).outE().count());
+            new BenchmarkProperty("connections", () -> connection.g().V(supernode).outE().count().next());
         eeb.collectBenchmarkProperty(connections, Tracking.AFTER);
 
         // compose benchmark

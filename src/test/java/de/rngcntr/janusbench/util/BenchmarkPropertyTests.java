@@ -13,13 +13,13 @@ public class BenchmarkPropertyTests {
 
     @Test
     public void testGetName() {
-        BenchmarkProperty prop = new BenchmarkProperty("key", "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
         assertEquals("BenchmarkProperty needs to keep key unchanged", "key", prop.getName());
     }
 
     @Test
     public void testEvaluateString() {
-        BenchmarkProperty prop = new BenchmarkProperty("key", "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
         assertEquals("BenchmarkProperty needs to keep key unchanged", "value", prop.evaluate());
     }
 
@@ -29,7 +29,7 @@ public class BenchmarkPropertyTests {
         Mockito.doReturn(mockedStatCollector).when(mockedStatCollector).clone();
         Mockito.doReturn("value").when(mockedStatCollector).next();
 
-        BenchmarkProperty prop = new BenchmarkProperty("key", mockedStatCollector);
+        BenchmarkProperty prop = new BenchmarkProperty("key", () -> mockedStatCollector);
         assertEquals("BenchmarkProperty needs to evaluate traversals", "value", prop.evaluate());
     }
 }

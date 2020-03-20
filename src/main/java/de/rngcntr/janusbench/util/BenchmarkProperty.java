@@ -1,7 +1,5 @@
 package de.rngcntr.janusbench.util;
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal;
-
 /**
  * Represents a key information of a benchmark run.
  * This can either be a parameter or a measured result.
@@ -41,24 +39,6 @@ public class BenchmarkProperty {
     public BenchmarkProperty(final String name, final ValueProvider vp) {
         this.name = name;
         this.value = vp;
-    }
-
-    /**
-     * Initializes a new BenchmarkProperty whose value is pre-determined. If value is a graph
-     * traversal, it will be automatically evaluated when needed.
-     *
-     * @param name The name of the BenchmarkProperty.
-     * @param value The pre-determined value.
-     */
-    public BenchmarkProperty(final String name, final Object value) {
-        this(name, () -> {
-            if (value instanceof DefaultGraphTraversal<?,?>) {
-                final DefaultGraphTraversal<?,?> statCollector = (DefaultGraphTraversal<?,?>) value;
-                return statCollector.clone().next();
-            } else {
-                return value;
-            }
-        });
     }
 
     /**

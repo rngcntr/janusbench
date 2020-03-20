@@ -110,7 +110,7 @@ public abstract class Benchmark implements Runnable {
 
         final BenchmarkResult result = new BenchmarkResult(this);
         result.setConfiguration(configuration);
-        final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", stepSize);
+        final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", () -> stepSize);
         result.injectBenchmarkProperty(stepSizeProperty);
 
         for (final BenchmarkProperty beforeProperty : trackBeforeRun) {
@@ -138,7 +138,7 @@ public abstract class Benchmark implements Runnable {
         }
 
         final BenchmarkProperty timeProperty =
-            new BenchmarkProperty("time", (stopTime - startTime) / 1000000.0);
+            new BenchmarkProperty("time", () -> (stopTime - startTime) / 1000000.0);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();

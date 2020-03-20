@@ -176,8 +176,8 @@ public class Connection {
      * @return The same ResultSet once all results are available.
      */
     public ResultSet awaitResults(final ResultSet rs) {
-        while (!rs.allItemsAvailable()) {
-        }
+        // TODO: handle possible exceptions using get() instead of join()
+        rs.all().join();
         return rs;
     }
 }

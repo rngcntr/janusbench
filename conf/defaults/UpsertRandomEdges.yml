@@ -1,0 +1,3 @@
+runs: 10
+vertices: 1000
+edgesPerRun: 1000

@@ -19,7 +19,7 @@ public class BenchmarkResultTests {
         assertEquals("action type should be set correctly", cb.getClass().getSimpleName(),
                      (String) result.getBenchmarkProperty("action"));
 
-        BenchmarkProperty prop = new BenchmarkProperty("key", "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
         result.injectBenchmarkProperty(prop);
 
         assertEquals("action type should be set correctly", "value",
@@ -32,7 +32,7 @@ public class BenchmarkResultTests {
         ComposedBenchmark cb = new ComposedBenchmark(mockedConn);
         BenchmarkResult result = new BenchmarkResult(cb);
 
-        BenchmarkProperty prop = new BenchmarkProperty("key", "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
         result.injectBenchmarkProperty(prop);
 
         assertEquals("String representation needs to output the defined format",

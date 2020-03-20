@@ -21,7 +21,7 @@ public class ResultLoggerTests {
 
         BenchmarkResult result0 = new BenchmarkResult(cb);
         BenchmarkResult result1 = new BenchmarkResult(cb);
-        result1.injectBenchmarkProperty(new BenchmarkProperty("key", "value"));
+        result1.injectBenchmarkProperty(new BenchmarkProperty("key", () -> "value"));
 
         ResultLogger.getInstance().log(result0);
         ResultLogger.getInstance().log(result1);
