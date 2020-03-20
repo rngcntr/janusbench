@@ -1,11 +1,8 @@
 package de.rngcntr.janusbench.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.DefaultGraphTraversal;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
