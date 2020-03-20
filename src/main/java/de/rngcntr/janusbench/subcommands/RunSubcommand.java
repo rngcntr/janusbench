@@ -72,8 +72,7 @@ public class RunSubcommand implements Callable<Integer> {
     private static Index[] INDEX_BACKENDS;
 
     @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
-                description = "The benchmark to run"
-                              + "\nAvailable: ${COMPLETION-CANDIDATES}")
+                description = "The benchmark to run. See `janusbench list benchmark` for a list of valid benchmarks")
     private static Class<? extends Benchmark> benchmarkClass;
 
     @Option(names = "-v", description = {"Specify multiple -v options to increase verbosity.",
