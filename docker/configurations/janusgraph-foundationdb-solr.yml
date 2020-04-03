@@ -14,6 +14,7 @@ services:
             - solr
         volumes:
             - clusterfile:/etc/foundationdb
+            - /tmp/janusbench/:/tmp/janusbench/
         environment:
             - janusgraph.storage.backend=com.experoinc.janusgraph.diskstorage.foundationdb.FoundationDBStoreManager
             - janusgraph.storage.hostname=foundationdb

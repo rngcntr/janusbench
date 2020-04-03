@@ -14,6 +14,8 @@ services:
             - janusgraph.storage.directory=/tmp/berkeleyje
 
             - janusgraph.cache.db-cache=true
+        volumes:
+            - /tmp/janusbench/:/tmp/janusbench/
 
     gremlin-client:
         image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-4

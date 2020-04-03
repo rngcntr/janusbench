@@ -23,6 +23,7 @@ import de.rngcntr.janusbench.exceptions.NoSchemaFoundException;
 import de.rngcntr.janusbench.util.Benchmark;
 import de.rngcntr.janusbench.util.BenchmarkFactory;
 import de.rngcntr.janusbench.util.ExitCode;
+import de.rngcntr.janusbench.util.GraphLoader;
 import de.rngcntr.janusbench.util.ResultLogger;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -37,23 +38,22 @@ public class RunSubcommand implements Callable<Integer> {
             defaultValue = "conf/remote-graph.properties",
             description = "The remote graph properties file"
                           + "\ndefault: ${DEFAULT-VALUE}")
-    private static File REMOTE_PROPERTIES;
+    private File REMOTE_PROPERTIES;
 
     @Option(names = {"--native"},
             description = "This option instructs janusbench to use an existing environment and"
                           + " skip creating the services defined in local docker compose files.")
-    private static boolean NATIVE = false;
+    private boolean NATIVE = false;
 
     @Option(names = {"--schema-script"}, paramLabel = "FILE",
-            defaultValue = "conf/initialize-graph.groovy",
             description = "The groovy script used for initialization of the graph schema"
                           + "\ndefault: ${DEFAULT-VALUE}")
-    private static File INIT_SCRIPT;
+    private File INIT_SCRIPT;
 
     @Option(names = {"-o", "--output"}, paramLabel = "OUTPUT FILE",
             description = "The desired location to write the collected results."
                           + " If unassigned, results/results.txt will be used.")
-    private static File OUTPUT_FILE;
+    private File OUTPUT_FILE;
 
     @Option(names = {"-s", "--storage"}, split = ",\\s*", paramLabel = "STORAGE BACKEND",
             required = true,
@@ -61,7 +61,7 @@ public class RunSubcommand implements Callable<Integer> {
                           + " For a list of supported storage backends use"
                           + " janusbench list storage"
                           + "\nAvailable: ${COMPLETION-CANDIDATES}")
-    private static Storage[] STORAGE_BACKENDS;
+    private Storage[] STORAGE_BACKENDS;
 
     @Option(names = {"-i", "--index"}, split = ",\\s*", paramLabel = "INDEX BACKEND",
             defaultValue = "none",
@@ -69,17 +69,25 @@ public class RunSubcommand implements Callable<Integer> {
                           + " For a list of supported index backends use"
                           + " janusbench list index"
                           + "\nAvailable: ${COMPLETION-CANDIDATES}")
-    private static Index[] INDEX_BACKENDS;
-
-    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
-                description = "The benchmark to run. See `janusbench list benchmark` for a list of valid benchmarks")
-    private static Class<? extends Benchmark> benchmarkClass;
+    private Index[] INDEX_BACKENDS;
 
     @Option(names = "-v", description = {"Specify multiple -v options to increase verbosity.",
                                          "For example, `-v`, `-vv` or `-vvv`"})
-    boolean[] verbosity = new boolean[]{};
+    private boolean[] VERBOSITY = new boolean[]{};
 
-    private static final Logger log = Logger.getLogger(RunSubcommand.class);
+    @Option(names = {"-g", "--initial-graph"}, paramLabel = "INITIAL GRAPH",
+            converter = {GraphLoader.GraphLoaderConverter.class},
+            description = "Initial state of the graph before running the benchmark."
+                          // TODO: use picocli completion candidates for allowed types
+                          + "\nAllowed Formats: GraphSON, GraphML, KRYO"
+                          + "\nThis option is not available in combination with the --native flag")
+    private GraphLoader INITIAL_GRAPH_LOADER;
+
+    @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
+                description = "The benchmark to run. See `janusbench list benchmark` for a list of valid benchmarks")
+    private Class<? extends Benchmark> benchmarkClass;
+
+    private final Logger log = Logger.getLogger(RunSubcommand.class);
 
     private Configuration configuration;
     private Connection connection;
@@ -127,7 +135,7 @@ public class RunSubcommand implements Callable<Integer> {
         ConsoleAppender stderr = new ConsoleAppender(layout, "System.err");
         root.addAppender(stderr);
         
-        switch (verbosity.length) {
+        switch (VERBOSITY.length) {
         case 1:
             root.setLevel(Level.WARN);
             break;
@@ -179,6 +187,7 @@ public class RunSubcommand implements Callable<Integer> {
                 return ExitCode.SERVICE_SETUP_ERROR;
             } else {
                 createSchema();
+                loadDefaultGraph();
 
                 Benchmark benchmark =
                     BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection);
@@ -195,19 +204,31 @@ public class RunSubcommand implements Callable<Integer> {
         }
     }
 
-    public void createSchema() throws NoSchemaFoundException {
-        log.info("Creating schema");
-        try {
-            String initRequest = new String(Files.readAllBytes(INIT_SCRIPT.toPath()));
-            connection.submit(initRequest);
-            log.info("Done creating schema");
-        } catch (IOException ioex) {
-            throw new NoSchemaFoundException("Schema not found: " + INIT_SCRIPT.getAbsolutePath(),
-                                             ioex);
+    private void createSchema() throws NoSchemaFoundException {
+        if (INIT_SCRIPT != null) {
+            log.info("Creating schema");
+            try {
+                String initRequest = new String(Files.readAllBytes(INIT_SCRIPT.toPath()));
+                connection.submit(initRequest);
+                log.info("Done creating schema");
+            } catch (IOException ioex) {
+                throw new NoSchemaFoundException(
+                    "Schema not found: " + INIT_SCRIPT.getAbsolutePath(), ioex);
+            }
         }
     }
 
-    public boolean openGraph() {
+    private void loadDefaultGraph() {
+        if (INITIAL_GRAPH_LOADER != null) {
+            try {
+                INITIAL_GRAPH_LOADER.loadGraph(connection);
+            } catch (final Exception ex) {
+                log.warn("Failed to load default graph. Continuing with empty graph.");
+            }
+        }
+    }
+
+    private boolean openGraph() {
         log.info("Opening graph");
 
         try {
@@ -222,7 +243,7 @@ public class RunSubcommand implements Callable<Integer> {
         return true;
     }
 
-    public boolean closeGraph() {
+    private boolean closeGraph() {
         log.info("Closing graph");
 
         try {

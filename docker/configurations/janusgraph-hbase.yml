@@ -17,6 +17,8 @@ services:
             - JANUS_STORAGE_TIMEOUT=50 # hbase takes longer than other backends
 
             - janusgraph.cache.db-cache=true
+        volumes:
+            - /tmp/janusbench/:/tmp/janusbench/
 
     gremlin-client:
         image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-4

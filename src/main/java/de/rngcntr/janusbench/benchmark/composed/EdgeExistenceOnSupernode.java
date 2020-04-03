@@ -17,16 +17,11 @@ public class EdgeExistenceOnSupernode extends ComposableBenchmark {
     public int edgesPerStep;
     public String approach;
 
-    private EdgeExistenceBenchmark.Approach lookupApproach;
-
     public EdgeExistenceOnSupernode() {
         super();
     }
 
     public void buildUp() {
-        // read the approach from the configuration
-        this.lookupApproach = EdgeExistenceBenchmark.Approach.valueOf(approach);
-
         // prepare a vertex to later become a supernode
         final InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, 1);
         ivb.run();
@@ -44,18 +39,32 @@ public class EdgeExistenceOnSupernode extends ComposableBenchmark {
 
         // create edge existence checker
         final String supernodeName = (String) connection.g().V(supernode).values("name").next();
-        final EdgeExistenceBenchmark<String> eeb = new EdgeExistenceBenchmark<String>(
+
+        final EdgeExistenceBenchmark<String> eeb1 = new EdgeExistenceBenchmark<String>(
             connection, supernode, "name", new String[] {supernodeName});
-        eeb.useApproach(lookupApproach);
+        eeb1.useApproach(EdgeExistenceBenchmark.Approach.NAIVE_PROPERTY);
+
+        final EdgeExistenceBenchmark<String> eeb2 = new EdgeExistenceBenchmark<String>(
+            connection, supernode, "name", new String[] {supernodeName});
+        eeb2.useApproach(EdgeExistenceBenchmark.Approach.INDIRECT_ID);
+
+        final EdgeExistenceBenchmark<String> eeb3 = new EdgeExistenceBenchmark<String>(
+            connection, supernode, "name", new String[] {supernodeName});
+        eeb3.useApproach(EdgeExistenceBenchmark.Approach.DIRECT_ID);
+
         final BenchmarkProperty connections =
             new BenchmarkProperty("connections", () -> connection.g().V(supernode).outE().count().next());
-        eeb.collectBenchmarkProperty(connections, Tracking.AFTER);
+        eeb1.collectBenchmarkProperty(connections, Tracking.AFTER);
+        eeb2.collectBenchmarkProperty(connections, Tracking.AFTER);
+        eeb3.collectBenchmarkProperty(connections, Tracking.AFTER);
 
         // compose benchmark
         final ComposedBenchmark cb = new ComposedBenchmark(connection, runs);
         cb.setCollectResults(false);
         cb.addComponent(isvb, stepsPerRun);
-        cb.addComponent(eeb);
+        cb.addComponent(eeb1);
+        cb.addComponent(eeb2);
+        cb.addComponent(eeb3);
 
         addComponent(cb);
     }

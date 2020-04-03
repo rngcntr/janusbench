@@ -5,9 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import de.rngcntr.janusbench.backend.Connection;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
 public class BenchmarkResultTests {
 
     @Test

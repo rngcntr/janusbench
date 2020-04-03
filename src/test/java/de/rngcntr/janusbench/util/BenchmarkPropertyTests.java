@@ -3,9 +3,7 @@ package de.rngcntr.janusbench.util;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
 public class BenchmarkPropertyTests {
 
     @Test
