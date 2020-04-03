@@ -10,6 +10,7 @@ public class InsertUnconnectedVertices extends ComposableBenchmark {
 
     public InsertUnconnectedVertices() { super(); }
 
+    @Override
     public void buildUp() {
         // create the simple benchmark to be encapsulated by a composed benchmark
         final InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, verticesPerRun);

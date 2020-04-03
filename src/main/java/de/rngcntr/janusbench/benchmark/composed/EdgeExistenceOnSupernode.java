@@ -21,6 +21,7 @@ public class EdgeExistenceOnSupernode extends ComposableBenchmark {
         super();
     }
 
+    @Override
     public void buildUp() {
         // prepare a vertex to later become a supernode
         final InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, 1);

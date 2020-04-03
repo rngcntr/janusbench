@@ -85,7 +85,7 @@ public class RunSubcommand implements Callable<Integer> {
 
     @Parameters(index = "0", paramLabel = "BENCHMARK CLASS", converter = {BenchmarkFactory.class},
                 description = "The benchmark to run. See `janusbench list benchmark` for a list of valid benchmarks")
-    private Class<? extends Benchmark> benchmarkClass;
+    private String benchmarkName;
 
     private final Logger log = Logger.getLogger(RunSubcommand.class);
 
@@ -102,7 +102,11 @@ public class RunSubcommand implements Callable<Integer> {
             return ExitCode.INACCESSIBLE_RESULT_FILE;
         }
 
-        log.info("Using " + benchmarkClass.getName());
+        // create the directory before the docker environment start because it will be owned by root
+        // otherwise
+        GraphLoader.makeExchangeDirectory();
+
+        log.info("Using " + benchmarkName);
 
         // iterate over backend combinations
         for (Storage storage : STORAGE_BACKENDS) {
@@ -190,7 +194,7 @@ public class RunSubcommand implements Callable<Integer> {
                 loadDefaultGraph();
 
                 Benchmark benchmark =
-                    BenchmarkFactory.getDefaultBenchmark(benchmarkClass, connection);
+                    BenchmarkFactory.getDefaultBenchmark(benchmarkName, connection);
                 benchmark.setConfiguration(configuration);
                 benchmark.run();
 

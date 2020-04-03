@@ -1,0 +1,2 @@
+runs: 10
+action: "g.V.where(bothE().count().is(0)).count().next()"

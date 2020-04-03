@@ -1,0 +1,3 @@
+runs: 10
+action: "g.V.where(inE().count().is(gte(k))).limit(10).toList().next()"
+parameters: {k: 50}

@@ -35,6 +35,8 @@ public abstract class Benchmark implements Runnable {
 
     protected Configuration configuration;
 
+    private String displayName;
+
     /**
      * Initializes a Benchmark with a step size of 1.
      * This Benchmark does not have connection and therefore is unable to run until {@link
@@ -46,6 +48,7 @@ public abstract class Benchmark implements Runnable {
         this.trackBeforeRun = new ArrayList<BenchmarkProperty>();
         this.trackAfterRun = new ArrayList<BenchmarkProperty>();
         this.collectResults = true;
+        this.displayName = null;
     }
 
     /**
@@ -98,6 +101,29 @@ public abstract class Benchmark implements Runnable {
      */
     public void setCollectResults(final boolean collectResults) {
         this.collectResults = collectResults;
+    }
+
+    /**
+     * Sets the content of the action property of all benchmark results produced by this benchmark.
+     *
+     * @param displayName The new name for this benchmark.
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    /**
+     * The content of the action property of all benchmark results produced by this benchmark.
+     *
+     * @return The name of this benchmark. If not modified explicitly, this is the benchmark's class
+     *     name.
+     */
+    public String getDisplayName() {
+        if (displayName != null) {
+            return displayName;
+        } else {
+            return getClass().getSimpleName();
+        }
     }
 
     /**

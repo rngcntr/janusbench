@@ -14,6 +14,7 @@ public class UpsertRandomEdges extends ComposableBenchmark {
 
     public UpsertRandomEdges() { super(); }
 
+    @Override
     public void buildUp() {
         // create the necessary vertices
         final InsertVerticesBenchmark ivb = new InsertVerticesBenchmark(connection, vertices);

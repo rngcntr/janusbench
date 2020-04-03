@@ -28,13 +28,15 @@ public class GraphLoader {
         this.fileType = FileType.byExtension(inputFile);
     }
 
-    public String getFileExtension() { return fileType.fileExtension; }
-
-    public void loadGraph(Connection connection) throws IOException {
+    public static void makeExchangeDirectory() {
         // make temp directory /tmp/janusbench
         File outputDirectory = new File(RESOURCE_LOCATION);
         outputDirectory.mkdirs();
-        
+    }
+
+    public String getFileExtension() { return fileType.fileExtension; }
+
+    public void loadGraph(Connection connection) throws IOException {
         // copy input file to /tmp/janusbench/default-graph
         File outputFile = new File(RESOURCE_LOCATION + File.separator + RESOURCE_NAME);
         Files.copy(inputFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -93,8 +95,7 @@ public class GraphLoader {
         @Override
         public GraphLoader convert(String fileName) throws Exception {
             try {
-                GraphLoader gl = new GraphLoader(new File(fileName));
-                return gl;
+                return new GraphLoader(new File(fileName));
             } catch (IllegalArgumentException iaex) {
                 throw new TypeConversionException(String.format(
                     "Graph resource File %s is unavailable or has invalid file type", fileName));

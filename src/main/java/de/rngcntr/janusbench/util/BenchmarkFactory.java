@@ -1,6 +1,7 @@
 package de.rngcntr.janusbench.util;
 
 import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.benchmark.MicroBenchmarkRunner;
 import de.rngcntr.janusbench.exceptions.UnavailableBenchmarkException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,24 +20,21 @@ import org.testcontainers.shaded.org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.Yaml;
 import picocli.CommandLine.ITypeConverter;
 
-public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmark>> {
+public class BenchmarkFactory implements ITypeConverter<String> {
 
     private static final String configPath = "conf/defaults/";
     private static final String configExtension = ".yml";
     private static final String benchmarkPackage = "de.rngcntr.janusbench.benchmark.composed.";
 
-    private static final Map<String, Class<? extends Benchmark>> registeredBenchmarks;
-    private static final Map<Class<? extends Benchmark>, Supplier<? extends Benchmark>>
-        registeredSuppliers;
+    private static final Map<String, Supplier<? extends Benchmark>> registeredSuppliers;
 
     private static final Logger log = Logger.getLogger(BenchmarkFactory.class);
 
     private static Yaml yaml;
 
     static {
-        registeredBenchmarks = new HashMap<String, Class<? extends Benchmark>>();
         registeredSuppliers =
-            new HashMap<Class<? extends Benchmark>, Supplier<? extends Benchmark>>();
+            new HashMap<String, Supplier<? extends Benchmark>>();
 
         yaml = new Yaml();
     }
@@ -59,15 +57,17 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         }
     }
 
-    private static void registerSupplier(String className) {
-        String fullyQualifiedClassName = benchmarkPackage + className;
+    private static void registerSupplier(String benchmarkName) {
+        String fullyQualifiedClassName = benchmarkPackage + benchmarkName;
         Class<?> retreivedClass;
 
         try {
             retreivedClass = Class.forName(fullyQualifiedClassName);
         } catch (ClassNotFoundException cnfex) {
-            log.warn("Unknown class " + fullyQualifiedClassName, cnfex);
-            return;
+            // micro benchmark files are not necessarily called "MicroBenchmark.yml"
+            // therefore, try to interpret the configuration as a micro benchmark if no other class
+            // is found
+            retreivedClass = MicroBenchmarkRunner.class;
         }
 
         if (!Benchmark.class.isAssignableFrom(retreivedClass)) {
@@ -78,11 +78,12 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         @SuppressWarnings("unchecked")
         Class<? extends Benchmark> benchmarkClass = (Class<? extends Benchmark>) retreivedClass;
 
-        registerSupplier(benchmarkClass, (conn) -> {
+        registerSupplier(benchmarkName, (conn) -> {
             try {
                 InputStream in =
-                    Files.newInputStream(Paths.get(configPath + className + configExtension));
+                    Files.newInputStream(Paths.get(configPath + benchmarkName + configExtension));
                 Benchmark benchmark = (Benchmark) yaml.loadAs(in, benchmarkClass);
+                benchmark.setDisplayName(benchmarkName);
                 benchmark.setConnection(conn);
                 return benchmark;
             } catch (YAMLException yamlex) {
@@ -90,7 +91,7 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
                           yamlex);
                 return null;
             } catch (NullPointerException npex) {
-                log.error("Unable to parse yaml " + configPath + className + configExtension +
+                log.error("Unable to parse yaml " + configPath + benchmarkName + configExtension +
                               " for class " + benchmarkClass.getSimpleName(),
                           npex);
                 return null;
@@ -103,33 +104,29 @@ public class BenchmarkFactory implements ITypeConverter<Class<? extends Benchmar
         });
     }
 
-    private static void registerSupplier(Class<? extends Benchmark> benchmarkClass,
+    private static void registerSupplier(String benchmarkName,
                                          Supplier<? extends Benchmark> supplier) {
-        registeredBenchmarks.put(benchmarkClass.getSimpleName(), benchmarkClass);
-        registeredSuppliers.put(benchmarkClass, supplier);
+        registeredSuppliers.put(benchmarkName, supplier);
     }
 
-    public static Set<String> getRegisteredSuppliers() { return registeredBenchmarks.keySet(); }
+    public static Set<String> getRegisteredSuppliers() { return registeredSuppliers.keySet(); }
 
-    public static Benchmark getDefaultBenchmark(Class<? extends Benchmark> benchmarkClass,
-                                                Connection conn) {
-        Supplier<? extends Benchmark> supplier = registeredSuppliers.get(benchmarkClass);
+    public static Benchmark getDefaultBenchmark(String benchmarkName, Connection conn) {
+        Supplier<? extends Benchmark> supplier = registeredSuppliers.get(benchmarkName);
         if (supplier != null) {
             return supplier.get(conn);
         } else {
-            throw new UnavailableBenchmarkException("Benchmark " + benchmarkClass.getName() +
+            throw new UnavailableBenchmarkException("Benchmark " + benchmarkName +
                                                     " has no registered default");
         }
     }
 
     @Override
-    public Class<? extends Benchmark> convert(String className) {
-        Class<? extends Benchmark> returnValue = registeredBenchmarks.get(className);
-
-        if (returnValue != null) {
-            return returnValue;
+    public String convert(String benchmarkName) {
+        if (registeredSuppliers.containsKey(benchmarkName)) {
+            return benchmarkName;
         } else {
-            throw new UnavailableBenchmarkException("Benchmark " + className + " does not exist");
+            throw new UnavailableBenchmarkException("Benchmark " + benchmarkName + " does not exist");
         }
     }
 }

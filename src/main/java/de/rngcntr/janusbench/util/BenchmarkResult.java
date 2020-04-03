@@ -21,7 +21,7 @@ public class BenchmarkResult {
     public BenchmarkResult(final Benchmark action) {
         this.benchmarkProperties = new HashMap<String, Object>();
         final BenchmarkProperty actionProperty =
-            new BenchmarkProperty("action", () -> action.getClass().getSimpleName());
+            new BenchmarkProperty("action", () -> action.getDisplayName());
         injectBenchmarkProperty(actionProperty);
     }
 
