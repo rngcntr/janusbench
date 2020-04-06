@@ -12,12 +12,12 @@ public class BenchmarkResultTests {
     public void testResultProperties() {
         Connection mockedConn = mock(Connection.class);
         ComposedBenchmark cb = new ComposedBenchmark(mockedConn);
-        BenchmarkResult result = new BenchmarkResult(cb);
+        BenchmarkResult result = new BenchmarkResult(cb, mockedConn);
 
         assertEquals("action type should be set correctly", cb.getClass().getSimpleName(),
                      (String) result.getBenchmarkProperty("action"));
 
-        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", (c) -> "value");
         result.injectBenchmarkProperty(prop);
 
         assertEquals("action type should be set correctly", "value",
@@ -28,9 +28,9 @@ public class BenchmarkResultTests {
     public void testToString() {
         Connection mockedConn = mock(Connection.class);
         ComposedBenchmark cb = new ComposedBenchmark(mockedConn);
-        BenchmarkResult result = new BenchmarkResult(cb);
+        BenchmarkResult result = new BenchmarkResult(cb, mockedConn);
 
-        BenchmarkProperty prop = new BenchmarkProperty("key", () -> "value");
+        BenchmarkProperty prop = new BenchmarkProperty("key", (c) -> "value");
         result.injectBenchmarkProperty(prop);
 
         assertEquals("String representation needs to output the defined format",

@@ -42,7 +42,7 @@ public class GraphLoader {
         Files.copy(inputFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         // load graph into database
-        connection.submit(fileType.getLoadRequest());
+        connection.submit(fileType.getLoadRequest()).all().join();
     }
 
     public static class CompletionCandidates extends ArrayList<String> {

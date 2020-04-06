@@ -46,7 +46,7 @@ public class EdgeExistenceBenchmark<T> extends Benchmark {
         }
 
         BenchmarkProperty useIndexProperty = new BenchmarkProperty(
-            "approach", () -> approach.toString().toLowerCase().replace("_", "-"));
+            "approach", (c) -> approach.toString().toLowerCase().replace("_", "-"));
         collectBenchmarkProperty(useIndexProperty, Tracking.BEFORE);
     }
 

@@ -1,0 +1,10 @@
+runs: 10
+action: "g.V(id_source).repeat(both((String[]) allowed_labels.toArray()).where(without(\"x\")).aggregate(\"x\")).until(hasId(id_destination)).limit(1).path().count(local).hasNext()"
+
+parameters: {
+  allowed_labels: ["route"]
+}
+
+buildUp:
+  - { name: id_source, query: g.V().sample(1).id() }
+  - { name: id_destination, query: g.V().sample(1).id() }

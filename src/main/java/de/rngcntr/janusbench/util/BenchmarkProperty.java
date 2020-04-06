@@ -1,9 +1,11 @@
 package de.rngcntr.janusbench.util;
 
+import de.rngcntr.janusbench.backend.Connection;
+
 /**
  * Represents a key information of a benchmark run.
  * This can either be a parameter or a measured result.
- * 
+ *
  * @author Florian Grieskamp
  */
 public class BenchmarkProperty {
@@ -41,6 +43,11 @@ public class BenchmarkProperty {
         this.value = vp;
     }
 
+    public BenchmarkProperty(final String name, final String query) {
+        this.name = name;
+        this.value = (c) -> c.submit(query).all().join().get(0).getObject();
+    }
+
     /**
      * Returns the name of the BenchmarkProperty.
      * 
@@ -54,8 +61,8 @@ public class BenchmarkProperty {
      * 
      * @return The evaluated result of the BenchmarkProperty.
      */
-    public Object evaluate() {
-        return value.evaluate();
+    public Object evaluate(Connection connection) {
+        return value.evaluate(connection);
     }
 
     /**
@@ -65,6 +72,6 @@ public class BenchmarkProperty {
      */
     @FunctionalInterface
     public interface ValueProvider {
-        Object evaluate();
+        Object evaluate(Connection connection);
     }
 }

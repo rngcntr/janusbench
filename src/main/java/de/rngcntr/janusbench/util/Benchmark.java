@@ -133,10 +133,11 @@ public abstract class Benchmark implements Runnable {
      */
     public void run() {
         buildUp();
+        connection.submit("g.tx().commit()");
 
-        final BenchmarkResult result = new BenchmarkResult(this);
+        final BenchmarkResult result = new BenchmarkResult(this, connection);
         result.setConfiguration(configuration);
-        final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", () -> stepSize);
+        final BenchmarkProperty stepSizeProperty = new BenchmarkProperty("stepSize", (c) -> stepSize);
         result.injectBenchmarkProperty(stepSizeProperty);
 
         for (final BenchmarkProperty beforeProperty : trackBeforeRun) {
@@ -145,16 +146,11 @@ public abstract class Benchmark implements Runnable {
 
         final long startTime = System.nanoTime();
 
-        boolean successful = false;
-
-        while (!successful) {
-            try {
-                performAction();
-                connection.submit("g.tx().commit()");
-                successful = true;
-            } catch (TimeoutException tex) {
-                connection.submit("g.tx().rollback()");
-            }
+        try {
+            performAction();
+            connection.submit("g.tx().commit()");
+        } catch (TimeoutException tex) {
+            connection.submit("g.tx().rollback()");
         }
 
         final long stopTime = System.nanoTime();
@@ -164,10 +160,11 @@ public abstract class Benchmark implements Runnable {
         }
 
         final BenchmarkProperty timeProperty =
-            new BenchmarkProperty("time", () -> (stopTime - startTime) / 1000000.0);
+            new BenchmarkProperty("time", (c) -> (stopTime - startTime) / 1000000.0);
         result.injectBenchmarkProperty(timeProperty);
 
         tearDown();
+        connection.submit("g.tx().commit()");
 
         if (collectResults) {
             results.add(result);

@@ -1,0 +1,10 @@
+runs: 10
+action: "v.property(property_name, property_value)"
+parameters: {
+  property_name:  "code",
+  property_value: "AAA",
+  required_label: "airport"
+}
+buildUp:
+  - { name: "v", query: "g.V().hasLabel(required_label).sample(1).next()" }
+  - { name: "pp", query: "v.property(property_name)"}

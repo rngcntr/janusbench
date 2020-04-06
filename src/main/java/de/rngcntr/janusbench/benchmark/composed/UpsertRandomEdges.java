@@ -21,7 +21,7 @@ public class UpsertRandomEdges extends ComposableBenchmark {
         ivb.run();
 
         final UpsertRandomEdgeBenchmark useb = new UpsertRandomEdgeBenchmark(connection, edgesPerRun);
-        BenchmarkProperty existingEdgesProperty = new BenchmarkProperty("existingEdges", () -> connection.g().E().count().next());
+        BenchmarkProperty existingEdgesProperty = new BenchmarkProperty("existingEdges", (c) -> c.g().E().count().next());
         useb.collectBenchmarkProperty(existingEdgesProperty, Tracking.AFTER);
 
         // run the previously created benchmark multiple times

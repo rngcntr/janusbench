@@ -1,0 +1,6 @@
+runs: 10
+action: g.V(id_source).repeat(both().where(without("x")).aggregate("x")).until(hasId(id_destination)).limit(1).path().count(local).hasNext();
+
+buildUp:
+  - { name: id_source, query: g.V().sample(1).id() }
+  - { name: id_destination, query: g.V().sample(1).id() }

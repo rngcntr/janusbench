@@ -19,9 +19,9 @@ public class ResultLoggerTests {
         Connection mockedConnection = mock(Connection.class);
         ComposedBenchmark cb = new ComposedBenchmark(mockedConnection);
 
-        BenchmarkResult result0 = new BenchmarkResult(cb);
-        BenchmarkResult result1 = new BenchmarkResult(cb);
-        result1.injectBenchmarkProperty(new BenchmarkProperty("key", () -> "value"));
+        BenchmarkResult result0 = new BenchmarkResult(cb, mockedConnection);
+        BenchmarkResult result1 = new BenchmarkResult(cb, mockedConnection);
+        result1.injectBenchmarkProperty(new BenchmarkProperty("key", (c) -> "value"));
 
         ResultLogger.getInstance().log(result0);
         ResultLogger.getInstance().log(result1);

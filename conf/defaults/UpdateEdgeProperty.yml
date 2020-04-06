@@ -1,0 +1,12 @@
+runs: 10
+action: "e.property(property_name, property_value)"
+
+parameters: {
+  property_name:  "dist",
+  property_value: 0,
+  required_label: "route"
+}
+
+buildUp:
+  - { name: "e", query: "g.E().hasLabel(required_label).sample(1).next()" }
+  - { name: "pp", query: "e.property(property_name)"}

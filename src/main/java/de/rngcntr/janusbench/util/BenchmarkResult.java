@@ -1,9 +1,9 @@
 package de.rngcntr.janusbench.util;
 
+import de.rngcntr.janusbench.backend.Connection;
+import de.rngcntr.janusbench.backend.configuration.Configuration;
 import java.util.HashMap;
 import java.util.Map;
-
-import de.rngcntr.janusbench.backend.configuration.Configuration;
 
 /**
  * A BenchmarkResult represents all information gained by a single benchmark run.
@@ -12,16 +12,19 @@ import de.rngcntr.janusbench.backend.configuration.Configuration;
  */
 public class BenchmarkResult {
     private final HashMap<String, Object> benchmarkProperties;
+    private final Connection connection;
 
     /**
      * Initializes a BenchmarkResult using a {@link Benchmark} it belongs to.
      * 
      * @param action The {@link Benchmark} which gathers the results.
      */
-    public BenchmarkResult(final Benchmark action) {
+    public BenchmarkResult(final Benchmark action, final Connection connection) {
         this.benchmarkProperties = new HashMap<String, Object>();
+        this.connection = connection;
+
         final BenchmarkProperty actionProperty =
-            new BenchmarkProperty("action", () -> action.getDisplayName());
+            new BenchmarkProperty("action", (c) -> action.getDisplayName());
         injectBenchmarkProperty(actionProperty);
     }
 
@@ -31,7 +34,7 @@ public class BenchmarkResult {
      * @param property The property to store.
      */
     public void injectBenchmarkProperty(final BenchmarkProperty property) {
-        benchmarkProperties.put(property.getName(), property.evaluate());
+        benchmarkProperties.put(property.getName(), property.evaluate(connection));
     }
 
     /**
@@ -66,8 +69,8 @@ public class BenchmarkResult {
      */
     public void setConfiguration(Configuration config) {
         if (config != null) {
-            injectBenchmarkProperty(new BenchmarkProperty("storage", () -> config.getStorage()));
-            injectBenchmarkProperty(new BenchmarkProperty("index", () -> config.getIndex()));
+            injectBenchmarkProperty(new BenchmarkProperty("storage", (c) -> config.getStorage()));
+            injectBenchmarkProperty(new BenchmarkProperty("index", (c) -> config.getIndex()));
         }
     }
 }

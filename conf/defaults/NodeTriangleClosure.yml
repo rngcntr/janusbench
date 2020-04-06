@@ -1,0 +1,10 @@
+runs: 10
+action: g.V(v_id).as("a").out().out().where(neq("a")).not(__.in().hasId(v_id)).limit(10).properties(prop_name).value().fill(nodes);
+
+parameters: {
+  prop_name: code
+}
+
+buildUp:
+  - { name: nodes, query: "[]"}
+  - { name: v_id, query: g.V().sample(1).id() }

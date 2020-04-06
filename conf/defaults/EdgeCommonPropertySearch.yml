@@ -1,0 +1,6 @@
+runs: 10
+action: "g.E().has(property_name, property_value).count().next()"
+parameters: {
+    property_name: "test_common_property",
+    property_value: "test_value"
+}

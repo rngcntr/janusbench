@@ -191,7 +191,7 @@ public class RunSubcommand implements Callable<Integer> {
                 return ExitCode.SERVICE_SETUP_ERROR;
             } else {
                 createSchema();
-                loadDefaultGraph();
+                loadInitialGraph();
 
                 Benchmark benchmark =
                     BenchmarkFactory.getDefaultBenchmark(benchmarkName, connection);
@@ -222,12 +222,14 @@ public class RunSubcommand implements Callable<Integer> {
         }
     }
 
-    private void loadDefaultGraph() {
+    private void loadInitialGraph() {
+        log.info("Loading initial graph...");
         if (INITIAL_GRAPH_LOADER != null) {
             try {
                 INITIAL_GRAPH_LOADER.loadGraph(connection);
+                log.info("Done loading initial graph.");
             } catch (final Exception ex) {
-                log.warn("Failed to load default graph. Continuing with empty graph.");
+                log.warn("Failed to load initial graph. Continuing with empty graph.");
             }
         }
     }

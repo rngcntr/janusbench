@@ -19,7 +19,7 @@
     <slf4j.version>1.7.5</slf4j.version>
     <testcontainers.version>1.12.5</testcontainers.version>
     <picocli.version>4.2.0</picocli.version>
-    <snakeyaml.version>1.11</snakeyaml.version>
+    <snakeyaml.version>1.26</snakeyaml.version>
     <mockito.version>2.10.0</mockito.version>
     <sunfire.version>2.22.1</sunfire.version>
 </properties>
