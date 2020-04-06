@@ -1,0 +1,5 @@
+runs: 10
+action: g.E(my_edge_id).next().id()
+
+buildUp:
+  - {name: my_edge_id, query: g.E().sample(1).id()}

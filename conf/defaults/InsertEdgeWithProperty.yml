@@ -1,0 +1,17 @@
+runs: 10
+action: g.addE(edge_label).from(a).to(b).property(property_name, property_value).iterate()
+
+parameters: {
+  edge_label: route,
+  property_name: ExamplePropertyName,
+  property_value: ExamplePropertyValue
+}
+
+buildUp:
+  - { name: a, query: g.V().sample(1) }
+  - { name: b, query: g.V().sample(1) }
+
+propertiesBefore: {
+  vertices: g.V().count(),
+  edges: g.E().count()
+}

@@ -1,0 +1,13 @@
+runs: 10
+action: g.V(my_vertex).property(property_name).drop().iterate()
+
+parameters: {
+  property_name: code
+}
+
+buildUp:
+  - {name: my_vertex, query: g.V().sample(1)}
+
+propertiesAfter: {
+  vertexCount: g.V().count()
+}

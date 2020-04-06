@@ -1,0 +1,11 @@
+runs: 10
+action: for(iteration = 0; iteration < num_insertions; iteration++){g.addV().property(prop_name, iteration).iterate();}
+
+parameters: {
+  num_insertions: 1000,
+  prop_name: fakeID
+}
+
+propertiesAfter: {
+  insertedVertices: g.V().count()
+}

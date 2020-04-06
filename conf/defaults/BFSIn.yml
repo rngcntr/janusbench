@@ -1,0 +1,9 @@
+runs: 10
+action: g.V(my_vertex).repeat(in().where(without("x")).aggregate("x")).times(depth).cap("x").next().size()
+
+parameters: {
+  depth: 3
+}
+
+buildUp:
+  - {name: my_vertex, query: g.V().sample(1)}

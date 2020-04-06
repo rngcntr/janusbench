@@ -1,0 +1,7 @@
+runs: 10
+action: g.V().has(prop_name, prop_value).count().next()
+
+parameters: {
+  prop_name: code,
+  prop_value: DUS
+}

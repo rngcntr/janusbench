@@ -1,0 +1,13 @@
+runs: 10
+action: g.E(my_edge).property(property_name).drop().iterate()
+
+parameters: {
+  property_name: dist
+}
+
+buildUp:
+  - {name: my_edge, query: g.E().sample(1)}
+
+propertiesAfter: {
+  vertexCount: g.E().count()
+}

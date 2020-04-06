@@ -1,0 +1,9 @@
+runs: 10
+action: "g.V(id_source).outE((String[]) allowed_labels.toArray()).count()"
+
+parameters: {
+  allowed_labels: ["route"]
+}
+
+buildUp:
+  - { name: id_source, query: g.V().sample(1).id() }

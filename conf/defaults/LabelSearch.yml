@@ -1,0 +1,6 @@
+runs: 10
+action: g.E().hasLabel(label_name).count().next()
+
+parameters: {
+  label_name: airport
+}

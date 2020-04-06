@@ -1,0 +1,5 @@
+runs: 10
+action: g.V(my_vertex).inE().count()
+
+buildUp:
+  - {name: my_vertex, query: g.V().sample(1)}

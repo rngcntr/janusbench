@@ -1,0 +1,10 @@
+runs: 10
+action: my_vertex.property(property_name, property_value).iterate()
+
+parameters: {
+  property_name: ExamplePropertyName,
+  property_value: ExamplePropertyValue
+}
+
+buildUp:
+  - {name: my_vertex, query: g.V().sample(1)}
