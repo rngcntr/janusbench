@@ -42,9 +42,9 @@ public class RunSubcommandBigTests {
         throws InterruptedException {
         String[] args =
             index == null
-                ? new String[] {"-s", storage.toString(), "IndexedEdgeExistenceOnSupernode"}
+                ? new String[] {"-s", storage.toString(), "InsertVertex"}
                 : new String[] {"-s", storage.toString(), "-i", index.toString(),
-                                "IndexedEdgeExistenceOnSupernode"};
+                                "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -56,7 +56,7 @@ public class RunSubcommandBigTests {
 
     @Test
     public void testValidStorageNoIndex() {
-        String[] args = {"-s", "inmemory", "EdgeExistenceOnSupernode"};
+        String[] args = {"-s", "inmemory", "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -66,7 +66,7 @@ public class RunSubcommandBigTests {
 
     @Test
     public void testMultipleValidStoragesNoIndex() {
-        String[] args = {"-s", "inmemory, berkeleyje", "EdgeExistenceOnSupernode"};
+        String[] args = {"-s", "inmemory, berkeleyje", "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -76,7 +76,7 @@ public class RunSubcommandBigTests {
 
     @Test
     public void testValidStorageValidIndex() {
-        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch", "EdgeExistenceOnSupernode"};
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch", "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -86,7 +86,7 @@ public class RunSubcommandBigTests {
 
     @Test
     public void testValidStorageMultipleValidIndexes() {
-        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+        String[] args = {"-s", "berkeleyje", "-i", "elasticsearch, lucene", "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);
@@ -96,7 +96,7 @@ public class RunSubcommandBigTests {
 
     @Test
     public void testMultipleValidStoragesMultipleValidIndexes() {
-        String[] args = {"-s", "berkeleyje, scylla", "-i", "elasticsearch, lucene", "EdgeExistenceOnSupernode"};
+        String[] args = {"-s", "berkeleyje, scylla", "-i", "elasticsearch, lucene", "InsertVertex"};
 
         final RunSubcommand runner = new RunSubcommand();
         CommandLine cli = new CommandLine(runner);

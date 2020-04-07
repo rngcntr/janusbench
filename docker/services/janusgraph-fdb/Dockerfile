@@ -3,7 +3,7 @@ ARG VERSION
 
 FROM alpine/git
 WORKDIR /foundationdb
-RUN git clone -b janusgraph-04 https://github.com/farodin91/janusgraph-foundationdb .
+RUN git clone -b master https://github.com/rngcntr/janusgraph-foundationdb .
 # Patch http:// to https:// in pom.xml
 RUN sed -i 's/http:/https:/g' pom.xml
 
@@ -19,10 +19,10 @@ FROM janusgraph/janusgraph:${VERSION}
 ENV JANUS_STORAGE_TIMEOUT=30
 ENV janusgraph.graph.replace-instance-if-exists=true
 
-COPY --from=1 /foundationdb/target/janusgraph-foundationdb-0.1.0-distribution.zip /foundationdb/janusgraph-fdb.zip
+COPY --from=1 /foundationdb/target/janusgraph-foundationdb-0.2.0-distribution.zip /foundationdb/janusgraph-fdb.zip
 RUN unzip /foundationdb/janusgraph-fdb.zip -d /foundationdb
-WORKDIR /foundationdb/janusgraph-foundationdb-0.1.0
-RUN /foundationdb/janusgraph-foundationdb-0.1.0/install.sh ${JANUS_HOME}
+WORKDIR /foundationdb/janusgraph-foundationdb-0.2.0
+RUN /foundationdb/janusgraph-foundationdb-0.2.0/install.sh ${JANUS_HOME}
 WORKDIR ${JANUS_HOME}
 
 COPY --chown=janusgraph:janusgraph src/log4j-server.properties ${JANUS_HOME}/conf/gremlin-server/

@@ -2,11 +2,11 @@ version: "3"
 
 services:
     janusgraph:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph:0.4.0-1
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/janusgraph-fdb:0.5.0
         build:
-            context: ../services/janusgraph
+            context: ../services/janusgraph-fdb
             args:
-                VERSION: 0.4.0
+                VERSION: 0.5.0
         ports:
             - "8182:8182"
         depends_on:
@@ -21,11 +21,11 @@ services:
             - /tmp/janusbench/:/tmp/janusbench/
 
     gremlin-client:
-        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.4.0-4
+        image: artifactory.gdata.de:6555/development/gaia/janusbench/gremlin-client:0.5.0
         build:
             context: ../services/gremlin-client
             args:
-                VERSION: 0.4.0
+                VERSION: 0.5.0
         stdin_open: true
         environment:
             - GREMLIN_REMOTE_HOSTS=janusgraph

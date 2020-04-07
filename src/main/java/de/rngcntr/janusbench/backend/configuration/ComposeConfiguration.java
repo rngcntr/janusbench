@@ -47,8 +47,7 @@ public class ComposeConfiguration extends Configuration {
         }
 
         // watch out for differently named container when using foundationdb backend
-        String janusgraphService =
-            storage == Storage.FOUNDATIONDB ? "janusgraph-fdb" : "janusgraph";
+        String janusgraphService = "janusgraph";
 
         environment =
             getEnvironment()

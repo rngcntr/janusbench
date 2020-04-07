@@ -1,7 +1,7 @@
 package de.rngcntr.janusbench.benchmark.composed;
 
-import de.rngcntr.janusbench.benchmark.simple.InsertVerticesBenchmark;
-import de.rngcntr.janusbench.benchmark.simple.UpsertRandomEdgeBenchmark;
+import de.rngcntr.janusbench.benchmark.helper.InsertVerticesBenchmark;
+import de.rngcntr.janusbench.benchmark.helper.UpsertRandomEdgeBenchmark;
 import de.rngcntr.janusbench.util.BenchmarkProperty;
 import de.rngcntr.janusbench.util.BenchmarkProperty.Tracking;
 import de.rngcntr.janusbench.util.ComposableBenchmark;

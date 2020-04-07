@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.benchmark.simple;
+package de.rngcntr.janusbench.benchmark.helper;
 
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.Benchmark;

@@ -39,7 +39,7 @@
     - lucene
 
 ### Compatibility Matrix
-|                   | cassandra | scylla   | berkeleyje | hbase    | yugabyte | foundationdb | inmemory |
+|                   | cassandra | scylla   | berkeleyje | hbase    | yugabyte | [foundationdb](https://github.com/rngcntr/janusgraph-foundationdb) | inmemory |
 |:------------------|:---------:|:--------:|:----------:|:--------:|:--------:|:------------:|:--------:|
 | __none__          | &#10004;  | &#10004; | &#10004;   | &#10004; | &#10004; | (&#10004;)   | &#10004; |
 | **elasticsearch** | &#10004;  | &#10004; | &#10004;   | &#10004; | &#10004; | (&#10004;)   | &#10008; |
@@ -60,15 +60,19 @@ At the moment, new backends need to be registrated within the corresponding back
 By using these services, more complex scenarios can be built using Docker Compose.
 The necessary Docker Compose files are located in [docker/configurations](https://github.com/rngcntr/janusbench/blob/master/docker/configurations) and use a consistent naming scheme where `storage` and `index` refer to the names of backend services:
 ```
-^janusgraph\-(?P<storage>[a-z]+)(\-(?P<index>[a-z]+))?\.yml$
+janusgraph<-storage><-index>?.yml
 ```
 The files themselves use the normal Docker Compose format and define combinations of services that can be used when running benchmarks.
 
 ## Building your own benchmarks
 In janusbench, there are two kinds of benchmarks:
 
-### Simple Benchmarks
-Simple Benchmarks - located within the package [de.rngcntr.janusbench.benchmark.simple](https://github.com/rngcntr/janusbench/blob/master/src/main/java/de/rngcntr/janusbench/benchmark/simple) - are very basic tasks like adding vertices and edges or testing the existence of such elements.
+### Micro Benchmarks
+Micro Benchmarks serve the purpose of being easy to create and configure, even without recompiling the benchmark suite. As soon as configured via a YAML file in [conf/defaults](https://github.com/rngcntr/janusbench/blob/master/conf/defaults), Micro Benchmarks are available from the `janusbench` CLI.
+Micro Benchmarks only support a limited set of features. If more sophisticated methods (e.g. statistical distributions) are required, it is preferred to write the benchmark in Java and have access to the full set of features of the Java language.
+
+### Helper Benchmarks
+Helper Benchmarks - located within the package [de.rngcntr.janusbench.benchmark.helper](https://github.com/rngcntr/janusbench/blob/master/src/main/java/de/rngcntr/janusbench/benchmark/helper) - are very basic tasks like adding vertices and edges or testing the existence of such elements.
 This kind of benchmark is not thought to be called by the user directly.
 Instead, it represents a key task, whose runtime is measured by a composed benchmark (see section below).
 

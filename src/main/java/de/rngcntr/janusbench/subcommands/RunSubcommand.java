@@ -55,7 +55,7 @@ public class RunSubcommand implements Callable<Integer> {
                           + " If unassigned, results/results.txt will be used.")
     private File OUTPUT_FILE;
 
-    @Option(names = {"-s", "--storage"}, split = ",\\s*", paramLabel = "STORAGE BACKEND",
+    @Option(names = {"-s", "--storage"}, split = ",", paramLabel = "STORAGE BACKEND",
             required = true,
             description = "One of the supported storage backends."
                           + " For a list of supported storage backends use"
@@ -63,7 +63,7 @@ public class RunSubcommand implements Callable<Integer> {
                           + "\nAvailable: ${COMPLETION-CANDIDATES}")
     private Storage[] STORAGE_BACKENDS;
 
-    @Option(names = {"-i", "--index"}, split = ",\\s*", paramLabel = "INDEX BACKEND",
+    @Option(names = {"-i", "--index"}, split = ",", paramLabel = "INDEX BACKEND",
             defaultValue = "none",
             description = "One of the supported storage index."
                           + " For a list of supported index backends use"
@@ -72,7 +72,7 @@ public class RunSubcommand implements Callable<Integer> {
     private Index[] INDEX_BACKENDS;
 
     @Option(names = "-v", description = {"Specify multiple -v options to increase verbosity.",
-                                         "For example, `-v`, `-vv` or `-vvv`"})
+                                         "Accepts -v up to -vvvv"})
     private boolean[] VERBOSITY = new boolean[]{};
 
     @Option(names = {"-g", "--initial-graph"}, paramLabel = "INITIAL GRAPH",
@@ -111,6 +111,7 @@ public class RunSubcommand implements Callable<Integer> {
         // iterate over backend combinations
         for (Storage storage : STORAGE_BACKENDS) {
             for (Index index : INDEX_BACKENDS) {
+                log.info(String.format("Running on storage=%s and index=%s", storage, index));
                 try {
                     initializeConfiguration(storage, index);
                 } catch (final InvalidConfigurationException icex) {

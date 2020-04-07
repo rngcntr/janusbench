@@ -1,4 +1,4 @@
-package de.rngcntr.janusbench.benchmark.simple;
+package de.rngcntr.janusbench.benchmark.helper;
 
 import de.rngcntr.janusbench.backend.Connection;
 import de.rngcntr.janusbench.util.Benchmark;
@@ -39,6 +39,8 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
 
     private ResultSet[] insertedVertices;
     private ResultSet[] insertedEdges;
+
+    private final int BATCH_SIZE = 100;
 
     public InsertSupernodeVerticesBenchmark(final Connection connection, final int stepSize,
                                             final Vertex supernode) {
@@ -92,25 +94,28 @@ public class InsertSupernodeVerticesBenchmark extends Benchmark {
 
     @Override
     public void performAction() throws TimeoutException {
-        for (int index = 0; index < stepSize; ++index) {
-            // assume vertex does not exist -> insert
-            vertexParameters.put("nameValue", names[index]);
-            vertexParameters.put("ageValue", ages[index]);
+        for (int startIndex = 0; startIndex < stepSize; startIndex += BATCH_SIZE) {
+            for (int index = startIndex; index - startIndex < BATCH_SIZE && index < stepSize; ++index) {
+                // assume vertex does not exist -> insert
+                vertexParameters.put("nameValue", names[index]);
+                vertexParameters.put("ageValue", ages[index]);
 
-            insertedVertices[index] = connection.submitAsync(vertexInsertQuery, vertexParameters);
-        }
+                insertedVertices[index] =
+                    connection.submitAsync(vertexInsertQuery, vertexParameters);
+            }
 
-        for (int index = 0; index < stepSize; ++index) {
-            edgeParameters.put("supernode", supernode);
-            edgeParameters.put("lastSeenValue", dates[index]);
-            edgeParameters.put("timesSeenValue", timesSeen[index]);
-            edgeParameters.put("insertedVertex", insertedVertices[index].one().getVertex());
+            for (int index = startIndex; index - startIndex < BATCH_SIZE && index < stepSize; ++index) {
+                edgeParameters.put("supernode", supernode);
+                edgeParameters.put("lastSeenValue", dates[index]);
+                edgeParameters.put("timesSeenValue", timesSeen[index]);
+                edgeParameters.put("insertedVertex", insertedVertices[index].one().getVertex());
 
-            insertedEdges[index] = connection.submitAsync(edgeInsertQuery, edgeParameters);
-        }
+                insertedEdges[index] = connection.submitAsync(edgeInsertQuery, edgeParameters);
+            }
 
-        for (int index = 0; index < stepSize; ++index) {
-            connection.awaitResults(insertedEdges[index]);
+            for (int index = startIndex; index - startIndex < BATCH_SIZE && index < stepSize; ++index) {
+                connection.awaitResults(insertedEdges[index]);
+            }
         }
     }
 
