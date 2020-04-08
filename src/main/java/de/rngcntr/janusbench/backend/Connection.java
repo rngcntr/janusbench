@@ -4,6 +4,7 @@ import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalS
 
 import java.io.File;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import org.apache.commons.configuration.ConfigurationException;
@@ -14,6 +15,9 @@ import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.ResultSet;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.opencypher.gremlin.client.CypherGremlinClient;
+import org.opencypher.gremlin.client.CypherResultSet;
+import org.opencypher.gremlin.client.CypherStatement.Submittable;
 
 /**
  * A Connection manages all interactions with a graph instance.
@@ -28,14 +32,15 @@ public class Connection {
 
     private GraphTraversalSource g;
     private Cluster cluster;
-    private Client client;
+    private Client gremlinClient;
+    private CypherGremlinClient cypherClient;
     private final UUID sessionUuid;
 
     private static final Logger log = Logger.getLogger(Connection.class);
 
     /**
      * Initializes a new Connection with the parameters given in the property file.
-     * 
+     *
      * @param propertiesFile The file to read the properties from.
      * This file is a TinkerPop <code>remote-graph.properties</code> file.
      */
@@ -62,9 +67,11 @@ public class Connection {
 
         try {
             cluster = Cluster.open(conf.getString("gremlin.remote.driver.clusterFile"));
-            client = cluster.connect(sessionUuid.toString(), false);
-            client.alias("g");
+            gremlinClient = cluster.connect(sessionUuid.toString(), false);
+            gremlinClient.alias("g");
             g = traversal().withRemote(propertiesFileName);
+
+            cypherClient = CypherGremlinClient.translating(gremlinClient);
         } catch (final Exception ex) {
             throw new ConfigurationException(ex);
         }
@@ -74,7 +81,7 @@ public class Connection {
         final long maxTime = System.currentTimeMillis() + TIMEOUT_MS;
         while (!connected && System.currentTimeMillis() < maxTime) {
             try {
-                connected = client.submit("true").one().getBoolean();
+                connected = gremlinClient.submit("true").one().getBoolean();
             } catch (final RuntimeException rex) {
             }
         }
@@ -93,11 +100,11 @@ public class Connection {
     public void close() throws Exception {
         try {
             g.close();
-            client.close();
+            gremlinClient.close();
             cluster.close();
         } finally {
             g = null;
-            client = null;
+            gremlinClient = null;
             cluster = null;
         }
     }
@@ -117,7 +124,34 @@ public class Connection {
      * @return The results of the query.
      */
     public ResultSet submit(final String traversal) {
-        return awaitResults(client.submit(traversal));
+        return awaitResults(gremlinClient.submit(traversal));
+    }
+
+    /**
+     * Synchronously cypher query to the graph database and blocks until its execution is completed.
+     *
+     * @param traversal The cypher representation of the query.
+     * @return The results of the query.
+     */
+    public CypherResultSet submitCypher(final String cypher) { return cypherClient.submit(cypher); }
+
+    /**
+     * Synchronously cypher query to the graph database and blocks until its execution is completed.
+     *
+     * @param traversal The cypher representation of the query.
+     * @param parameters A map of values for parameterized queries.
+     * @return The results of the query.
+     */
+    public CypherResultSet submitCypher(final String cypher, Map<String, Object> parameters) {
+        Submittable s = cypherClient.statement(cypher);
+
+        if (parameters != null) {
+            for (Entry<String, Object> param : parameters.entrySet()) {
+                s = s.addParameter(param.getKey(), param.getValue());
+            }
+        }
+
+        return s.submit().join();
     }
 
     /**
@@ -136,7 +170,7 @@ public class Connection {
         ResultSet results = null;
 
         try {
-            results = client.submit(traversal, parameters);
+            results = gremlinClient.submit(traversal, parameters);
         } catch (RuntimeException rex) {
             log.warn("submitAsync failed");
             throw new TimeoutException("submitAsync failed");
@@ -154,7 +188,7 @@ public class Connection {
      * @return The results of the query.
      */
     public ResultSet submit(final String traversal, final Map<String, Object> parameters) {
-        return awaitResults(client.submit(traversal, parameters));
+        return awaitResults(gremlinClient.submit(traversal, parameters));
     }
 
     /**
@@ -165,7 +199,7 @@ public class Connection {
      * @return The results of the query.
      */
     public ResultSet submit(final GraphTraversal<?, ?> traversal) {
-        return awaitResults(client.submit(traversal));
+        return awaitResults(gremlinClient.submit(traversal));
     }
 
     /**

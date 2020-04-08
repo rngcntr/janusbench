@@ -22,6 +22,7 @@
     <snakeyaml.version>1.26</snakeyaml.version>
     <mockito.version>2.10.0</mockito.version>
     <sunfire.version>2.22.1</sunfire.version>
+    <cypher.gremlin.version>1.0.4</cypher.gremlin.version>
 </properties>
 
 <dependencies>
@@ -113,6 +114,12 @@
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
         <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.opencypher.gremlin</groupId>
+        <artifactId>cypher-gremlin-server-client</artifactId>
+        <version>${cypher.gremlin.version}</version>
     </dependency>
 </dependencies>
 

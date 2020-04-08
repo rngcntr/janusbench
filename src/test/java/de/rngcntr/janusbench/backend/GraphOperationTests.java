@@ -76,4 +76,13 @@ public class GraphOperationTests {
         assertEquals("One edge should exist in graph", 1,
                      conn.submit("g.E().count().next()").one().getInt());
     }
+
+    @Test
+    public void testCypherQuery() throws Exception {
+        conn.submitCypher("CREATE (p1:Person {name: 'Tom', age: 24})").all();
+        conn.submitCypher("CREATE (p2:Person {name: 'Jerry', age: 24})").all();
+        Object count = conn.submitCypher("MATCH (n) RETURN count(n) as count").all().get(0).get("count");
+        assertTrue(count instanceof Long);
+        assertEquals(new Long(2L), (Long) count);
+    }
 }
