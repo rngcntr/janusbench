@@ -21,7 +21,7 @@
     <picocli.version>4.2.0</picocli.version>
     <snakeyaml.version>1.26</snakeyaml.version>
     <mockito.version>3.3.3</mockito.version>
-    <sunfire.version>2.22.1</sunfire.version>
+    <sunfire.version>2.22.2</sunfire.version>
     <cypher.gremlin.version>1.0.4</cypher.gremlin.version>
 </properties>
 
