@@ -18,7 +18,7 @@
     <apache.tinkerpop.version>3.4.4</apache.tinkerpop.version>
     <slf4j.version>1.7.30</slf4j.version>
     <testcontainers.version>1.14.0</testcontainers.version>
-    <picocli.version>4.2.0</picocli.version>
+    <picocli.version>4.5.1</picocli.version>
     <snakeyaml.version>1.26</snakeyaml.version>
     <mockito.version>3.3.3</mockito.version>
     <sunfire.version>2.22.1</sunfire.version>
