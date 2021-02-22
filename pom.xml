@@ -19,7 +19,7 @@
     <slf4j.version>1.7.30</slf4j.version>
     <testcontainers.version>1.14.0</testcontainers.version>
     <picocli.version>4.2.0</picocli.version>
-    <snakeyaml.version>1.26</snakeyaml.version>
+    <snakeyaml.version>1.28</snakeyaml.version>
     <mockito.version>3.3.3</mockito.version>
     <sunfire.version>2.22.1</sunfire.version>
     <cypher.gremlin.version>1.0.4</cypher.gremlin.version>
